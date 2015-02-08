@@ -8,6 +8,14 @@ namespace Probability
 {
     class World
     {
+        Logger logger;
+        Rules rules;
+        public World(Logger logger)
+        {
+            this.logger = logger;
+            rules = new Rules(logger);
+        }
+
         //Create players
         //Create Arena
         //Live different scenarious
