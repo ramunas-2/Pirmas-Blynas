@@ -40,13 +40,13 @@
             // 
             this.richTextBoxMainLogger.Location = new System.Drawing.Point(12, 12);
             this.richTextBoxMainLogger.Name = "richTextBoxMainLogger";
-            this.richTextBoxMainLogger.Size = new System.Drawing.Size(424, 509);
+            this.richTextBoxMainLogger.Size = new System.Drawing.Size(987, 509);
             this.richTextBoxMainLogger.TabIndex = 0;
             this.richTextBoxMainLogger.Text = "";
             // 
             // buttonRun01
             // 
-            this.buttonRun01.Location = new System.Drawing.Point(443, 13);
+            this.buttonRun01.Location = new System.Drawing.Point(1020, 12);
             this.buttonRun01.Name = "buttonRun01";
             this.buttonRun01.Size = new System.Drawing.Size(75, 23);
             this.buttonRun01.TabIndex = 1;
@@ -58,7 +58,7 @@
             // 
             chartArea1.Name = "ChartArea1";
             this.chartLog.ChartAreas.Add(chartArea1);
-            this.chartLog.Location = new System.Drawing.Point(496, 119);
+            this.chartLog.Location = new System.Drawing.Point(1020, 221);
             this.chartLog.Name = "chartLog";
             series1.ChartArea = "ChartArea1";
             series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
@@ -72,7 +72,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(999, 533);
+            this.ClientSize = new System.Drawing.Size(1476, 533);
             this.Controls.Add(this.chartLog);
             this.Controls.Add(this.buttonRun01);
             this.Controls.Add(this.richTextBoxMainLogger);

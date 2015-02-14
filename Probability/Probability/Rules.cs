@@ -10,15 +10,33 @@ namespace Probability
     {
         Logger logger;
 
-        public const int blind = 1;
-        public const int playerCoins = 3;
-        public const int diceCombinations = 6;
+        public int blind = 1;
+        public int playerCoins = 3;
+        public int diceCombinations = 6;
+        public Random random;
+        public int situationBrainCellsCount;
 
 
         public Rules(Logger logger)
         {
             this.logger = logger;
             generateScenarios();
+            generatePossibleMoves();
+            generateBrainCellsCount();
+
+
+            //debug
+            
+            foreach (Scenario scenario in scenarios)
+            {
+                logger.log(scenario.toString());
+            }
+            
+
+            //Random generator
+            random = new Random();
+
+
         }
 
         //Scenarios
@@ -26,8 +44,31 @@ namespace Probability
         void generateScenarios()
         {
             List<int> path = new List<int>();
+            Scenario scenario = new Scenario(path, false, this, logger);
+            scenarios.Add(scenario);
             iterate(path);
+        }
 
+        void generatePossibleMoves()
+        {
+            foreach (Scenario scenario in scenarios)
+            {
+                List<int> possibleMoves = new List<int>();
+                if (!scenario.gameOver)
+                {//Not game over
+                    foreach (Scenario scenario2 in scenarios)
+                    {
+                        if (scenario.path.Count == (scenario2.path.Count - 1))
+                        {//scenario2 is 1 step longer
+                            if (scenario.pathMatchCount(scenario2.path) == scenario.path.Count)
+                            {//path match
+                                possibleMoves.Add(scenario2.path[scenario2.path.Count - 1]);
+                            }
+                        }
+                    }
+                }
+                scenario.updatePossibleMoves(possibleMoves);
+            }
         }
 
         void iterate(List<int> path)
@@ -64,13 +105,13 @@ namespace Probability
                         moveAllowed = false;
                     }
 
-                    if (action < p2Bet-p1Bet)
+                    if (action < p2Bet - p1Bet)
                     {//trying to bet less than required
                         moveAllowed = false;
                     }
                     if (action == p2Bet - p1Bet)
                     {//Equalised
-                        if(path.Count > 0)
+                        if (path.Count > 0)
                         {//Not first move
                             gameOver = true;
                         }
@@ -85,12 +126,10 @@ namespace Probability
                     }
                     pathNew.Add(action);
 
-                    if (gameOver)
-                    {
-                        Scenario scenario = new Scenario(pathNew, this, logger);
-                        scenarios.Add(scenario);
-                    }
-                    else
+                    Scenario scenario = new Scenario(pathNew, gameOver, this, logger);
+                    scenarios.Add(scenario);
+
+                    if (!gameOver)
                     {
                         iterate(pathNew);
                     }
@@ -98,10 +137,45 @@ namespace Probability
             }
         }
 
+        public Scenario findScenarioByPath(List<int> path)
+        {
+            Scenario retVal = null;
+            foreach (Scenario scenario in scenarios)
+            {
+                if (scenario.path.Count == path.Count)
+                {
+                    if (scenario.pathMatchCount(path) == scenario.path.Count)
+                    {
+                        retVal = scenario;
+                        break;
+                    }
+                }
+            }
+            return retVal;
+        }
 
         //Braincells structure
+        void generateBrainCellsCount()
+        {
+            situationBrainCellsCount = 0;
+            foreach (Scenario scenario in scenarios)
+            {
+                scenario.brainCellsLocation = situationBrainCellsCount;
+                situationBrainCellsCount += scenario.possibleMoves.Count;
+            }
+        }
 
-        //Random generator
+        public string intListToString(List<int> path)
+        {
+            string s = "";
+            foreach(int ii in path)
+            {
+                s += (ii.ToString() + "; ");
+            }
+            return s;
+        }
+
+
 
 
 
