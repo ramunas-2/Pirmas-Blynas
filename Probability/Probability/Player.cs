@@ -14,6 +14,7 @@ namespace Probability
 
         //Braincells
         public double[] brainCells;
+        public double[] storeBrainCells;
         public int coins;
         public int dice;
         public int allBrainCellsCount;
@@ -134,6 +135,30 @@ namespace Probability
             return retVal;
         }
 
+        public void mutate(int brainCellToMutate, double delta)
+        {
+            brainCells[brainCellToMutate] += (delta);
+            brainCells[brainCellToMutate] = Math.Min(brainCells[brainCellToMutate], 1.0d);
+            brainCells[brainCellToMutate] = Math.Max(brainCells[brainCellToMutate], 0.0d);
+            normaliseBrainCells();
+        }
+
+        public void push()
+        {
+            storeBrainCells = new double[allBrainCellsCount];
+            for (int i=0; i<allBrainCellsCount; i++)
+            {
+                storeBrainCells[i] = brainCells[i];
+            }
+        }
+
+        public void pop()
+        {
+            for (int i = 0; i < allBrainCellsCount; i++)
+            {
+                brainCells[i] = storeBrainCells[i];
+            }
+        }
 
         //toString
         public string toString()
