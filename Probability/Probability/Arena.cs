@@ -14,6 +14,7 @@ namespace Probability
 
         public Arena(Logger logger, Rules rules)
         {
+            logger.set("Fight", 1, Color.Blue);
             this.logger = logger;
             this.rules = rules;
 
@@ -23,7 +24,6 @@ namespace Probability
         //2 players, given dices, choieces made on braincells and random, fight to the end, return won coins
         public int fight(Player p1, Player p2)
         {
-            logger.set("Fight", 1, Color.Blue);
             logger.log("p1 dice = " + p1.dice.ToString() + " ; p2 dice = " + p2.dice.ToString(), 9, "Fight");
             int retVal = 0;
             Player pCurrrent = p1;

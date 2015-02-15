@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,14 +12,15 @@ namespace Probability
         Logger logger;
 
         public int blind = 1;
-        public int playerCoins = 3;
-        public int diceCombinations = 6;
+        public int playerCoins = 2;
+        public int diceCombinations = 2;
         public Random random;
         public int situationBrainCellsCount;
 
 
         public Rules(Logger logger)
         {
+            logger.set("Rules", 1, Color.Brown);
             this.logger = logger;
             generateScenarios();
             generatePossibleMoves();
@@ -26,12 +28,12 @@ namespace Probability
 
 
             //debug
-            
+
             foreach (Scenario scenario in scenarios)
             {
-                logger.log(scenario.toString());
+                logger.log(scenario.toString(), 8, "Rules");
             }
-            
+
 
             //Random generator
             random = new Random();
@@ -151,6 +153,10 @@ namespace Probability
                     }
                 }
             }
+            if (retVal == null)
+            {
+                logger.log("Scenario by path not found.", 1, "Error");
+            }
             return retVal;
         }
 
@@ -168,13 +174,22 @@ namespace Probability
         public string intListToString(List<int> path)
         {
             string s = "";
-            foreach(int ii in path)
+            foreach (int ii in path)
             {
                 s += (ii.ToString() + "; ");
             }
             return s;
         }
 
+        public string doubleListToString(List<double> path, int precission = 4)
+        {
+            string s = "";
+            foreach (double dd in path)
+            {
+                s += (dd.ToString("F" + precission.ToString()) + "; ");
+            }
+            return s;
+        }
 
 
 

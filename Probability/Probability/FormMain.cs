@@ -21,7 +21,7 @@ namespace Probability
 
         void run()
         {
-            world.scenario1();
+            world.mainScenario();
 
         }
 
@@ -30,7 +30,7 @@ namespace Probability
             logger = new Logger(richTextBoxMainLogger, chartLog, "log.txt", 5);
             logger.log("Hello");
             world = new World(logger);
-            run();
+            //run();
         }
 
 

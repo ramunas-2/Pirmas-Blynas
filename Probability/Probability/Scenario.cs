@@ -9,7 +9,6 @@ namespace Probability
     class Scenario
     {
         public List<int> path = new List<int>();
-        public List<int> posssibleMoves = new List<int>();
         public int brainCellsLocation;
         Rules rules;
         Logger logger;

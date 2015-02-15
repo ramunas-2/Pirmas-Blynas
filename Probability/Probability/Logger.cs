@@ -74,7 +74,7 @@ namespace Probability
             richTextLog.AppendText(ss);
             richTextLog.SelectionColor = richTextLog.ForeColor;
             richTextLog.Refresh();
-            w.WriteLine(ss);
+            w.Write(ss);
             richTextLog.ScrollToCaret();
             w.Flush();
         }
@@ -82,6 +82,7 @@ namespace Probability
         public void logChart(double x)
         {
             chartLog.Series["Series1"].Points.AddY(x);
+            chartLog.Update();
         }
 
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,6 +23,7 @@ namespace Probability
         //New  player (constructor)
         public Player(Logger logger, Rules rules, string name = "", bool initialiseRandomiseNow = false)
         {
+            logger.set("Player", 1, Color.Green);
             this.logger = logger;
             this.rules = rules;
             this.name = name;
@@ -69,26 +71,29 @@ namespace Probability
 
         public void normaliseBrainCells()
         {
-            int brainCellsBegin = 0;
-            foreach (Scenario scenario in rules.scenarios)
+            for (int dice = 0; dice < rules.diceCombinations; dice++)
             {
-                double brainCellsSum = 0.0d;
-                for (int i = brainCellsBegin; i < brainCellsBegin + scenario.possibleMoves.Count; i++)
+                int brainCellsBegin = dice * rules.situationBrainCellsCount;
+                foreach (Scenario scenario in rules.scenarios)
                 {
-                    brainCellsSum += brainCells[i];
-                }
-                for (int i = brainCellsBegin; i < brainCellsBegin + scenario.possibleMoves.Count; i++)
-                {
-                    if (brainCellsSum > 0.0d)
+                    double brainCellsSum = 0.0d;
+                    for (int i = brainCellsBegin; i < brainCellsBegin + scenario.possibleMoves.Count; i++)
                     {
-                        brainCells[i] /= brainCellsSum;
+                        brainCellsSum += brainCells[i];
                     }
-                    else
+                    for (int i = brainCellsBegin; i < brainCellsBegin + scenario.possibleMoves.Count; i++)
                     {
-                        brainCells[i] = 1.0d / ((double)scenario.possibleMoves.Count);
+                        if (brainCellsSum > 0.0d)
+                        {
+                            brainCells[i] /= brainCellsSum;
+                        }
+                        else
+                        {
+                            brainCells[i] = 1.0d / ((double)scenario.possibleMoves.Count);
+                        }
                     }
+                    brainCellsBegin += scenario.possibleMoves.Count;
                 }
-                brainCellsBegin += scenario.possibleMoves.Count;
             }
         }
 
@@ -99,19 +104,23 @@ namespace Probability
         {
             int retVal = -2;
             Scenario scenario = rules.findScenarioByPath(path);
+            logger.log("Make Move from path ( " + rules.intListToString(path) + ")", 8, "Player");
             if (scenario.gameOver)
             {
-                logger.log("Can't make move, gameOver",0,"Error");
+                logger.log("Can't make move, gameOver", 0, "Error");
             }
             else
             {
                 double choice = rules.random.NextDouble();
+                logger.log("Random choice = " + choice.ToString("F4"), 8, "Player");
                 int i = 0;
-                double threshold = brainCells[scenario.brainCellsLocation ];
+                double threshold = brainCells[scenario.brainCellsLocation + (dice * rules.situationBrainCellsCount)];
+                logger.log("--Cheching threshold = " + threshold.ToString("F4") + " decission " + scenario.possibleMoves[i].ToString(), 8, "Player");
                 while ((i < scenario.possibleMoves.Count()) && (threshold < choice))
                 {
                     i++;
-                    threshold += brainCells[scenario.brainCellsLocation + i];
+                    threshold += brainCells[scenario.brainCellsLocation + (dice * rules.situationBrainCellsCount) + i];
+                    logger.log("--Cheching threshold = " + threshold.ToString("F4") + " decission " + scenario.possibleMoves[i].ToString(), 8, "Player");
                 }
                 if (threshold < choice)
                 {
