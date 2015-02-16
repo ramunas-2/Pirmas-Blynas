@@ -12,13 +12,208 @@ namespace Probability
         Logger logger;
         Rules rules;
         List<FightStatisticsComponent> fightStatisticComponents = new List<FightStatisticsComponent>();
+        int maxGameOverPathLength = 0;
 
         public ArenaAugmented(Logger logger, Rules rules)
         {
             logger.set("FightS", 1, Color.Green);
+            logger.set("Anti-A", 10, Color.Blue);
             this.logger = logger;
             this.rules = rules;
             fillFightStatisticsComponents();
+
+
+        }
+
+        public Player makeAugmentedAntiplayer(Player pP)
+        {
+            Player pA = pP.copyPlayer();
+            pA.name = "Anti-" + pA.name;
+            logger.log("Antiplayer Augmented started for pleyer : " + pP.toString(), 5, "Anti-A");
+
+
+
+            //1 Fill A braincells with -1
+            //2 Make fightStatisticComponents copy
+            //3 Filter longest (n length) paths where A ends
+            //4 Scan groups of moves (A6, A7……A16, A17)
+            //5 Calculate sum of (multiplication of all P probabilites * coins in the same row) for each A in a group (same A dice!)
+            //6 Choose the best outcome, fill its A with 1, and replace all other A with 0 in the group (verify if A was -1 before replacement, otherwise - exception)
+            //7 If N>2, replace coins with coins * A(n) * p(n-1); delete A(n) and p(n-1)
+            //8 While N>1, continue step 3
+            //9 Verify if any -1 brain cell is left in A
+            //10 Make a copy of A, run normalise, verify if anything is changed
+
+
+
+            //1 Fill A braincells with -1
+            for (int i = 0; i < pA.allBrainCellsCount; i++)
+            {
+                pA.brainCells[i] = -1.0d;
+            }
+            //2 Make fightStatisticComponents copy
+            List<FightStatisticsComponent> antiComponents = new List<FightStatisticsComponent>();
+            foreach (FightStatisticsComponent fightStatisticComponent in fightStatisticComponents)
+            {
+                //FightStatisticsComponent newComponent = new FightStatisticsComponent(fightStatisticComponent);
+                antiComponents.Add(new FightStatisticsComponent(fightStatisticComponent));
+            }
+
+            debugAntiComponents(pP, pA, antiComponents);
+
+            //3 Filter longest (n length) paths where A ends
+            for (int pathLength = maxGameOverPathLength; pathLength > 0; pathLength--)
+            {
+                foreach (FightStatisticsComponent antiComponent in antiComponents)
+                {
+                    if ((antiComponent.whoEnds == 1) && (antiComponent.probabilityComponents.Count() == pathLength))
+                    {
+                        //4 Scan groups of moves (A6, A7……A16, A17)
+                        int lastLocation = antiComponent.probabilityComponents[0];
+                        if (pA.brainCells[lastLocation] == -1.0d)
+                        {//Component is not processed at this level yet, must collect a group and process
+                            logger.log("Iteration pathLength = " + pathLength + " path = ( " + rules.intListToString(antiComponent.probabilityComponents) + ")", 8, "Anti-A");
+                            //Identify A group
+                            Scenario scenario = rules.findScenarioByBCLocation(lastLocation % rules.situationBrainCellsCount);
+                            int currentADice = lastLocation / rules.situationBrainCellsCount;
+                            //Scan all other A in the same group
+                            //Scan all P dice combinations
+                            double? bestOptionABenefit = null;
+                            int bestOptionAChoiceLocation = -1;
+                            int choiceLocation = (currentADice * rules.situationBrainCellsCount) + scenario.brainCellsLocation;
+                            foreach (int iiA in scenario.possibleMoves)
+                            {
+                                double sumOfAllDiceCombinationsBenefit = 0;
+                                //5 Calculate sum of (multiplication of all P probabilites * coins in the same row) for each A in a group (same A dice!)
+                                foreach (FightStatisticsComponent deepComponent in antiComponents)
+                                {
+                                    if ((deepComponent.whoEnds == 1) && (deepComponent.probabilityComponents.Count() == pathLength) && (deepComponent.probabilityComponents[0] == choiceLocation))
+                                    {
+                                        double multiplication = (double)deepComponent.wonCoins;
+                                        for (int i = 1; i < pathLength; i += 2)
+                                        {
+                                            multiplication *= pP.brainCells[deepComponent.probabilityComponents[i]];
+                                        }
+                                        sumOfAllDiceCombinationsBenefit += multiplication;
+                                    }
+                                }
+                                if (bestOptionABenefit.HasValue)
+                                {
+                                    if (sumOfAllDiceCombinationsBenefit > bestOptionABenefit)
+                                    {
+                                        bestOptionABenefit = sumOfAllDiceCombinationsBenefit;
+                                        bestOptionAChoiceLocation = choiceLocation;
+                                    }
+                                }
+                                else
+                                {
+                                    bestOptionABenefit = sumOfAllDiceCombinationsBenefit;
+                                    bestOptionAChoiceLocation = choiceLocation;
+                                }
+                                choiceLocation++;
+                            }
+                            //6 Choose the best outcome, fill its A with 1, and replace all other A with 0 in the group (verify if A was -1 before replacement, otherwise - exception)
+                            choiceLocation = (currentADice * rules.situationBrainCellsCount) + scenario.brainCellsLocation;
+                            foreach (int iiA in scenario.possibleMoves)
+                            {
+                                if (pA.brainCells[choiceLocation] == -1.0d)
+                                {
+                                    pA.brainCells[choiceLocation] = ((choiceLocation == bestOptionAChoiceLocation) ? 1.0d : 0.0d);
+                                }
+                                else
+                                {
+                                    logger.log("Trying to fill non -1 brain cell", 1, "Error");
+                                }
+                                foreach (FightStatisticsComponent deepComponent in antiComponents)
+                                {
+                                    if ((deepComponent.whoEnds == 1) && (deepComponent.probabilityComponents.Count() == pathLength) && (deepComponent.probabilityComponents[0] == choiceLocation))
+                                    {
+                                        //7 If N>2, replace coins with coins * A(n) * p(n-1); delete A(n) and p(n-1)
+                                        if (pathLength > 2)
+                                        {
+                                            deepComponent.wonCoins *= (pA.brainCells[deepComponent.probabilityComponents[0]] * pP.brainCells[deepComponent.probabilityComponents[1]]);
+                                            deepComponent.probabilityComponents.RemoveAt(0);
+                                            deepComponent.probabilityComponents.RemoveAt(0);
+                                        }
+                                    }
+                                }
+                                choiceLocation++;
+                            }
+                            debugAntiComponents(pP, pA, antiComponents);
+                        }
+                    }
+                }
+                //8 While N>1, continue step 3
+            }
+            //9 Verify if any -1 brain cell is left in A
+            //10 Make a copy of A, run normalise, verify if anything is changed
+            Player pACopy = pA.copyPlayer();
+            pACopy.normaliseBrainCells();
+            for (int i = 0; i < rules.allBrainCellsCount; i++)
+            {
+                if (pA.brainCells[i] == -1.0d)
+                {
+                    logger.log("After Anti player creatiopn found -1 brain cell", 1, "Error");
+                }
+                if (pA.brainCells[i] != pACopy.brainCells[i])
+                {
+                    logger.log("After Anti player creatiopn found not normalised brain cell", 1, "Error");
+                }
+            }
+
+
+
+
+            logger.log("Antiplayer Augmented made : " + pA.toString(), 5, "Anti-A");
+            logger.log("Antiplayer Augmented success against player : " + fightStatistics(pA, pP).ToString("F4"), 5, "Anti-A");
+            return pA;
+        }
+
+        void debugAntiComponents(Player pP, Player pA, List<FightStatisticsComponent> antiComponents)
+        {
+            logger.set("AntiD", 10, Color.DarkBlue);
+
+            int ii = 0;
+            foreach (FightStatisticsComponent component in antiComponents)
+            {
+                string ss = ii.ToString("D2") + " Path = ( ";
+                string s1 = "";
+                string s2 = "";
+
+
+                bool antiPlayer = (component.whoEnds == 1) ^ (component.probabilityComponents.Count % 2 == 0);
+                for (int i = component.probabilityComponents.Count - 1; i >= 0; i--)
+                {
+                    s1 += ((antiPlayer ? "A " : "P ") + component.probabilityComponents[i] + "; ");
+                    s2 += ((antiPlayer ? ("A " + pA.brainCells[component.probabilityComponents[i]].ToString("F4")) : ("P " + pP.brainCells[component.probabilityComponents[i]].ToString("F4"))) + "; ");
+                    antiPlayer ^= true;
+                }
+
+                string s3 = component.wonCoins.ToString("F4");
+                while (s3.Length < 7)
+                    s3 = " " + s3;
+
+
+                while (s1.Length < 20)
+                    s1 += " ";
+                ss += (s1 + ")  Coins = " + s3);
+
+
+                while (s2.Length < 35)
+                    s2 += " ";
+
+                ss += "  Probabilities = ( ";
+                ss += (s2 + ")");
+
+
+
+                logger.log(ss, 8, "AntiD");
+                ii++;
+
+            }
+
+
+
 
 
         }
@@ -133,6 +328,10 @@ namespace Probability
                                 fightStatisticComponent.whoEnds = whoEnds;
                                 fightStatisticComponent.probabilityComponents = probabilityComponents;
                                 fightStatisticComponents.Add(fightStatisticComponent);
+                                if (probabilityComponents.Count() > maxGameOverPathLength)
+                                {
+                                    maxGameOverPathLength = probabilityComponents.Count();
+                                }
                                 logger.log("wonCoins = " + wonCoins.ToString() + " probabilityComponents = ( " + rules.intListToString(probabilityComponents) + ")", 8, "FightS");
                             }
                         }
@@ -153,7 +352,7 @@ namespace Probability
                 string debugS = "Component coins = " + fightStatisticComponent.wonCoins.ToString() + " probability = ( ";
                 foreach (int ii in fightStatisticComponent.probabilityComponents)
                 {
-                    debugS+=((((fightStatisticComponent.whoEnds == 1) ^ (currentPlayer)) ? p2.brainCells[ii] : p1.brainCells[ii]).ToString("F4")+"; ");
+                    debugS += ((((fightStatisticComponent.whoEnds == 1) ^ (currentPlayer)) ? p2.brainCells[ii] : p1.brainCells[ii]).ToString("F4") + "; ");
                     component *= (((fightStatisticComponent.whoEnds == 1) ^ (currentPlayer)) ? p2.brainCells[ii] : p1.brainCells[ii]);
                     currentPlayer ^= true;
                 }
@@ -163,7 +362,7 @@ namespace Probability
                 component *= ((double)fightStatisticComponent.wonCoins);
                 retVal += component;
             }
-            logger.log("Debug check sum = " + debugCheckSum.ToString(),8, "FightS");
+            logger.log("Debug check sum = " + debugCheckSum.ToString(), 8, "FightS");
             retVal /= (2 * rules.diceCombinations * rules.diceCombinations);
             return retVal;
         }
@@ -179,9 +378,24 @@ namespace Probability
     }
     class FightStatisticsComponent
     {
-        public int wonCoins;
+        public double wonCoins;
         public int whoEnds;
         public List<int> probabilityComponents = new List<int>();
+
+        public FightStatisticsComponent()
+        {
+
+        }
+
+        public FightStatisticsComponent(FightStatisticsComponent model)
+        {
+            this.wonCoins = model.wonCoins;
+            this.whoEnds = model.whoEnds;
+            this.probabilityComponents = new List<int>(model.probabilityComponents);
+
+
+        }
+
     }
 }
 

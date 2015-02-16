@@ -16,6 +16,8 @@ namespace Probability
         public int diceCombinations = 2;
         public Random random;
         public int situationBrainCellsCount;
+        public int allBrainCellsCount;
+        public Scenario[] locationsBC;
 
 
         public Rules(Logger logger)
@@ -160,6 +162,11 @@ namespace Probability
             return retVal;
         }
 
+        public Scenario findScenarioByBCLocation(int location)
+        {
+            return locationsBC[location];
+        }
+
         //Braincells structure
         void generateBrainCellsCount()
         {
@@ -169,6 +176,19 @@ namespace Probability
                 scenario.brainCellsLocation = situationBrainCellsCount;
                 situationBrainCellsCount += scenario.possibleMoves.Count;
             }
+            allBrainCellsCount = situationBrainCellsCount * diceCombinations;
+            locationsBC = new Scenario[situationBrainCellsCount];
+            int locationStart = 0;
+            foreach (Scenario scenario in scenarios)
+            {
+                for(int i=locationStart; i<locationStart+scenario.possibleMoves.Count;i++)
+                {
+                    locationsBC[i] = scenario;
+                }
+                locationStart += scenario.possibleMoves.Count;
+            }
+
+
         }
 
         public string intListToString(List<int> path)

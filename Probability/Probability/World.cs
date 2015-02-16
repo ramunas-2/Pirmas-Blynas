@@ -9,10 +9,10 @@ namespace Probability
 {
     class World
     {
-        Logger logger;
-        Rules rules;
-        Arena arena;
-        ArenaAugmented arenaAugmented;
+        protected Logger logger;
+        protected Rules rules;
+        protected Arena arena;
+        protected ArenaAugmented arenaAugmented;
         public World(Logger logger)
         {
             this.logger = logger;
@@ -38,7 +38,7 @@ namespace Probability
             Player p1 = new Player(logger, rules, "p1", true);
             Player p2 = new Player(logger, rules, "p2", true);
 
-            /*
+            
             p1.brainCells[0] = 0.70d;
             p1.brainCells[1] = 0.26d;
             p1.brainCells[2] = 0.04d;
@@ -83,7 +83,7 @@ namespace Probability
 
             p1.normaliseBrainCells();
             p2.normaliseBrainCells();
-            */
+            
 
             double maxResult = ((double)(-rules.playerCoins));
 
@@ -110,7 +110,7 @@ namespace Probability
             }
         }
 
-        void beautifyAgainst(Player p2, Player p1)
+        protected void beautifyAgainst(Player p2, Player p1)
         {
             createBeutifyComponents();
             double bestComponent;
@@ -123,7 +123,7 @@ namespace Probability
 
         }
 
-        double beautifyRepeatAgainstStep(Player p2, Player p1, double step, int repeatCount)
+        protected double beautifyRepeatAgainstStep(Player p2, Player p1, double step, int repeatCount)
         {
             double? bestResult = null;
             bool stillEfficient=true;
@@ -153,9 +153,10 @@ namespace Probability
         }
 
 
-        double beautifyOnceAgainstStep(Player p2, Player p1, double step)
+        protected double beautifyOnceAgainstStep(Player p2, Player p1, double step)
         {
             randomiseBeautifyComponents();
+            //no need to order???
             var sorted = from beautifyComponent in beautifyComponents orderby beautifyComponent.randomOrder select beautifyComponent;
             BeautifyComponent bestComponent = null;
             p2.push();
@@ -183,8 +184,8 @@ namespace Probability
             return bestComponent.newResult.Value;
         }
 
-        List<BeautifyComponent> beautifyComponents;
-        void createBeutifyComponents()
+        protected List<BeautifyComponent> beautifyComponents;
+        protected void createBeutifyComponents()
         {
             beautifyComponents = new List<BeautifyComponent>();
             for (int iBraiCells = 0; iBraiCells < rules.diceCombinations * rules.situationBrainCellsCount; iBraiCells++)
@@ -199,7 +200,7 @@ namespace Probability
                 }
             }
         }
-        void randomiseBeautifyComponents()
+        protected void randomiseBeautifyComponents()
         {
             foreach (BeautifyComponent beautifyComponent in beautifyComponents)
             {
@@ -208,7 +209,7 @@ namespace Probability
             }
         }
 
-        class BeautifyComponent
+        protected class BeautifyComponent
         {
             public int brainCellIndex;
             public double direction;
@@ -221,7 +222,7 @@ namespace Probability
             logger.log("Run scenarion 2 - build anti player - brutal force");
 
             Player p1 = new Player(logger, rules, "p1", true);
-            Player p2 = new Player(logger, rules, "p2", true);
+            
 
             p1.brainCells[0] = 0.70d;
             p1.brainCells[1] = 0.26d;
@@ -244,46 +245,33 @@ namespace Probability
             p1.brainCells[18] = 0.00d;
             p1.brainCells[19] = 1.00d;
 
-            p2.brainCells[0] = 0.11d;
-            p2.brainCells[1] = 0.12d;
-            p2.brainCells[2] = 0.77d;
-            p2.brainCells[3] = 0.14d;
-            p2.brainCells[4] = 0.76d;
-            p2.brainCells[5] = 0.10d;
-            p2.brainCells[6] = 0.85d;
-            p2.brainCells[7] = 0.15d;
-            p2.brainCells[8] = 0.16d;
-            p2.brainCells[9] = 0.84d;
-            p2.brainCells[10] = 0.04d;
-            p2.brainCells[11] = 0.00d;
-            p2.brainCells[12] = 0.96d;
-            p2.brainCells[13] = 0.06d;
-            p2.brainCells[14] = 0.01d;
-            p2.brainCells[15] = 0.93d;
-            p2.brainCells[16] = 0.08d;
-            p2.brainCells[17] = 0.92d;
-            p2.brainCells[18] = 0.09d;
-            p2.brainCells[19] = 0.91d;
 
             p1.normaliseBrainCells();
-            p2.normaliseBrainCells();
 
 
+
+            searchAntiplayerBrootforce(p1);
+
+
+        }
+
+        public void searchAntiplayerBrootforce(Player p1)
+        {
+            Player pABrootForce = new Player(logger, rules, "pAntiBrrotforce", true);
             double maxResult = ((double)(-rules.playerCoins));
-
             logger.log("Start looking for antiPlayer for " + p1.toString());
             while (true)
             {
-                double newResult = arenaAugmented.fightStatistics(p2, p1);
+                double newResult = arenaAugmented.fightStatistics(pABrootForce, p1);
                 if (newResult > maxResult)
                 {
-                    logger.log("New max found, value = " + newResult.ToString("F4") + " " + p2.toString());
+                    logger.log("New max found, value = " + newResult.ToString("F4") + " " + pABrootForce.toString());
                     logger.logChart(newResult);
                     maxResult = newResult;
                 }
-                p2.initialiseRandomise();
-
+                pABrootForce.initialiseRandomise();
             }
+
         }
 
         public void scenario1()

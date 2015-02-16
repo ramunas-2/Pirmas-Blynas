@@ -13,7 +13,7 @@ namespace Probability
     public partial class FormMain : Form
     {
         Logger logger;
-        World world;
+        WorldAugmented worldAugmented;
         public FormMain()
         {
             InitializeComponent();
@@ -21,7 +21,7 @@ namespace Probability
 
         void run()
         {
-            world.mainScenario();
+            worldAugmented.mainScenario();
 
         }
 
@@ -29,8 +29,8 @@ namespace Probability
         {
             logger = new Logger(richTextBoxMainLogger, chartLog, "log.txt", 5);
             logger.log("Hello");
-            world = new World(logger);
-            //run();
+            worldAugmented = new WorldAugmented(logger);
+            run();
         }
 
 

@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.richTextBoxMainLogger = new System.Windows.Forms.RichTextBox();
             this.buttonRun01 = new System.Windows.Forms.Button();
             this.chartLog = new System.Windows.Forms.DataVisualization.Charting.Chart();
@@ -38,6 +38,7 @@
             // 
             // richTextBoxMainLogger
             // 
+            this.richTextBoxMainLogger.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(186)));
             this.richTextBoxMainLogger.Location = new System.Drawing.Point(12, 12);
             this.richTextBoxMainLogger.Name = "richTextBoxMainLogger";
             this.richTextBoxMainLogger.Size = new System.Drawing.Size(987, 509);
@@ -56,14 +57,14 @@
             // 
             // chartLog
             // 
-            chartArea1.Name = "ChartArea1";
-            this.chartLog.ChartAreas.Add(chartArea1);
+            chartArea2.Name = "ChartArea1";
+            this.chartLog.ChartAreas.Add(chartArea2);
             this.chartLog.Location = new System.Drawing.Point(1020, 221);
             this.chartLog.Name = "chartLog";
-            series1.ChartArea = "ChartArea1";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series1.Name = "Series1";
-            this.chartLog.Series.Add(series1);
+            series2.ChartArea = "ChartArea1";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series2.Name = "Series1";
+            this.chartLog.Series.Add(series2);
             this.chartLog.Size = new System.Drawing.Size(444, 300);
             this.chartLog.TabIndex = 2;
             this.chartLog.Text = "chart1";
