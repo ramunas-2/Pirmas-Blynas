@@ -115,10 +115,11 @@ namespace Probability
             createBeutifyComponents();
             double bestComponent;
             //bestComponent = beautifyRepeatAgainstStep(p2, p1, 0.1d, 1000);
-            bestComponent = beautifyRepeatAgainstStep(p2, p1, 0.01d, 1000);
-            bestComponent = beautifyRepeatAgainstStep(p2, p1, 0.001d, 1000);
-            bestComponent = beautifyRepeatAgainstStep(p2, p1, 0.0001d, 1000);
-            bestComponent = beautifyRepeatAgainstStep(p2, p1, 0.00001d, 1000);
+            bestComponent = beautifyRepeatAgainstStep(p2, p1, 0.1d, 10000);
+            bestComponent = beautifyRepeatAgainstStep(p2, p1, 0.01d, 10000);
+            bestComponent = beautifyRepeatAgainstStep(p2, p1, 0.001d, 10000);
+            bestComponent = beautifyRepeatAgainstStep(p2, p1, 0.0001d, 10000);
+            bestComponent = beautifyRepeatAgainstStep(p2, p1, 0.00001d, 10000);
 
 
         }
@@ -129,6 +130,11 @@ namespace Probability
             bool stillEfficient=true;
             for (int i = 0; (i < repeatCount)&&(stillEfficient); i++)
             {
+                if ((i%100==00)&&(i>100))
+                {
+                    logger.log("Iteration "+i+ " Precission = "+step.ToString());
+                }
+
                 stillEfficient = false;
                 double? beautifyResult = beautifyOnceAgainstStep(p2, p1, step);
                 if (bestResult == null)

@@ -62,6 +62,7 @@ namespace Probability
             if (debugLevel <= loggerType.debugLevel)
             {
                 string ss = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.ff") + " "+name+"> " + logMessage;
+                //string ss = logMessage;
                 write(ss + "\n", loggerType.color);
             }
         }

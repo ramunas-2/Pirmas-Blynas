@@ -30,7 +30,7 @@ namespace Probability
             logger = new Logger(richTextBoxMainLogger, chartLog, "log.txt", 5);
             logger.log("Hello");
             worldAugmented = new WorldAugmented(logger);
-            run();
+            //run();
         }
 
 

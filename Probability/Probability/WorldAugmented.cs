@@ -17,9 +17,9 @@ namespace Probability
 
         public void mainScenario()
         {
-            scenarioA1();
+            //scenarioA1();
             //scenario3();
-            //scenarioA2();
+            scenarioA2();
         }
 
         public void scenarioA2()
@@ -29,6 +29,7 @@ namespace Probability
 
             Player p1 = new Player(logger, rules, "p1", true);
 
+            /*
             p1.brainCells[0] = 0.70d;
             p1.brainCells[1] = 0.26d;
             p1.brainCells[2] = 0.04d;
@@ -51,7 +52,7 @@ namespace Probability
             p1.brainCells[19] = 1.00d;
 
             p1.normaliseBrainCells();
-
+            */
 
             Player pAAugmented = arenaAugmented.makeAugmentedAntiplayer(p1);
             Player pABeautified = new Player(logger, rules, "p1", true);
@@ -61,10 +62,10 @@ namespace Probability
             double compareAugmentedStatistics = arenaAugmented.fightStatistics(pAAugmented, p1);
             double compareBeautifiedStatistics = arenaAugmented.fightStatistics(pABeautified, p1);
 
-            logger.log("AugmentedStatistics = " + compareAugmentedStatistics.ToString("F4"), 1, "ScenarioA2");
-            logger.log("BeautifiedStatistics = " + compareBeautifiedStatistics.ToString("F4"), 1, "ScenarioA2");
+            logger.log("AugmentedStatistics  = " + compareAugmentedStatistics.ToString("F4") + " " + pAAugmented.toString(), 1, "ScenarioA2");
+            logger.log("BeautifiedStatistics = " + compareBeautifiedStatistics.ToString("F4") + "      " + pABeautified.toString(), 1, "ScenarioA2");
 
-            searchAntiplayerBrootforce(p1);
+            //searchAntiplayerBrootforce(p1);
 
 
         }
@@ -79,7 +80,7 @@ namespace Probability
             Player p1 = new Player(logger, rules, "p1", true);
             Player p2 = new Player(logger, rules, "p2", true);
 
-            
+
             p1.brainCells[0] = 0.70d;
             p1.brainCells[1] = 0.26d;
             p1.brainCells[2] = 0.04d;

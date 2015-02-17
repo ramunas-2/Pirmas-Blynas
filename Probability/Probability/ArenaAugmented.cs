@@ -142,6 +142,18 @@ namespace Probability
                             debugAntiComponents(pP, pA, antiComponents);
                         }
                     }
+                    if ((antiComponent.whoEnds != 1) && (antiComponent.probabilityComponents.Count() == pathLength))
+                    {//Fix - additionally remove P probability and move to Coins
+                        
+                        if (pathLength > 1)
+                        {
+                            antiComponent.wonCoins *= (pP.brainCells[antiComponent.probabilityComponents[0]]);
+                            antiComponent.probabilityComponents.RemoveAt(0);
+                            antiComponent.whoEnds = 1;
+                        }
+                        
+
+                    }
                 }
                 //8 While N>1, continue step 3
             }
@@ -171,7 +183,7 @@ namespace Probability
 
         void debugAntiComponents(Player pP, Player pA, List<FightStatisticsComponent> antiComponents)
         {
-            logger.set("AntiD", 10, Color.DarkBlue);
+            logger.set("AntiD", 1, Color.DarkBlue);
 
             int ii = 0;
             foreach (FightStatisticsComponent component in antiComponents)
