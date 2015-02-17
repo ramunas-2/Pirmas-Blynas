@@ -55,15 +55,21 @@ namespace Probability
             */
 
             Player pAAugmented = arenaAugmented.makeAugmentedAntiplayer(p1);
-            Player pABeautified = new Player(logger, rules, "p1", true);
-            beautifyAgainst(pABeautified, p1);
-
-
+            Player pABeautified = new Player(logger, rules, "pABeautified", true);
             double compareAugmentedStatistics = arenaAugmented.fightStatistics(pAAugmented, p1);
-            double compareBeautifiedStatistics = arenaAugmented.fightStatistics(pABeautified, p1);
+            double compareBeautifiedStatistics =-1.0d;
 
-            logger.log("AugmentedStatistics  = " + compareAugmentedStatistics.ToString("F4") + " " + pAAugmented.toString(), 1, "ScenarioA2");
-            logger.log("BeautifiedStatistics = " + compareBeautifiedStatistics.ToString("F4") + "      " + pABeautified.toString(), 1, "ScenarioA2");
+            while ((compareBeautifiedStatistics + 0.0001d) < compareAugmentedStatistics)
+            {
+                pABeautified.initialiseRandomise();
+                beautifyAgainst(pABeautified, p1);
+                compareBeautifiedStatistics = arenaAugmented.fightStatistics(pABeautified, p1);
+                logger.log("BeautifiedStatistics = " + compareBeautifiedStatistics.ToString("F4"), 1, "ScenarioA2");
+                logger.logChart(compareBeautifiedStatistics);
+            }
+
+            logger.log("AugmentedStatistics  = " + compareAugmentedStatistics.ToString("F4") + "       " + pAAugmented.toString(), 1, "ScenarioA2");
+            logger.log("BeautifiedStatistics = " + compareBeautifiedStatistics.ToString("F4") + "  " + pABeautified.toString(), 1, "ScenarioA2");
 
             //searchAntiplayerBrootforce(p1);
 

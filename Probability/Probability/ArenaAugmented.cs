@@ -355,26 +355,26 @@ namespace Probability
         //Virtual fight FightStatistics - return average won coins
         public double fightStatistics(Player p1, Player p2)
         {
-            double debugCheckSum = 0;
+            //double debugCheckSum = 0;
             double retVal = 0;
             foreach (FightStatisticsComponent fightStatisticComponent in fightStatisticComponents)
             {
                 double component = 1.0;
                 bool currentPlayer = true;
-                string debugS = "Component coins = " + fightStatisticComponent.wonCoins.ToString() + " probability = ( ";
+                //string debugS = "Component coins = " + fightStatisticComponent.wonCoins.ToString() + " probability = ( ";
                 foreach (int ii in fightStatisticComponent.probabilityComponents)
                 {
-                    debugS += ((((fightStatisticComponent.whoEnds == 1) ^ (currentPlayer)) ? p2.brainCells[ii] : p1.brainCells[ii]).ToString("F4") + "; ");
+                    //debugS += ((((fightStatisticComponent.whoEnds == 1) ^ (currentPlayer)) ? p2.brainCells[ii] : p1.brainCells[ii]).ToString("F4") + "; ");
                     component *= (((fightStatisticComponent.whoEnds == 1) ^ (currentPlayer)) ? p2.brainCells[ii] : p1.brainCells[ii]);
                     currentPlayer ^= true;
                 }
-                debugS += ")";
-                logger.log(debugS, 8, "FightS");
-                debugCheckSum += component;
-                component *= ((double)fightStatisticComponent.wonCoins);
+                //debugS += ")";
+                //logger.log(debugS, 8, "FightS");
+                //debugCheckSum += component;
+                component *= fightStatisticComponent.wonCoins;
                 retVal += component;
             }
-            logger.log("Debug check sum = " + debugCheckSum.ToString(), 8, "FightS");
+            //logger.log("Debug check sum = " + debugCheckSum.ToString(), 8, "FightS");
             retVal /= (2 * rules.diceCombinations * rules.diceCombinations);
             return retVal;
         }

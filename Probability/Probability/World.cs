@@ -38,7 +38,7 @@ namespace Probability
             Player p1 = new Player(logger, rules, "p1", true);
             Player p2 = new Player(logger, rules, "p2", true);
 
-            
+
             p1.brainCells[0] = 0.70d;
             p1.brainCells[1] = 0.26d;
             p1.brainCells[2] = 0.04d;
@@ -83,7 +83,7 @@ namespace Probability
 
             p1.normaliseBrainCells();
             p2.normaliseBrainCells();
-            
+
 
             double maxResult = ((double)(-rules.playerCoins));
 
@@ -115,24 +115,35 @@ namespace Probability
             createBeutifyComponents();
             double bestComponent;
             //bestComponent = beautifyRepeatAgainstStep(p2, p1, 0.1d, 1000);
+
+            
+            double step = 0.01d;
+            for (int i = 0; i < 10; i++)
+            {
+                bestComponent = beautifyRepeatAgainstStep(p2, p1, step, 10000);
+                step /= 10.0d;
+            }
+            
+
+            /*
             bestComponent = beautifyRepeatAgainstStep(p2, p1, 0.1d, 10000);
             bestComponent = beautifyRepeatAgainstStep(p2, p1, 0.01d, 10000);
             bestComponent = beautifyRepeatAgainstStep(p2, p1, 0.001d, 10000);
             bestComponent = beautifyRepeatAgainstStep(p2, p1, 0.0001d, 10000);
             bestComponent = beautifyRepeatAgainstStep(p2, p1, 0.00001d, 10000);
-
+            */
 
         }
 
         protected double beautifyRepeatAgainstStep(Player p2, Player p1, double step, int repeatCount)
         {
             double? bestResult = null;
-            bool stillEfficient=true;
-            for (int i = 0; (i < repeatCount)&&(stillEfficient); i++)
+            bool stillEfficient = true;
+            for (int i = 0; (i < repeatCount) && (stillEfficient); i++)
             {
-                if ((i%100==00)&&(i>100))
+                if ((i % 100 == 0) && (i > 100))
                 {
-                    logger.log("Iteration "+i+ " Precission = "+step.ToString());
+                    logger.log("Iteration " + i + " Precission = " + step.ToString());
                 }
 
                 stillEfficient = false;
@@ -194,7 +205,7 @@ namespace Probability
         protected void createBeutifyComponents()
         {
             beautifyComponents = new List<BeautifyComponent>();
-            for (int iBraiCells = 0; iBraiCells < rules.diceCombinations * rules.situationBrainCellsCount; iBraiCells++)
+            for (int iBraiCells = 0; iBraiCells < rules.allBrainCellsCount; iBraiCells++)
             {
                 for (int iDirection = 0; iDirection < 2; iDirection++)
                 {
@@ -228,7 +239,7 @@ namespace Probability
             logger.log("Run scenarion 2 - build anti player - brutal force");
 
             Player p1 = new Player(logger, rules, "p1", true);
-            
+
 
             p1.brainCells[0] = 0.70d;
             p1.brainCells[1] = 0.26d;
