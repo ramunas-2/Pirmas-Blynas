@@ -13,11 +13,7 @@ namespace Probability
 
         public int blind = 1;
         public int playerCoins = 3;
-<<<<<<< HEAD
-        public int diceCombinations = 4;
-=======
         public int diceCombinations = 6;
->>>>>>> origin/Branch-B2
         public Random random;
         public int situationBrainCellsCount;
         public int allBrainCellsCount;

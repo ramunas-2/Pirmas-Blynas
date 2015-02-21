@@ -30,7 +30,7 @@ namespace Probability
         {
             Player pA = pP.copyPlayer();
             pA.name = "AntiE1-" + pA.name;
-            logger.log("Antiplayer Augmented started for pleyer : " + pP.toString(), 5, "Anti-A");
+            //logger.log("Antiplayer Augmented started for pleyer : " + pP.toString(), 5, "Anti-A");
             //1 Fill A braincells with -1
             for (int i = 0; i < pA.allBrainCellsCount; i++)
             {
@@ -63,7 +63,7 @@ namespace Probability
                 antiComponents.Add(newComponent);
             }
 
-            debugAntiComponents(pP, pA, antiComponents);
+            //debugAntiComponents(pP, pA, antiComponents);
 
             //3 Filter longest (n length) paths where A ends
             for (int pathLength = maxGameOverPathLengthEvolution1; pathLength > 0; pathLength--)
@@ -76,7 +76,7 @@ namespace Probability
                         int lastLocation = antiComponent.probabilityComponents[0];
                         if (pA.brainCells[lastLocation] == -1.0d)
                         {//Component is not processed at this level yet, must collect a group and process
-                            logger.log("Iteration pathLength = " + pathLength + " path = ( " + rules.intListToString(antiComponent.probabilityComponents) + ")", 8, "Anti-A");
+                            //logger.log("Iteration pathLength = " + pathLength + " path = ( " + rules.intListToString(antiComponent.probabilityComponents) + ")", 8, "Anti-A");
                             //Identify A group
                             Scenario scenario = rules.findScenarioByBCLocation(lastLocation % rules.situationBrainCellsCount);
                             int currentADice = lastLocation / rules.situationBrainCellsCount;
@@ -96,7 +96,7 @@ namespace Probability
                                         sumOfAllDiceCombinationsBenefit += deepComponent.wonCoins;
                                     }
                                 }
-                                logger.log("Sum = " + sumOfAllDiceCombinationsBenefit, 8, "Anti-A");
+                                //logger.log("Sum = " + sumOfAllDiceCombinationsBenefit, 8, "Anti-A");
                                 if (bestOptionABenefit.HasValue)
                                 {
                                     if (sumOfAllDiceCombinationsBenefit > bestOptionABenefit)
@@ -112,7 +112,7 @@ namespace Probability
                                 }
                                 choiceLocation++;
                             }
-                            logger.log("Benefit = " + bestOptionABenefit, 8, "Anti-A");
+                            //logger.log("Benefit = " + bestOptionABenefit, 8, "Anti-A");
                             //6 Choose the best outcome, fill its A with 1, and replace all other A with 0 in the group (verify if A was -1 before replacement, otherwise - exception)
                             choiceLocation = (currentADice * rules.situationBrainCellsCount) + scenario.brainCellsLocation;
                             foreach (int iiA in scenario.possibleMoves)
@@ -135,7 +135,7 @@ namespace Probability
                                 }
                                 choiceLocation++;
                             }
-                            debugAntiComponents(pP, pA, antiComponents);
+                            //debugAntiComponents(pP, pA, antiComponents);
                         }
                     }
 
@@ -150,10 +150,12 @@ namespace Probability
                 sumOfCoins += antiComponent.wonCoins;
             }
             sumOfCoins /= (2 * rules.diceCombinations * rules.diceCombinations);
-            logger.log("Sum of Coins per game = " + sumOfCoins.ToString("F4"), 1, "Anti-A");
+            pA.strength = sumOfCoins;
+            //logger.log("Sum of Coins per game = " + sumOfCoins.ToString("F4"), 1, "Anti-A");
 
             //9 Verify if any -1 brain cell is left in A
             //10 Make a copy of A, run normalise, verify if anything is changed
+            /*
             Player pACopy = pA.copyPlayer();
             pACopy.normaliseBrainCells();
             for (int i = 0; i < rules.allBrainCellsCount; i++)
@@ -167,12 +169,12 @@ namespace Probability
                     logger.log("After Anti player creatiopn found not normalised brain cell", 1, "Error");
                 }
             }
+            */
 
 
 
-
-            logger.log("Antiplayer Augmented made : " + pA.toString(), 5, "Anti-A");
-            logger.log("Antiplayer Augmented success against player : " + fightStatistics(pA, pP).ToString("F4"), 5, "Anti-A");
+            //logger.log("Antiplayer Augmented made : " + pA.toString(), 5, "Anti-A");
+            //logger.log("Antiplayer Augmented success against player : " + fightStatistics(pA, pP).ToString("F4"), 5, "Anti-A");
             return pA;
 
         }

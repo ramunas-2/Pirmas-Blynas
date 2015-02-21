@@ -86,6 +86,12 @@ namespace Probability
             chartLog.Update();
         }
 
+        public void logChartReset()
+        {
+            chartLog.Series["Series1"].Points.Clear();
+            chartLog.Update();
+        }
+
 
     }
 

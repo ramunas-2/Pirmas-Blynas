@@ -19,6 +19,7 @@ namespace Probability
         public int dice;
         public int allBrainCellsCount;
         public string name;
+        public double strength;
 
 
         //New  player (constructor)
@@ -47,6 +48,7 @@ namespace Probability
             retVal.coins = this.coins;
             retVal.dice = this.dice;
             retVal.allBrainCellsCount = this.allBrainCellsCount;
+            retVal.strength = this.strength;
 
 
             return retVal;
@@ -57,6 +59,7 @@ namespace Probability
         {
             coins = rules.playerCoins;
             dice = rules.random.Next(rules.diceCombinations);
+            strength = 0.0d;
         }
 
         //Initialise and randomise Player
@@ -181,7 +184,7 @@ namespace Probability
         public void push()
         {
             storeBrainCells = new double[allBrainCellsCount];
-            for (int i=0; i<allBrainCellsCount; i++)
+            for (int i = 0; i < allBrainCellsCount; i++)
             {
                 storeBrainCells[i] = brainCells[i];
             }
@@ -207,6 +210,18 @@ namespace Probability
             return s;
         }
 
-
+        public bool isBrainCellsEqual(Player p2)
+        {
+            bool brainCellsEqual = true;
+            for (int i = 0; (i < allBrainCellsCount) && brainCellsEqual; i++)
+            {
+                if (brainCells[i]!=p2.brainCells[i])
+                {
+                    brainCellsEqual = false;
+                }
+            }
+            return brainCellsEqual;
+        }
     }
 }
+

@@ -117,7 +117,7 @@ namespace Probability
             //bestComponent = beautifyRepeatAgainstStep(p2, p1, 0.1d, 1000);
 
 
-            double step = 0.005d;
+            double step = 0.05d;
             for (int i = 0; i < 10; i++)
             {
                 bestComponent = beautifyRepeatAgainstStep(p2, p1, step, 10000);
@@ -236,6 +236,13 @@ namespace Probability
             foreach (BeautifyComponent beautifyComponent in beautifyComponents)
             {
                 //beautifyComponent.randomOrder = rules.random.NextDouble();
+                beautifyComponent.newResult = null;
+            }
+        }
+        protected void resetBeautifyComponents()
+        {
+            foreach (BeautifyComponent beautifyComponent in beautifyComponents)
+            {
                 beautifyComponent.newResult = null;
             }
         }

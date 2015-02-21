@@ -20,8 +20,210 @@ namespace Probability
             //scenarioA1();
             //scenario3();
             //scenarioA2();
-            scenarioA3();
+            //scenarioA3();
+            scenarioA4();
         }
+
+        private void scenarioA4()
+        {
+            logger.log("Run scenarion A4 - Evolve imune player");
+            logger.set("ScenarioA4", 10, Color.Blue);
+            Player pA;
+            double pPResult;
+
+            Player pP = new Player(logger, rules, "pP", true);
+
+            printLog(pP);
+
+
+            logger.logChartReset();
+
+            createBeutifyComponents();
+
+
+            double? bestBeautifiedResult = null;
+
+            string[] args = Environment.GetCommandLineArgs();
+            int mutateCount = 1;
+            if (args.Count()==2)
+            {
+                mutateCount = Convert.ToInt32(args[1]);
+                logger.log("mutateCount = " + mutateCount, 1, "ScenarioA4");
+            }
+
+            Player pPOld = pP.copyPlayer();
+            bool continueSearch = true;
+            for (int i = 0; (i < 1000000) && continueSearch; i++)
+            {
+                if (args.Count()==2)
+                {
+                    mutateCount = rules.random.Next(64);
+                    logger.log("mutateCount = " + mutateCount, 1, "ScenarioA4");
+                }
+                double newBeautifiedResult = beautifyAE1M2(pP);
+                if (bestBeautifiedResult.HasValue)
+                {
+                    if (newBeautifiedResult > bestBeautifiedResult)
+                    {
+                        logger.log("Improved   ", 1, "ScenarioA4");
+                        bestBeautifiedResult = newBeautifiedResult;
+                        pPOld = pP.copyPlayer();
+
+                        if (bestBeautifiedResult > -0.01)
+                        {
+                            printLog(pP);
+                        }
+
+                        if (bestBeautifiedResult > -0.0001)
+                        {
+                            continueSearch = false;
+                        }
+                        else
+                        {
+                            mutateN(pP, mutateCount);
+                        }
+                    }
+                    else
+                    {
+                        logger.log("Restore old ", 1, "ScenarioA4");
+                        pP = pPOld.copyPlayer();
+                        mutateN(pP, mutateCount);
+                    }
+                }
+                else
+                {
+                    bestBeautifiedResult = newBeautifiedResult;
+                    mutateN(pP, mutateCount);
+                }
+
+            }
+
+
+
+
+
+
+
+            printLog(pP);
+
+
+
+        }
+
+        private void printLog(Player pP)
+        {
+            Player pA;
+            double pPResult;
+            pA = arenaAugmented.makeAugmentedAntiplayerEvolution1(pP);
+            pPResult = arenaAugmented.fightStatistics(pP, pA);
+            logger.log("Player strenght  = " + pPResult.ToString("F12") + "     ", 1, "ScenarioA4");
+            logger.log("Player             = " + pP.toString(), 1, "ScenarioA4");
+            logger.log("Antiplayer  = " + pA.toString(), 1, "ScenarioA4");
+        }
+
+        private void mutateN(Player pP, int n)
+        {
+            for (int mutateI = 0; mutateI < n; mutateI++)
+            {
+                BeautifyComponent beautifyComponent = beautifyComponents[rules.random.Next(beautifyComponents.Count)];
+                pP.mutateAdvanced(beautifyComponent.brainCellIndex, beautifyComponent.changeAgainst, beautifyComponent.direction * rules.random.NextDouble());
+            }
+        }
+
+        private double beautifyAE1M2(Player pP)
+        {
+            double? pPStrenght = null;
+            bool benefit = true;
+
+            while (benefit)
+            {
+                double newStrenght = beautifyAE1(pP);
+                if (pPStrenght.HasValue)
+                {
+                    if (newStrenght > pPStrenght)
+                    {
+                        pPStrenght = newStrenght;
+                    }
+                    else
+                    {
+                        benefit = false;
+                    }
+                }
+                else
+                {
+                    pPStrenght = newStrenght;
+                }
+                logger.log("Strenght = " + pPStrenght.Value.ToString("F15"), 8, "ScenarioA4");
+                logger.logChart(pPStrenght.Value);
+            }
+            return pPStrenght.Value;
+        }
+
+        private double beautifyAE1(Player pP)
+        {
+            //1 Finf MAX beneficial direction
+            BeautifyComponent bestDirection = null;
+            double microStep = 1.0E-12d;
+            Player pA = arenaAugmented.makeAugmentedAntiplayerEvolution1(pP);
+            double bestResult = -pA.strength;
+            Player pABaseline = pA.copyPlayer();
+            double baseLineStrength = pA.strength;
+            pP.push();
+            resetBeautifyComponents();
+            foreach (BeautifyComponent beautifyComponent in beautifyComponents)
+            {
+                pP.mutateAdvanced(beautifyComponent.brainCellIndex, beautifyComponent.changeAgainst, beautifyComponent.direction * microStep);
+                pA = arenaAugmented.makeAugmentedAntiplayerEvolution1(pP);
+                beautifyComponent.newResult = pA.strength;
+                //logger.log("Checking new direction, result = " + beautifyComponent.newResult.Value.ToString("F15"), 8, "ScenarioA4");
+                if (bestDirection == null)
+                {
+                    bestDirection = beautifyComponent;
+                }
+                else
+                {
+                    if (beautifyComponent.newResult.Value < bestDirection.newResult.Value)
+                    {
+                        if (pA.isBrainCellsEqual(pABaseline))
+                        {
+                            bestDirection = beautifyComponent;
+                        }
+                    }
+                }
+                pP.pop();
+            }
+            double stepMax = 0.0d;
+            if (bestDirection != null)
+            {
+                for (double stepIncrement = 0.1d; stepIncrement > microStep; stepIncrement /= 2.0d)
+                {
+                    double testStep = stepMax + stepIncrement;
+                    pP.mutateAdvanced(bestDirection.brainCellIndex, bestDirection.changeAgainst, bestDirection.direction * testStep);
+                    pA = arenaAugmented.makeAugmentedAntiplayerEvolution1(pP);
+                    if (pA.isBrainCellsEqual(pABaseline))
+                    {
+                        stepMax = testStep;
+                        bestResult = -pA.strength;
+                    }
+                    pP.pop();
+                }
+                pP.mutateAdvanced(bestDirection.brainCellIndex, bestDirection.changeAgainst, bestDirection.direction * stepMax);
+            }
+            /*
+            logger.log("stepMax = " + stepMax.ToString("F15"), 8, "ScenarioA4");
+            logger.logChartReset();
+            for (double step = 0; step <= stepMax; step += (stepMax / 100.0d))
+            {
+                pP.mutateAdvanced(bestDirection.brainCellIndex, bestDirection.changeAgainst, bestDirection.direction * step);
+                pA = arenaAugmented.makeAugmentedAntiplayerEvolution1(pP);
+                logger.logChart(pA.strength);
+                pP.pop();
+            }
+            */
+            return bestResult;
+        }
+
+
 
         private void scenarioA3()
         {
@@ -37,7 +239,7 @@ namespace Probability
             double compareAugmentedStatisticsEvolution1 = arenaAugmented.fightStatistics(pAAugmentedEvolution1, p1);
 
 
-            if (Math.Abs(compareAugmentedStatistics-compareAugmentedStatisticsEvolution1)<1.0E-06d)
+            if (Math.Abs(compareAugmentedStatistics - compareAugmentedStatisticsEvolution1) < 1.0E-06d)
             {
                 logger.log("Result match OK", 1, "ScenarioA3");
             }
@@ -46,14 +248,14 @@ namespace Probability
                 logger.log("Result don't match", 5, "Error");
             }
 
-            logger.log("AugmentedStatistics            = " + compareAugmentedStatistics.ToString("F4")           + "       " + pAAugmented.toString()          , 1, "ScenarioA3");
+            logger.log("AugmentedStatistics            = " + compareAugmentedStatistics.ToString("F4") + "       " + pAAugmented.toString(), 1, "ScenarioA3");
             logger.log("AugmentedStatisticsEvolution1  = " + compareAugmentedStatisticsEvolution1.ToString("F4") + "     " + pAAugmentedEvolution1.toString(), 1, "ScenarioA3");
 
 
 
 
 
-            
+
         }
 
         public void scenarioA2()
@@ -91,7 +293,7 @@ namespace Probability
             Player pAAugmented = arenaAugmented.makeAugmentedAntiplayer(p1);
             Player pABeautified = new Player(logger, rules, "pABeautified", true);
             double compareAugmentedStatistics = arenaAugmented.fightStatistics(pAAugmented, p1);
-            double compareBeautifiedStatistics =-1.0d;
+            double compareBeautifiedStatistics = -1.0d;
 
             while ((compareBeautifiedStatistics + 0.00000001d) < compareAugmentedStatistics)
             {
