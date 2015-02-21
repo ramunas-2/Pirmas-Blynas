@@ -143,6 +143,41 @@ namespace Probability
             normaliseBrainCells();
         }
 
+        public void mutateAdvanced(int brainCellToMutate, int brainCellToCompensate, double delta)
+        {
+
+
+
+            double b1 = brainCells[brainCellToMutate];
+            double b2 = brainCells[brainCellToCompensate];
+            double b1Old = b1;
+            double b2Old = b2;
+
+            b1 += delta;
+            b2 -= delta;
+
+            b1 = Math.Min(b1, 1.0d);
+            b1 = Math.Max(b1, 0.0d);
+            b2 = Math.Min(b2, 1.0d);
+            b2 = Math.Max(b2, 0.0d);
+
+            double delta1 = b1 - b1Old;
+            double delta2 = b2Old - b2;
+
+
+            double deltaNew = (Math.Abs(delta1) < Math.Abs(delta2)) ? delta1 : delta2;
+
+
+            brainCells[brainCellToMutate] += (deltaNew);
+
+            brainCells[brainCellToCompensate] -= (deltaNew);
+
+
+            //remove?
+            normaliseBrainCells();
+        }
+
+
         public void push()
         {
             storeBrainCells = new double[allBrainCellsCount];
