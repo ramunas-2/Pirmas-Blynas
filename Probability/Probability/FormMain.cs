@@ -29,9 +29,10 @@ namespace Probability
         {
             logger = new Logger(richTextBoxMainLogger, chartLog, "log.txt", 5);
             logger.log("Hello");
+            logger.set("Error",10,Color.Red);
             worldAugmented = new WorldAugmented(logger);
             //run();
-            //change
+            //change3
         }
 
 

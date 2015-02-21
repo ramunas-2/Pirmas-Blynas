@@ -19,7 +19,41 @@ namespace Probability
         {
             //scenarioA1();
             //scenario3();
-            scenarioA2();
+            //scenarioA2();
+            scenarioA3();
+        }
+
+        private void scenarioA3()
+        {
+            logger.log("Run scenarion A3 - build anti player - Augmented direct method Evolution1 and test agaist Simple Augmented direct method");
+            logger.set("ScenarioA3", 10, Color.DarkGreen);
+
+            Player p1 = new Player(logger, rules, "p1", true);
+
+
+            Player pAAugmented = arenaAugmented.makeAugmentedAntiplayer(p1);
+            Player pAAugmentedEvolution1 = arenaAugmented.makeAugmentedAntiplayerEvolution1(p1);
+            double compareAugmentedStatistics = arenaAugmented.fightStatistics(pAAugmented, p1);
+            double compareAugmentedStatisticsEvolution1 = arenaAugmented.fightStatistics(pAAugmentedEvolution1, p1);
+
+
+            if (Math.Abs(compareAugmentedStatistics-compareAugmentedStatisticsEvolution1)<1.0E-06d)
+            {
+                logger.log("Result match OK", 1, "ScenarioA3");
+            }
+            else
+            {
+                logger.log("Result don't match", 5, "Error");
+            }
+
+            logger.log("AugmentedStatistics            = " + compareAugmentedStatistics.ToString("F4")           + "       " + pAAugmented.toString()          , 1, "ScenarioA3");
+            logger.log("AugmentedStatisticsEvolution1  = " + compareAugmentedStatisticsEvolution1.ToString("F4") + "     " + pAAugmentedEvolution1.toString(), 1, "ScenarioA3");
+
+
+
+
+
+            
         }
 
         public void scenarioA2()
