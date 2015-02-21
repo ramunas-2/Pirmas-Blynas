@@ -93,7 +93,7 @@ namespace Probability
             double compareAugmentedStatistics = arenaAugmented.fightStatistics(pAAugmented, p1);
             double compareBeautifiedStatistics =-1.0d;
 
-            while ((compareBeautifiedStatistics + 0.0001d) < compareAugmentedStatistics)
+            while ((compareBeautifiedStatistics + 0.00000001d) < compareAugmentedStatistics)
             {
                 pABeautified.initialiseRandomise();
                 beautifyAgainst(pABeautified, p1);
@@ -102,8 +102,8 @@ namespace Probability
                 logger.logChart(compareBeautifiedStatistics);
             }
 
-            logger.log("AugmentedStatistics  = " + compareAugmentedStatistics.ToString("F4") + "       " + pAAugmented.toString(), 1, "ScenarioA2");
-            logger.log("BeautifiedStatistics = " + compareBeautifiedStatistics.ToString("F4") + "  " + pABeautified.toString(), 1, "ScenarioA2");
+            logger.log("AugmentedStatistics  = " + compareAugmentedStatistics.ToString("F8") + "       " + pAAugmented.toString(), 1, "ScenarioA2");
+            logger.log("BeautifiedStatistics = " + compareBeautifiedStatistics.ToString("F8") + "  " + pABeautified.toString(), 1, "ScenarioA2");
 
             //searchAntiplayerBrootforce(p1);
 

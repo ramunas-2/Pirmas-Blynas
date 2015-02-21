@@ -116,14 +116,14 @@ namespace Probability
             double bestComponent;
             //bestComponent = beautifyRepeatAgainstStep(p2, p1, 0.1d, 1000);
 
-            
-            double step = 0.01d;
+
+            double step = 0.005d;
             for (int i = 0; i < 10; i++)
             {
                 bestComponent = beautifyRepeatAgainstStep(p2, p1, step, 10000);
                 step /= 10.0d;
             }
-            
+
 
             /*
             bestComponent = beautifyRepeatAgainstStep(p2, p1, 0.1d, 10000);
@@ -174,12 +174,12 @@ namespace Probability
         {
             randomiseBeautifyComponents();
             //no need to order???
-            var sorted = from beautifyComponent in beautifyComponents orderby beautifyComponent.randomOrder select beautifyComponent;
+            //var sorted = from beautifyComponent in beautifyComponents orderby beautifyComponent.randomOrder select beautifyComponent;
             BeautifyComponent bestComponent = null;
             p2.push();
-            foreach (BeautifyComponent beautifyComponent in sorted)
+            foreach (BeautifyComponent beautifyComponent in /*sorted*/ beautifyComponents)
             {
-                p2.mutate(beautifyComponent.brainCellIndex, beautifyComponent.direction * step);
+                p2.mutateAdvanced(beautifyComponent.brainCellIndex, beautifyComponent.changeAgainst, beautifyComponent.direction * step);
 
                 beautifyComponent.newResult = arenaAugmented.fightStatistics(p2, p1);
                 if (bestComponent == null)
@@ -196,7 +196,7 @@ namespace Probability
                 p2.pop();
                 //logger.log("Sorted: randomOrder = " + beautifyComponent.randomOrder.ToString("F4") + " brainCellIndex = " + beautifyComponent.brainCellIndex + " direction = " + beautifyComponent.direction + " newResult = " + (beautifyComponent.newResult.HasValue ? beautifyComponent.newResult.Value.ToString("F4") : "null"), 8, "Scenario3");
             }
-            p2.mutate(bestComponent.brainCellIndex, bestComponent.direction * step);
+            p2.mutateAdvanced(bestComponent.brainCellIndex, bestComponent.changeAgainst, bestComponent.direction * step);
             //logger.log("Beautification once step = " + step.ToString("F6") + " Best result = " + bestComponent.newResult.Value.ToString("F4"), 8, "Scenario3");
             return bestComponent.newResult.Value;
         }
@@ -205,15 +205,29 @@ namespace Probability
         protected void createBeutifyComponents()
         {
             beautifyComponents = new List<BeautifyComponent>();
-            for (int iBraiCells = 0; iBraiCells < rules.allBrainCellsCount; iBraiCells++)
+
+
+            foreach (Scenario scenario in rules.scenarios)
             {
-                for (int iDirection = 0; iDirection < 2; iDirection++)
+                for (int dice = 0; dice < rules.diceCombinations; dice++)
                 {
-                    BeautifyComponent beautifyComponent = new BeautifyComponent();
-                    beautifyComponent.brainCellIndex = iBraiCells;
-                    beautifyComponent.direction = -1.0d + (2.0d * ((double)iDirection));
-                    //beautifyComponent.randomOrder = rules.random.NextDouble();
-                    beautifyComponents.Add(beautifyComponent);
+                    int iBraiCellsStart = (dice * rules.situationBrainCellsCount) + scenario.brainCellsLocation;
+                    for (int iBraiCells = iBraiCellsStart; iBraiCells < iBraiCellsStart + scenario.possibleMoves.Count; iBraiCells++)
+                    {
+
+                        for (int iDirection = 0; iDirection < 2; iDirection++)
+                        {
+                            for (int targetCell = iBraiCells + 1; targetCell < iBraiCellsStart + scenario.possibleMoves.Count; targetCell++)
+                            //for (int targetCell = iBraiCells + 1; targetCell < iBraiCells+3; targetCell++)
+                            {
+                                BeautifyComponent beautifyComponent = new BeautifyComponent();
+                                beautifyComponent.brainCellIndex = iBraiCells;
+                                beautifyComponent.direction = -1.0d + (2.0d * ((double)iDirection));
+                                beautifyComponent.changeAgainst = targetCell;
+                                beautifyComponents.Add(beautifyComponent);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -221,7 +235,7 @@ namespace Probability
         {
             foreach (BeautifyComponent beautifyComponent in beautifyComponents)
             {
-                beautifyComponent.randomOrder = rules.random.NextDouble();
+                //beautifyComponent.randomOrder = rules.random.NextDouble();
                 beautifyComponent.newResult = null;
             }
         }
@@ -229,6 +243,7 @@ namespace Probability
         protected class BeautifyComponent
         {
             public int brainCellIndex;
+            public int changeAgainst;
             public double direction;
             public double randomOrder;
             public double? newResult;
