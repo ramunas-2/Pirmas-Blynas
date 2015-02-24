@@ -22,6 +22,100 @@ namespace Probability
             //scenarioA2();
             //scenarioA3();
             scenarioA4();
+            //scenarioA5();
+        }
+
+        private void scenarioA5()
+        {
+            logger.log("Run scenarion A4 - Evolve imune player");
+            logger.set("ScenarioA4", 10, Color.Green);
+            logger.set("ScenarioA5", 10, Color.Blue);
+            Player pA;
+            double pPResult;
+
+            Player pPUgly = new Player(logger, rules, "pP", true);
+
+            logger.logChartReset();
+
+            createBeutifyComponents();
+
+            Player pP = pPUgly.copyPlayer();
+            beautifyAE1M2(pP);
+            printLog(pP);
+
+
+            double? bestBeautifiedResult = null;
+
+            string[] args = Environment.GetCommandLineArgs();
+            int mutateCount = 1;
+            if (args.Count() == 2)
+            {
+                mutateCount = Convert.ToInt32(args[1]);
+                logger.log("mutateCount = " + mutateCount, 1, "ScenarioA5");
+            }
+
+            Player pPOld = pPUgly.copyPlayer();
+            bool continueSearch = true;
+            for (int i = 0; (i < 1000000) && continueSearch; i++)
+            {
+                if (args.Count() != 2)
+                {
+                    //mutateCount = rules.random.Next(16);
+                    //logger.log("mutateCount = " + mutateCount, 1, "ScenarioA5");
+                }
+                pP = pPUgly.copyPlayer();
+                double newBeautifiedResult = beautifyAE1M2(pP);
+                if (bestBeautifiedResult.HasValue)
+                {
+                    if (newBeautifiedResult > bestBeautifiedResult)
+                    {
+                        logger.log("Improved   ", 1, "ScenarioA5");
+                        bestBeautifiedResult = newBeautifiedResult;
+                        pPOld = pPUgly.copyPlayer();
+
+                        if (bestBeautifiedResult > -0.01)
+                        {
+                            printLog(pP);
+                        }
+
+                        if (bestBeautifiedResult > -0.0001)
+                        {
+                            continueSearch = false;
+                        }
+                        else
+                        {
+                            mutateN(pPUgly, mutateCount);
+                        }
+                    }
+                    else
+                    {
+                        logger.log("Restore old ", 1, "ScenarioA5");
+                        pPUgly = pPOld.copyPlayer();
+                        mutateN(pPUgly, mutateCount);
+                    }
+                }
+                else
+                {
+                    bestBeautifiedResult = newBeautifiedResult;
+                    mutateN(pPUgly, mutateCount);
+                }
+
+            }
+
+
+
+
+
+
+
+            printLog(pP);
+
+
+        }
+
+        public void mainScenario2()
+        {
+            arenaAugmented.makeAugmentedAntiplayerEvolution1(new Player(logger, rules, "Anonymous", true));
         }
 
         private void scenarioA4()
@@ -33,12 +127,108 @@ namespace Probability
 
             Player pP = new Player(logger, rules, "pP", true);
 
+            
+            pP.brainCells[0] = 0d;
+            pP.brainCells[1] = 0.6152d;
+            pP.brainCells[2] = 0d;
+            pP.brainCells[3] = 0.3848d;
+            pP.brainCells[4] = 0d;
+            pP.brainCells[5] = 0.3854d;
+            pP.brainCells[6] = 0.1146d;
+            pP.brainCells[7] = 0.5d;
+            pP.brainCells[8] = 1d;
+            pP.brainCells[9] = 0d;
+            pP.brainCells[10] = 0d;
+            pP.brainCells[11] = 1d;
+            pP.brainCells[12] = 0d;
+            pP.brainCells[13] = 1d;
+            pP.brainCells[14] = 0d;
+            pP.brainCells[15] = 1d;
+            pP.brainCells[16] = 0d;
+            pP.brainCells[17] = 0d;
+            pP.brainCells[18] = 0.412d;
+            pP.brainCells[19] = 0.588d;
+            pP.brainCells[20] = 1d;
+            pP.brainCells[21] = 0d;
+            pP.brainCells[22] = 0d;
+            pP.brainCells[23] = 1d;
+            pP.brainCells[24] = 0d;
+            pP.brainCells[25] = 0d;
+            pP.brainCells[26] = 0d;
+            pP.brainCells[27] = 1d;
+            pP.brainCells[28] = 0d;
+            pP.brainCells[29] = 0d;
+            pP.brainCells[30] = 0.5391d;
+            pP.brainCells[31] = 0.4609d;
+            pP.brainCells[32] = 0d;
+            pP.brainCells[33] = 0.1289d;
+            pP.brainCells[34] = 0.8711d;
+            pP.brainCells[35] = 0.9159d;
+            pP.brainCells[36] = 0.0841d;
+            pP.brainCells[37] = 0.4226d;
+            pP.brainCells[38] = 0.4608d;
+            pP.brainCells[39] = 0.1166d;
+            pP.brainCells[40] = 1d;
+            pP.brainCells[41] = 0d;
+            pP.brainCells[42] = 0.8169d;
+            pP.brainCells[43] = 0.1831d;
+            pP.brainCells[44] = 0d;
+            pP.brainCells[45] = 1d;
+            pP.brainCells[46] = 0d;
+            pP.brainCells[47] = 0d;
+            pP.brainCells[48] = 0d;
+            pP.brainCells[49] = 0.6563d;
+            pP.brainCells[50] = 0.3437d;
+            pP.brainCells[51] = 0d;
+            pP.brainCells[52] = 0d;
+            pP.brainCells[53] = 0.5403d;
+            pP.brainCells[54] = 0.4597d;
+            pP.brainCells[55] = 0d;
+            pP.brainCells[56] = 1d;
+            pP.brainCells[57] = 0.046d;
+            pP.brainCells[58] = 0.954d;
+            pP.brainCells[59] = 0d;
+            pP.brainCells[60] = 1d;
+            pP.brainCells[61] = 0d;
+            pP.brainCells[62] = 0.912d;
+            pP.brainCells[63] = 0.088d;
+            pP.brainCells[64] = 0.2794d;
+            pP.brainCells[65] = 0.7206d;
+            pP.brainCells[66] = 0d;
+            pP.brainCells[67] = 0.2305d;
+            pP.brainCells[68] = 0d;
+            pP.brainCells[69] = 0.7695d;
+            pP.brainCells[70] = 0d;
+            pP.brainCells[71] = 0d;
+            pP.brainCells[72] = 0d;
+            pP.brainCells[73] = 1d;
+            pP.brainCells[74] = 0d;
+            pP.brainCells[75] = 0d;
+            pP.brainCells[76] = 1d;
+            pP.brainCells[77] = 0.2056d;
+            pP.brainCells[78] = 0.7944d;
+            pP.brainCells[79] = 0d;
+            pP.brainCells[80] = 1d;
+            pP.brainCells[81] = 0d;
+            pP.brainCells[82] = 0.4172d;
+            pP.brainCells[83] = 0.5828d;
+            pP.brainCells[84] = 0.9325d;
+            pP.brainCells[85] = 0.0675d;
+            pP.brainCells[86] = 0d;
+            pP.brainCells[87] = 1d;
+
+
             printLog(pP);
+            
 
 
             logger.logChartReset();
 
             createBeutifyComponents();
+
+            //mutateN(pP, 16);
+            beautifyAE1M2(pP);
+            printLog(pP);
 
 
             double? bestBeautifiedResult = null;
@@ -55,9 +245,9 @@ namespace Probability
             bool continueSearch = true;
             for (int i = 0; (i < 1000000) && continueSearch; i++)
             {
-                if (args.Count()==2)
+                if (args.Count()!=2)
                 {
-                    mutateCount = rules.random.Next(64);
+                    //mutateCount = rules.random.Next(16);
                     logger.log("mutateCount = " + mutateCount, 1, "ScenarioA4");
                 }
                 double newBeautifiedResult = beautifyAE1M2(pP);
@@ -69,14 +259,14 @@ namespace Probability
                         bestBeautifiedResult = newBeautifiedResult;
                         pPOld = pP.copyPlayer();
 
-                        if (bestBeautifiedResult > -0.01)
+                        if (bestBeautifiedResult > -0.000001)
                         {
-                            printLog(pP);
+                            //printLog(pP);
                         }
 
                         if (bestBeautifiedResult > -0.0001)
                         {
-                            continueSearch = false;
+                            //continueSearch = false;
                         }
                         else
                         {
@@ -200,7 +390,7 @@ namespace Probability
                     double testStep = stepMax + stepIncrement;
                     pP.mutateAdvanced(bestDirection.brainCellIndex, bestDirection.changeAgainst, bestDirection.direction * testStep);
                     pA = arenaAugmented.makeAugmentedAntiplayerEvolution1(pP);
-                    if (pA.isBrainCellsEqual(pABaseline))
+                    if ((pA.isBrainCellsEqual(pABaseline)) && ((-pA.strength) > bestResult))
                     {
                         stepMax = testStep;
                         bestResult = -pA.strength;

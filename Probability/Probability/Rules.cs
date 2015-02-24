@@ -13,7 +13,7 @@ namespace Probability
 
         public int blind = 1;
         public int playerCoins = 3;
-        public int diceCombinations = 6;
+        public int diceCombinations = 4;
         public Random random;
         public int situationBrainCellsCount;
         public int allBrainCellsCount;
@@ -181,7 +181,7 @@ namespace Probability
             int locationStart = 0;
             foreach (Scenario scenario in scenarios)
             {
-                for(int i=locationStart; i<locationStart+scenario.possibleMoves.Count;i++)
+                for (int i = locationStart; i < locationStart + scenario.possibleMoves.Count; i++)
                 {
                     locationsBC[i] = scenario;
                 }
@@ -197,6 +197,16 @@ namespace Probability
             foreach (int ii in path)
             {
                 s += (ii.ToString() + "; ");
+            }
+            return s;
+        }
+
+        public string intListToStringReverse(List<int> path)
+        {
+            string s = "";
+            for (int i = path.Count - 1; i >= 0; i--)
+            {
+                s += (path[i].ToString() + "; ");
             }
             return s;
         }

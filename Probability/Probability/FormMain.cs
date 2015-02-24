@@ -44,5 +44,10 @@ namespace Probability
 
 
         }
+
+        private void buttonRun2_Click(object sender, EventArgs e)
+        {
+            worldAugmented.mainScenario2();
+        }
     }
 }

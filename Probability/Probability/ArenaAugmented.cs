@@ -39,6 +39,7 @@ namespace Probability
             //2 Make fightStatisticComponents copy
             int maxGameOverPathLengthEvolution1 = 0;
             List<FightStatisticsComponent> antiComponents = new List<FightStatisticsComponent>();
+            int ii=0;
             foreach (FightStatisticsComponent fightStatisticComponent in fightStatisticComponents)
             {
                 //antiComponents.Add(new FightStatisticsComponent(fightStatisticComponent));
@@ -61,6 +62,10 @@ namespace Probability
                     maxGameOverPathLengthEvolution1 = newComponent.probabilityComponents.Count;
                 }
                 antiComponents.Add(newComponent);
+
+                //logger.log("PAthA["+ii.ToString("D3")+"] = ;" + rules.intListToStringReverse(newComponent.probabilityComponents), 8, "Anti-AE1");
+                ii++;
+
             }
 
             //debugAntiComponents(pP, pA, antiComponents);
