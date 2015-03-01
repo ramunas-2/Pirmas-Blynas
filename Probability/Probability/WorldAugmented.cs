@@ -13,6 +13,7 @@ namespace Probability
         public WorldAugmented(Logger logger)
             : base(logger)
         {
+            stopRun = false;
         }
 
         public void mainScenario()
@@ -24,6 +25,11 @@ namespace Probability
             scenarioA4();
             //scenarioA5();
         }
+
+
+        public bool stopRun;
+        double lastMutationSize = 0;
+        BeautifyComponent lastBeautifyComponent = null;
 
         private void scenarioA5()
         {
@@ -40,8 +46,8 @@ namespace Probability
             createBeutifyComponents();
 
             Player pP = pPUgly.copyPlayer();
-            beautifyAE1M2(pP);
-            printLog(pP);
+            beautifyAE1M2(ref pP);
+            printLog(pP, "");
 
 
             double? bestBeautifiedResult = null;
@@ -64,7 +70,7 @@ namespace Probability
                     //logger.log("mutateCount = " + mutateCount, 1, "ScenarioA5");
                 }
                 pP = pPUgly.copyPlayer();
-                double newBeautifiedResult = beautifyAE1M2(pP);
+                double newBeautifiedResult = beautifyAE1M2(ref pP);
                 if (bestBeautifiedResult.HasValue)
                 {
                     if (newBeautifiedResult > bestBeautifiedResult)
@@ -75,7 +81,7 @@ namespace Probability
 
                         if (bestBeautifiedResult > -0.01)
                         {
-                            printLog(pP);
+                            printLog(pP, "");
                         }
 
                         if (bestBeautifiedResult > -0.0001)
@@ -108,7 +114,7 @@ namespace Probability
 
 
 
-            printLog(pP);
+            printLog(pP, "");
 
 
         }
@@ -121,152 +127,143 @@ namespace Probability
         private void scenarioA4()
         {
             logger.log("Run scenarion A4 - Evolve imune player");
-            logger.set("ScenarioA4", 10, Color.Blue);
-            Player pA;
-            double pPResult;
+            logger.set("ScenarioA4", 2, Color.Green);
+            Player pPVeryBest = null;
+            Player pPLast = null;
 
-            Player pP = new Player(logger, rules, "pP", true);
-
-            
-            pP.brainCells[0] = 0d;
-            pP.brainCells[1] = 0.6152d;
-            pP.brainCells[2] = 0d;
-            pP.brainCells[3] = 0.3848d;
-            pP.brainCells[4] = 0d;
-            pP.brainCells[5] = 0.3854d;
-            pP.brainCells[6] = 0.1146d;
-            pP.brainCells[7] = 0.5d;
-            pP.brainCells[8] = 1d;
-            pP.brainCells[9] = 0d;
-            pP.brainCells[10] = 0d;
-            pP.brainCells[11] = 1d;
-            pP.brainCells[12] = 0d;
-            pP.brainCells[13] = 1d;
-            pP.brainCells[14] = 0d;
-            pP.brainCells[15] = 1d;
-            pP.brainCells[16] = 0d;
-            pP.brainCells[17] = 0d;
-            pP.brainCells[18] = 0.412d;
-            pP.brainCells[19] = 0.588d;
-            pP.brainCells[20] = 1d;
-            pP.brainCells[21] = 0d;
-            pP.brainCells[22] = 0d;
-            pP.brainCells[23] = 1d;
-            pP.brainCells[24] = 0d;
-            pP.brainCells[25] = 0d;
-            pP.brainCells[26] = 0d;
-            pP.brainCells[27] = 1d;
-            pP.brainCells[28] = 0d;
-            pP.brainCells[29] = 0d;
-            pP.brainCells[30] = 0.5391d;
-            pP.brainCells[31] = 0.4609d;
-            pP.brainCells[32] = 0d;
-            pP.brainCells[33] = 0.1289d;
-            pP.brainCells[34] = 0.8711d;
-            pP.brainCells[35] = 0.9159d;
-            pP.brainCells[36] = 0.0841d;
-            pP.brainCells[37] = 0.4226d;
-            pP.brainCells[38] = 0.4608d;
-            pP.brainCells[39] = 0.1166d;
-            pP.brainCells[40] = 1d;
-            pP.brainCells[41] = 0d;
-            pP.brainCells[42] = 0.8169d;
-            pP.brainCells[43] = 0.1831d;
-            pP.brainCells[44] = 0d;
-            pP.brainCells[45] = 1d;
-            pP.brainCells[46] = 0d;
-            pP.brainCells[47] = 0d;
-            pP.brainCells[48] = 0d;
-            pP.brainCells[49] = 0.6563d;
-            pP.brainCells[50] = 0.3437d;
-            pP.brainCells[51] = 0d;
-            pP.brainCells[52] = 0d;
-            pP.brainCells[53] = 0.5403d;
-            pP.brainCells[54] = 0.4597d;
-            pP.brainCells[55] = 0d;
-            pP.brainCells[56] = 1d;
-            pP.brainCells[57] = 0.046d;
-            pP.brainCells[58] = 0.954d;
-            pP.brainCells[59] = 0d;
-            pP.brainCells[60] = 1d;
-            pP.brainCells[61] = 0d;
-            pP.brainCells[62] = 0.912d;
-            pP.brainCells[63] = 0.088d;
-            pP.brainCells[64] = 0.2794d;
-            pP.brainCells[65] = 0.7206d;
-            pP.brainCells[66] = 0d;
-            pP.brainCells[67] = 0.2305d;
-            pP.brainCells[68] = 0d;
-            pP.brainCells[69] = 0.7695d;
-            pP.brainCells[70] = 0d;
-            pP.brainCells[71] = 0d;
-            pP.brainCells[72] = 0d;
-            pP.brainCells[73] = 1d;
-            pP.brainCells[74] = 0d;
-            pP.brainCells[75] = 0d;
-            pP.brainCells[76] = 1d;
-            pP.brainCells[77] = 0.2056d;
-            pP.brainCells[78] = 0.7944d;
-            pP.brainCells[79] = 0d;
-            pP.brainCells[80] = 1d;
-            pP.brainCells[81] = 0d;
-            pP.brainCells[82] = 0.4172d;
-            pP.brainCells[83] = 0.5828d;
-            pP.brainCells[84] = 0.9325d;
-            pP.brainCells[85] = 0.0675d;
-            pP.brainCells[86] = 0d;
-            pP.brainCells[87] = 1d;
+            while (!stopRun)
+            {
+                pPLast = beautifyAE1M4();
+                if ((pPLast != null) && ((pPVeryBest == null) || (pPLast.strength > pPVeryBest.strength)))
+                {
+                    pPVeryBest = pPLast.copyPlayer();
+                    logger.log("New very best Player found : " + pPVeryBest.toString(), 1, "ScenarioA4");
+                    logger.log("Strength : " + pPVeryBest.strength.ToString("F12"), 1, "ScenarioA4");
+                }
+            }
 
 
-            printLog(pP);
-            
 
 
-            logger.logChartReset();
+
+        }
+
+
+        private Player beautifyAE1M4()
+        {
+            int pCount = 16; //Number of parrallel players
+            int maxIterations = 20; //Number of iterations (long)
+            int maxBeautifyIterations = 30; //Number of iterations (long)
+
+            /*
+            int pCount = 16; //Number of parrallel players
+            int maxIterations = 20; //Number of iterations (long)
+            int maxBeautifyIterations = 30; //Number of iterations (long)
+            */
+
+            Player[] pP = new Player[pCount];
+            for (int i = 0; i < pCount; i++)
+            {
+                pP[i] = null;
+            }
+            Player pPVeryBest = null;
+            for (int iteration = 0; iteration < maxIterations; iteration++)
+            {
+                Player pPBest = null;
+                int bestNo = -1;
+                for (int i = 0; i < pCount; i++)
+                {
+                    logger.log("Iteration = " + iteration + "; Player = " + i, 5, "ScenarioA4");
+                    pP[i] = beautifyAE1M3(-1E-12d, maxBeautifyIterations, 1, pP[i], 100, "T00", 2);
+                    if ((pP[i] != null) && ((pPBest == null) || (pP[i].strength > pPBest.strength)))
+                    {
+                        pPBest = pP[i].copyPlayer();
+                        bestNo = i;
+                        logger.log("New best Player found : " + pPBest.toString(), 8, "ScenarioA4");
+                    }
+                }
+                if (pPBest != null)
+                {
+                    logger.log("Iteration: "+iteration+"; Best Player was found at: " + bestNo+"; Strength: "+pPBest.strength.ToString("F12"), 2, "ScenarioA4");
+                    for (int i = 0; i < pCount; i++)
+                    {
+                        pP[i] = pPBest.copyPlayer();
+                        if (i < pCount / 2)
+                        {
+                            mutateN(pP[i], i);
+                        }
+                    }
+                }
+                if ((pPBest != null) && ((pPVeryBest == null) || (pPBest.strength > pPVeryBest.strength)))
+                {
+                    pPVeryBest = pPBest.copyPlayer();
+                }
+                if (pPBest != null)
+                {
+                    logger.logChart(pPBest.strength);
+                }
+            }
+            return pPVeryBest;
+        }
+
+        public Player beautifyAE1M3(double targetResult = -1E-06d, int repCount = 1000, int mutateCount = 1, Player pP = null, int maxBeautifyCount = 100, string threadName = "T00", int debugL = 10)
+        {
+            logger.set("ScenarioA4" + threadName, debugL, Color.Blue);
+            logger.set("ScenarioA4Internal", debugL, Color.Magenta);
+
+
+            if (pP == null)
+            {
+                pP = new Player(logger, rules, "pP", true);
+            }
+
+
+            //printLog(pP, "ScenarioA4" + threadName);
+
+
+
+            //logger.logChartReset();
 
             createBeutifyComponents();
 
             //mutateN(pP, 16);
-            beautifyAE1M2(pP);
-            printLog(pP);
+            //beautifyAE1M2(pP);
+            //printLog(pP);
 
 
             double? bestBeautifiedResult = null;
 
             string[] args = Environment.GetCommandLineArgs();
-            int mutateCount = 1;
-            if (args.Count()==2)
+
+            if (args.Count() == 2)
             {
                 mutateCount = Convert.ToInt32(args[1]);
-                logger.log("mutateCount = " + mutateCount, 1, "ScenarioA4");
+                logger.log("mutateCount = " + mutateCount, 1, "ScenarioA4" + threadName);
             }
 
-            Player pPOld = pP.copyPlayer();
+            Player pPBest = null;
             bool continueSearch = true;
-            for (int i = 0; (i < 1000000) && continueSearch; i++)
+            for (int i = 0; (i < repCount) && continueSearch && (!stopRun); i++)
             {
-                if (args.Count()!=2)
-                {
-                    //mutateCount = rules.random.Next(16);
-                    logger.log("mutateCount = " + mutateCount, 1, "ScenarioA4");
-                }
-                double newBeautifiedResult = beautifyAE1M2(pP);
+                logger.log("Iteration " + i, 3, "ScenarioA4" + threadName);
+                double newBeautifiedResult = beautifyAE1M2(ref pP, maxBeautifyCount);
                 if (bestBeautifiedResult.HasValue)
                 {
                     if (newBeautifiedResult > bestBeautifiedResult)
                     {
-                        logger.log("Improved   ", 1, "ScenarioA4");
+                        logger.log("Improved   ", 3, "ScenarioA4" + threadName);
+                        logger.log("Improvement mutation size = " + lastMutationSize.ToString("F12") + "; cell = " + lastBeautifyComponent.brainCellIndex + "; against = " + lastBeautifyComponent.changeAgainst + "; direction = " + lastBeautifyComponent.direction.ToString("F4"), 3, "ScenarioA4" + threadName);
                         bestBeautifiedResult = newBeautifiedResult;
-                        pPOld = pP.copyPlayer();
-
-                        if (bestBeautifiedResult > -0.000001)
+                        pPBest = pP.copyPlayer();
+                        /*
+                        if (bestBeautifiedResult > -1E-05d)
                         {
-                            //printLog(pP);
+                            printLog(pP);
                         }
-
-                        if (bestBeautifiedResult > -0.0001)
+                        */
+                        if (bestBeautifiedResult > targetResult)
                         {
-                            //continueSearch = false;
+                            continueSearch = false;
                         }
                         else
                         {
@@ -275,14 +272,15 @@ namespace Probability
                     }
                     else
                     {
-                        logger.log("Restore old ", 1, "ScenarioA4");
-                        pP = pPOld.copyPlayer();
+                        logger.log("Restore old ", 3, "ScenarioA4" + threadName);
+                        pP = pPBest.copyPlayer();
                         mutateN(pP, mutateCount);
                     }
                 }
                 else
                 {
                     bestBeautifiedResult = newBeautifiedResult;
+                    pPBest = pP.copyPlayer();
                     mutateN(pP, mutateCount);
                 }
 
@@ -294,40 +292,41 @@ namespace Probability
 
 
 
-            printLog(pP);
+            //printLog(pP, "ScenarioA4" + threadName);
 
 
-
+            return pPBest;
         }
 
-        private void printLog(Player pP)
+        private void printLog(Player pP, string debugName)
         {
             Player pA;
             double pPResult;
             pA = arenaAugmented.makeAugmentedAntiplayerEvolution1(pP);
             pPResult = arenaAugmented.fightStatistics(pP, pA);
-            logger.log("Player strenght  = " + pPResult.ToString("F12") + "     ", 1, "ScenarioA4");
-            logger.log("Player             = " + pP.toString(), 1, "ScenarioA4");
-            logger.log("Antiplayer  = " + pA.toString(), 1, "ScenarioA4");
+            logger.log("Player strenght  = " + pPResult.ToString("F12") + "     ", 1, debugName);
+            logger.log("Player             = " + pP.toString(), 1, debugName);
+            logger.log("Antiplayer  = " + pA.toString(), 1, debugName);
         }
 
         private void mutateN(Player pP, int n)
         {
             for (int mutateI = 0; mutateI < n; mutateI++)
             {
-                BeautifyComponent beautifyComponent = beautifyComponents[rules.random.Next(beautifyComponents.Count)];
-                pP.mutateAdvanced(beautifyComponent.brainCellIndex, beautifyComponent.changeAgainst, beautifyComponent.direction * rules.random.NextDouble());
+                lastMutationSize = rules.random.NextDouble();
+                lastBeautifyComponent = beautifyComponents[rules.random.Next(beautifyComponents.Count)];
+                pP.mutateAdvanced(lastBeautifyComponent.brainCellIndex, lastBeautifyComponent.changeAgainst, lastBeautifyComponent.direction * rules.random.NextDouble());
             }
         }
 
-        private double beautifyAE1M2(Player pP)
+        private double beautifyAE1M2(ref Player pP, int maxBeautifyCount = 100)
         {
             double? pPStrenght = null;
             bool benefit = true;
-
-            while (benefit)
+            int beautifyCount = 0;
+            while (benefit && (beautifyCount < maxBeautifyCount) && (!stopRun))
             {
-                double newStrenght = beautifyAE1(pP);
+                double newStrenght = beautifyAE1(ref pP);
                 if (pPStrenght.HasValue)
                 {
                     if (newStrenght > pPStrenght)
@@ -343,13 +342,14 @@ namespace Probability
                 {
                     pPStrenght = newStrenght;
                 }
-                logger.log("Strenght = " + pPStrenght.Value.ToString("F15"), 8, "ScenarioA4");
-                logger.logChart(pPStrenght.Value);
+                logger.log("Strenght = " + pPStrenght.Value.ToString("F15"), 8, "ScenarioA4Internal");
+                //logger.logChart(pPStrenght.Value);
+                beautifyCount++;
             }
             return pPStrenght.Value;
         }
 
-        private double beautifyAE1(Player pP)
+        private double beautifyAE1(ref Player pP)
         {
             //1 Finf MAX beneficial direction
             BeautifyComponent bestDirection = null;
@@ -410,6 +410,7 @@ namespace Probability
                 pP.pop();
             }
             */
+            pP.strength = bestResult;
             return bestResult;
         }
 

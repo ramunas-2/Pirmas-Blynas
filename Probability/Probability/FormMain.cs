@@ -14,6 +14,8 @@ namespace Probability
     {
         Logger logger;
         WorldAugmented worldAugmented;
+        bool threadRuns = false;
+
         public FormMain()
         {
             InitializeComponent();
@@ -29,7 +31,7 @@ namespace Probability
         {
             logger = new Logger(richTextBoxMainLogger, chartLog, "log.txt", 5);
             logger.log("Hello");
-            logger.set("Error",10,Color.Red);
+            logger.set("Error", 10, Color.Red);
             worldAugmented = new WorldAugmented(logger);
             //run();
             //change3
@@ -38,8 +40,12 @@ namespace Probability
 
         private void buttonRun01_Click(object sender, EventArgs e)
         {
-            run();
-
+            if (!threadRuns)
+            {
+                worldAugmented.stopRun = false;
+                threadRuns = true;
+                backgroundWorker1.RunWorkerAsync();
+            }
 
 
 
@@ -47,7 +53,26 @@ namespace Probability
 
         private void buttonRun2_Click(object sender, EventArgs e)
         {
-            worldAugmented.mainScenario2();
+                worldAugmented.mainScenario2();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (threadRuns)
+            {
+                worldAugmented.stopRun = true;
+            }
+        }
+
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+            run();
+
+        }
+
+        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            threadRuns = false;
         }
     }
 }

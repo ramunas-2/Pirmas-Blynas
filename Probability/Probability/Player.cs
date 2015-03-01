@@ -204,7 +204,7 @@ namespace Probability
             string s = "Player <" + name + ">; coins = " + coins.ToString() + "; dice = " + dice.ToString() + "; brainCells = ( ";
             for (int i = 0; i < allBrainCellsCount; i++)
             {
-                s += (brainCells[i].ToString("F4") + "; ");
+                s += (brainCells[i].ToString("F25") + "; ");
             }
             s += ")";
             return s;

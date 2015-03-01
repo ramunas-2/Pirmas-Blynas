@@ -61,6 +61,7 @@ namespace Probability
                 {
                     maxGameOverPathLengthEvolution1 = newComponent.probabilityComponents.Count;
                 }
+                newComponent.setCountZero();
                 antiComponents.Add(newComponent);
 
                 //logger.log("PAthA["+ii.ToString("D3")+"] = ;" + rules.intListToStringReverse(newComponent.probabilityComponents), 8, "Anti-AE1");
@@ -96,7 +97,7 @@ namespace Probability
                                 //5 Calculate sum of (multiplication of all P probabilites * coins in the same row) for each A in a group (same A dice!)
                                 foreach (FightStatisticsComponent deepComponent in antiComponents)
                                 {
-                                    if ((deepComponent.probabilityComponents.Count() == pathLength) && (deepComponent.probabilityComponents[0] == choiceLocation))
+                                    if ((deepComponent.probabilityComponentsCount == pathLength) && (deepComponent.probabilityComponents0 == choiceLocation))
                                     {
                                         sumOfAllDiceCombinationsBenefit += deepComponent.wonCoins;
                                     }
@@ -132,10 +133,14 @@ namespace Probability
                                 }
                                 foreach (FightStatisticsComponent deepComponent in antiComponents)
                                 {
-                                    if ((deepComponent.whoEnds == 1) && (deepComponent.probabilityComponents.Count() == pathLength) && (deepComponent.probabilityComponents[0] == choiceLocation))
+                                    if ((deepComponent.probabilityComponentsCount == pathLength) && (deepComponent.probabilityComponents0 == choiceLocation))
                                     {
                                         deepComponent.wonCoins *= (pA.brainCells[deepComponent.probabilityComponents[0]]);
                                         deepComponent.probabilityComponents.RemoveAt(0);
+                                        //Performance fix
+                                        //deepComponent.probabilityComponentsCount--;
+                                        //deepComponent.probabilityComponents0 = deepComponent.probabilityComponents[0];
+                                        deepComponent.setCountZero();
                                     }
                                 }
                                 choiceLocation++;
@@ -654,6 +659,7 @@ namespace Probability
                                 fightStatisticComponent.wonCoins = wonCoins;
                                 fightStatisticComponent.whoEnds = whoEnds;
                                 fightStatisticComponent.probabilityComponents = probabilityComponents;
+                                fightStatisticComponent.setCountZero();
                                 fightStatisticComponents.Add(fightStatisticComponent);
                                 if (probabilityComponents.Count() > maxGameOverPathLength)
                                 {
@@ -708,6 +714,8 @@ namespace Probability
         public double wonCoins;
         public int whoEnds;
         public List<int> probabilityComponents = new List<int>();
+        public int probabilityComponentsCount;
+        public int probabilityComponents0;
 
         public FightStatisticsComponent()
         {
@@ -721,6 +729,19 @@ namespace Probability
             this.probabilityComponents = new List<int>(model.probabilityComponents);
 
 
+        }
+
+        public void setCountZero()
+        {
+            probabilityComponentsCount = probabilityComponents.Count;
+            if (probabilityComponentsCount>0)
+            {
+                probabilityComponents0 = probabilityComponents[0];
+            }
+            else
+            {
+                probabilityComponents0 = -1;
+            }
         }
 
     }

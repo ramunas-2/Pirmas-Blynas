@@ -14,6 +14,9 @@ namespace Probability
         System.Windows.Forms.DataVisualization.Charting.Chart chartLog;
         string logFile;
 
+        delegate void SetTextCallback(string ss, Color color);
+        delegate void SetChartCallback(double x);
+
 
         int debugLevel;
         Dictionary<string, LoggerType> loggerTypesDictionary;
@@ -67,23 +70,50 @@ namespace Probability
             }
         }
 
+        //delegate void write(string ss, Color color);
+
         void write(string ss, Color color)
         {
-            richTextLog.SelectionStart = richTextLog.TextLength;
-            richTextLog.SelectionLength = 0;
-            richTextLog.SelectionColor = color;
-            richTextLog.AppendText(ss);
-            richTextLog.SelectionColor = richTextLog.ForeColor;
-            richTextLog.Refresh();
-            w.Write(ss);
-            richTextLog.ScrollToCaret();
-            w.Flush();
+
+
+            if (richTextLog.InvokeRequired)
+            {
+                SetTextCallback d = new SetTextCallback(write);
+                richTextLog.Invoke(d, new object[] { ss, color });
+            }
+            else
+            {
+
+
+                richTextLog.SelectionStart = richTextLog.TextLength;
+                richTextLog.SelectionLength = 0;
+                richTextLog.SelectionColor = color;
+                richTextLog.AppendText(ss);
+                richTextLog.SelectionColor = richTextLog.ForeColor;
+                richTextLog.Refresh();
+                w.Write(ss);
+                richTextLog.ScrollToCaret();
+                w.Flush();
+            }
         }
 
         public void logChart(double x)
         {
-            chartLog.Series["Series1"].Points.AddY(x);
-            chartLog.Update();
+
+            if (chartLog.InvokeRequired)
+            {
+                SetChartCallback d = new SetChartCallback(logChart);
+                richTextLog.Invoke(d, new object[] { x });
+            }
+            else
+            {
+                chartLog.Series["Series1"].Points.AddY(x);
+                chartLog.Update();
+            }
+            
+            
+            
+
         }
 
         public void logChartReset()
