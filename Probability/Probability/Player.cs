@@ -222,6 +222,101 @@ namespace Probability
             }
             return brainCellsEqual;
         }
+
+        public void load01()
+        {
+            brainCells[0] = 0d;
+            brainCells[1] = 0.614932611089377d;
+            brainCells[2] = 0d;
+            brainCells[3] = 0.385067388910623d;
+            brainCells[4] = 0d;
+            brainCells[5] = 0.384748012352251d;
+            brainCells[6] = 0.115251987647749d;
+            brainCells[7] = 0.5d;
+            brainCells[8] = 0.99999999999709d;
+            brainCells[9] = 0d;
+            brainCells[10] = 2.9103386367524E-12d;
+            brainCells[11] = 1d;
+            brainCells[12] = 5.55111512E-17d;
+            brainCells[13] = 1d;
+            brainCells[14] = 0d;
+            brainCells[15] = 0.819311554917875d;
+            brainCells[16] = 0d;
+            brainCells[17] = 0.180688445082125d;
+            brainCells[18] = 1d;
+            brainCells[19] = 0d;
+            brainCells[20] = 1d;
+            brainCells[21] = 0d;
+            brainCells[22] = 2.08166817E-17d;
+            brainCells[23] = 1d;
+            brainCells[24] = 0d;
+            brainCells[25] = 0d;
+            brainCells[26] = 6.9388939E-18d;
+            brainCells[27] = 1d;
+            brainCells[28] = 0d;
+            brainCells[29] = 0d;
+            brainCells[30] = 0.538310870365266d;
+            brainCells[31] = 0.461689129634734d;
+            brainCells[32] = 0d;
+            brainCells[33] = 0.766422686897754d;
+            brainCells[34] = 0.233577313102246d;
+            brainCells[35] = 0.961199458317424d;
+            brainCells[36] = 0.0388005416825764d;
+            brainCells[37] = 0.642271115869516d;
+            brainCells[38] = 0.357728884130484d;
+            brainCells[39] = 0d;
+            brainCells[40] = 1d;
+            brainCells[41] = 1.110223025E-16d;
+            brainCells[42] = 0.716794824815521d;
+            brainCells[43] = 0.283205175184479d;
+            brainCells[44] = 0d;
+            brainCells[45] = 1d;
+            brainCells[46] = 0d;
+            brainCells[47] = 0d;
+            brainCells[48] = 0d;
+            brainCells[49] = 0.654244037053071d;
+            brainCells[50] = 0.345755962946929d;
+            brainCells[51] = 0d;
+            brainCells[52] = 0d;
+            brainCells[53] = 0.41974411731062d;
+            brainCells[54] = 0.58025588268938d;
+            brainCells[55] = 9.02056208E-17d;
+            brainCells[56] = 1d;
+            brainCells[57] = 2.25514052E-17d;
+            brainCells[58] = 1d;
+            brainCells[59] = 5.55111512E-17d;
+            brainCells[60] = 1d;
+            brainCells[61] = 0d;
+            brainCells[62] = 0.637520924035935d;
+            brainCells[63] = 0.362479075964065d;
+            brainCells[64] = 0.379392178274477d;
+            brainCells[65] = 0.620607821725523d;
+            brainCells[66] = 0d;
+            brainCells[67] = 0.229865222177881d;
+            brainCells[68] = 0d;
+            brainCells[69] = 0.770134777822119d;
+            brainCells[70] = 0d;
+            brainCells[71] = 5.55111512E-17d;
+            brainCells[72] = 0d;
+            brainCells[73] = 1d;
+            brainCells[74] = 0d;
+            brainCells[75] = 2.77555756E-17d;
+            brainCells[76] = 1d;
+            brainCells[77] = 0.532729303246704d;
+            brainCells[78] = 0.467270696753296d;
+            brainCells[79] = 0d;
+            brainCells[80] = 1d;
+            brainCells[81] = 0d;
+            brainCells[82] = 0.0d;
+            brainCells[83] = 1.0d;
+            brainCells[84] = 5.55111512E-17d;
+            brainCells[85] = 1d;
+            brainCells[86] = 6.24500451E-17d;
+            brainCells[87] = 1d;
+
+
+        }
+
     }
 }
 

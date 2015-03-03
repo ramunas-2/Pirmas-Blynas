@@ -175,6 +175,8 @@ namespace Probability
             {
                 scenario.brainCellsLocation = situationBrainCellsCount;
                 situationBrainCellsCount += scenario.possibleMoves.Count;
+                //logger.log(scenario.possibleMoves.Count.ToString()+" Moves: ;"+intListToString(scenario.possibleMoves));
+                //logger.log(intListToString(scenario.path));
             }
             allBrainCellsCount = situationBrainCellsCount * diceCombinations;
             locationsBC = new Scenario[situationBrainCellsCount];

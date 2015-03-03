@@ -155,20 +155,24 @@ namespace Probability
 
         private Player beautifyAE1M4()
         {
+            
             int pCount = 16; //Number of parrallel players
             int maxIterations = 20; //Number of iterations (long)
             int maxBeautifyIterations = 30; //Number of iterations (long)
-
+            
+            
             /*
-            int pCount = 16; //Number of parrallel players
-            int maxIterations = 20; //Number of iterations (long)
+            int pCount = 1; //Number of parrallel players
+            int maxIterations = 1; //Number of iterations (long)
             int maxBeautifyIterations = 30; //Number of iterations (long)
             */
 
             Player[] pP = new Player[pCount];
             for (int i = 0; i < pCount; i++)
             {
-                pP[i] = null;
+                pP[i] = new Player(logger, rules, "Lucky", true);
+                pP[i].load01();
+                pP[i].normaliseBrainCells();
             }
             Player pPVeryBest = null;
             for (int iteration = 0; iteration < maxIterations; iteration++)
