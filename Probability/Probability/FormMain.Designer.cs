@@ -36,6 +36,7 @@
             this.buttonRun2 = new System.Windows.Forms.Button();
             this.buttonStop = new System.Windows.Forms.Button();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.labelResult = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.chartLog)).BeginInit();
             this.SuspendLayout();
             // 
@@ -74,7 +75,7 @@
             // 
             // buttonRun2
             // 
-            this.buttonRun2.Location = new System.Drawing.Point(970, 12);
+            this.buttonRun2.Location = new System.Drawing.Point(1069, 12);
             this.buttonRun2.Name = "buttonRun2";
             this.buttonRun2.Size = new System.Drawing.Size(75, 23);
             this.buttonRun2.TabIndex = 3;
@@ -97,11 +98,21 @@
             this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
             this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
             // 
+            // labelResult
+            // 
+            this.labelResult.AutoSize = true;
+            this.labelResult.Location = new System.Drawing.Point(864, 17);
+            this.labelResult.Name = "labelResult";
+            this.labelResult.Size = new System.Drawing.Size(10, 13);
+            this.labelResult.TabIndex = 5;
+            this.labelResult.Text = "-";
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1151, 195);
+            this.Controls.Add(this.labelResult);
             this.Controls.Add(this.buttonStop);
             this.Controls.Add(this.buttonRun2);
             this.Controls.Add(this.chartLog);
@@ -112,6 +123,7 @@
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.chartLog)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -123,6 +135,7 @@
         private System.Windows.Forms.Button buttonRun2;
         private System.Windows.Forms.Button buttonStop;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.Windows.Forms.Label labelResult;
     }
 }
 

@@ -12,10 +12,12 @@ namespace Probability
     {
         System.Windows.Forms.RichTextBox richTextLog;
         System.Windows.Forms.DataVisualization.Charting.Chart chartLog;
+        System.Windows.Forms.Label labelResult;
         string logFile;
 
         delegate void SetTextCallback(string ss, Color color);
         delegate void SetChartCallback(double x);
+        delegate void SetLabelCallback(string s);
 
 
         int debugLevel;
@@ -24,10 +26,11 @@ namespace Probability
 
 
         StreamWriter w;
-        public Logger(System.Windows.Forms.RichTextBox richTextLog, System.Windows.Forms.DataVisualization.Charting.Chart chartLog, string logFile, int debugLevel)
+        public Logger(System.Windows.Forms.RichTextBox richTextLog, System.Windows.Forms.DataVisualization.Charting.Chart chartLog, System.Windows.Forms.Label labelResult, string logFile, int debugLevel)
         {
             this.richTextLog = richTextLog;
             this.chartLog = chartLog;
+            this.labelResult = labelResult;
             this.logFile = logFile;
             this.debugLevel = debugLevel;
             w = File.AppendText(logFile);
@@ -61,10 +64,10 @@ namespace Probability
 
         public void log(string logMessage, int debugLevel, string name = "")
         {
-            LoggerType loggerType=getAppendLoggerType(name);
+            LoggerType loggerType = getAppendLoggerType(name);
             if (debugLevel <= loggerType.debugLevel)
             {
-                string ss = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.ff") + " "+name+"> " + logMessage;
+                string ss = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.ff") + " " + name + "> " + logMessage;
                 //string ss = logMessage;
                 write(ss + "\n", loggerType.color);
             }
@@ -99,7 +102,6 @@ namespace Probability
 
         public void logChart(double x)
         {
-
             if (chartLog.InvokeRequired)
             {
                 SetChartCallback d = new SetChartCallback(logChart);
@@ -110,10 +112,20 @@ namespace Probability
                 chartLog.Series["Series1"].Points.AddY(x);
                 chartLog.Update();
             }
-            
-            
-            
+        }
 
+        public void logLabel(string s)
+        {
+            if (labelResult.InvokeRequired)
+            {
+                SetLabelCallback d = new SetLabelCallback(logLabel);
+                labelResult.Invoke(d, new object[] { s });
+            }
+            else
+            {
+                labelResult.Text = s;
+                labelResult.Update();
+            }
         }
 
         public void logChartReset()

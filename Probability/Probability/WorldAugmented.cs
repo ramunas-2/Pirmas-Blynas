@@ -128,6 +128,9 @@ namespace Probability
         {
             logger.log("Run scenarion A4 - Evolve imune player");
             logger.set("ScenarioA4", 2, Color.Green);
+
+            logger.logLabel("Started...");
+
             Player pPVeryBest = null;
             Player pPLast = null;
 
@@ -139,6 +142,7 @@ namespace Probability
                     pPVeryBest = pPLast.copyPlayer();
                     logger.log("New very best Player found : " + pPVeryBest.toString(), 1, "ScenarioA4");
                     logger.log("Strength : " + pPVeryBest.strength.ToString("F12"), 1, "ScenarioA4");
+                    logger.logLabel("Strength : " + pPVeryBest.strength.ToString("F12"));
                 }
             }
 

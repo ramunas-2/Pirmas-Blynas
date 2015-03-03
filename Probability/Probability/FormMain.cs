@@ -29,7 +29,7 @@ namespace Probability
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            logger = new Logger(richTextBoxMainLogger, chartLog, "log.txt", 5);
+            logger = new Logger(richTextBoxMainLogger, chartLog, labelResult, "log.txt", 5);
             logger.log("Hello");
             logger.set("Error", 10, Color.Red);
             worldAugmented = new WorldAugmented(logger);
