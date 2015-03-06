@@ -225,13 +225,20 @@ namespace Probability
 
         public void load01()
         {
+
+
+            //Result : -0,0000000000000727
+            //public int blind = 1;
+            //public int playerCoins = 3;
+            //public int diceCombinations = 4; 
+
             brainCells[0] = 0d;
-            brainCells[1] = 0.615384593592386d;
+            brainCells[1] = 0.615384615384305d;
             brainCells[2] = 0d;
-            brainCells[3] = 0.384615406407614d;
+            brainCells[3] = 0.384615384615695d;
             brainCells[4] = 0d;
-            brainCells[5] = 0.384615384616041d;
-            brainCells[6] = 0.115384615384392d;
+            brainCells[5] = 0.384615384616235d;
+            brainCells[6] = 0.115384615384198d;
             brainCells[7] = 0.499999999999568d;
             brainCells[8] = 1d;
             brainCells[9] = 0d;
@@ -255,46 +262,46 @@ namespace Probability
             brainCells[27] = 1d;
             brainCells[28] = 5.55111512E-17d;
             brainCells[29] = 0d;
-            brainCells[30] = 0.538461531197237d;
-            brainCells[31] = 0.461538468802763d;
+            brainCells[30] = 0.538461538461756d;
+            brainCells[31] = 0.461538461538244d;
             brainCells[32] = 0d;
             brainCells[33] = 0.766422686897754d;
             brainCells[34] = 0.233577313102246d;
-            brainCells[35] = 0.96153844519431d;
-            brainCells[36] = 0.0384615548056899d;
+            brainCells[35] = 0.961538461538467d;
+            brainCells[36] = 0.038461538461533d;
             brainCells[37] = 0.65820568260242d;
             brainCells[38] = 0.34179431739758d;
             brainCells[39] = 0d;
             brainCells[40] = 1d;
             brainCells[41] = 0d;
-            brainCells[42] = 1d;
-            brainCells[43] = 5.55111512E-17d;
+            brainCells[42] = 0.735701051884098d;
+            brainCells[43] = 0.264298948115902d;
             brainCells[44] = 0d;
             brainCells[45] = 1d;
             brainCells[46] = 0d;
-            brainCells[47] = 2.77555756E-17d;
+            brainCells[47] = 1.387778781E-16d;
             brainCells[48] = 0d;
-            brainCells[49] = 0.653846153844839d;
-            brainCells[50] = 0.346153846153235d;
-            brainCells[51] = 1.9256818362123E-12d;
+            brainCells[49] = 0.65384615384593d;
+            brainCells[50] = 0.346153846152341d;
+            brainCells[51] = 1.7287837827951E-12d;
             brainCells[52] = 0d;
-            brainCells[53] = 0.516719553021906d;
-            brainCells[54] = 0.483280446978094d;
+            brainCells[53] = 0.649848677137742d;
+            brainCells[54] = 0.350151322862258d;
             brainCells[55] = 9.02056208E-17d;
             brainCells[56] = 1d;
-            brainCells[57] = 2.25514052E-17d;
+            brainCells[57] = 0d;
             brainCells[58] = 1d;
-            brainCells[59] = 5.55111512E-17d;
+            brainCells[59] = 0d;
             brainCells[60] = 1d;
-            brainCells[61] = 0d;
-            brainCells[62] = 0.637520924035935d;
-            brainCells[63] = 0.362479075964065d;
-            brainCells[64] = 0.0961538461531745d;
-            brainCells[65] = 0.903846153846826d;
+            brainCells[61] = 5.55111512E-17d;
+            brainCells[62] = 1d;
+            brainCells[63] = 0d;
+            brainCells[64] = 0.360452794269914d;
+            brainCells[65] = 0.639547205730086d;
             brainCells[66] = 0d;
-            brainCells[67] = 0.230769187184342d;
+            brainCells[67] = 0.230769230768585d;
             brainCells[68] = 0d;
-            brainCells[69] = 0.769230812815658d;
+            brainCells[69] = 0.769230769231415d;
             brainCells[70] = 0d;
             brainCells[71] = 5.55111512E-17d;
             brainCells[72] = 0d;
@@ -302,17 +309,20 @@ namespace Probability
             brainCells[74] = 0d;
             brainCells[75] = 0d;
             brainCells[76] = 1d;
-            brainCells[77] = 0.17761475414858d;
-            brainCells[78] = 0.82238524585142d;
+            brainCells[77] = 2.77555756E-17d;
+            brainCells[78] = 1d;
             brainCells[79] = 0d;
             brainCells[80] = 1d;
             brainCells[81] = 0d;
-            brainCells[82] = 0.0790796618203543d;
-            brainCells[83] = 0.920920338179646d;
+            brainCells[82] = 8.32667268E-17d;
+            brainCells[83] = 1d;
             brainCells[84] = 5.55111512E-17d;
             brainCells[85] = 1d;
             brainCells[86] = 6.24500451E-17d;
             brainCells[87] = 1d;
+
+
+
 
 
 

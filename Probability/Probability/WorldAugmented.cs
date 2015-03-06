@@ -141,8 +141,8 @@ namespace Probability
                 {
                     pPVeryBest = pPLast.copyPlayer();
                     logger.log("New very best Player found : " + pPVeryBest.toString(), 1, "ScenarioA4");
-                    logger.log("Strength : " + pPVeryBest.strength.ToString("F12"), 1, "ScenarioA4");
-                    logger.logLabel("Strength : " + pPVeryBest.strength.ToString("F12"));
+                    logger.log("Strength : " + pPVeryBest.strength.ToString("F16"), 1, "ScenarioA4");
+                    logger.logLabel("Strength : " + pPVeryBest.strength.ToString("0.###E+0"));
                 }
             }
 
@@ -171,7 +171,7 @@ namespace Probability
             for (int i = 0; i < pCount; i++)
             {
                 pP[i] = new Player(logger, rules, "Lucky", true);
-                pP[i].load01();
+                //pP[i].load01();
                 pP[i].normaliseBrainCells();
             }
             Player pPVeryBest = null;
@@ -192,7 +192,7 @@ namespace Probability
                 }
                 if (pPBest != null)
                 {
-                    logger.log("Iteration: "+iteration+"; Best Player was found at: " + bestNo+"; Strength: "+pPBest.strength.ToString("F12"), 2, "ScenarioA4");
+                    logger.log("Iteration: "+iteration+"; Best Player was found at: " + bestNo+"; Strength: "+pPBest.strength.ToString("F16"), 2, "ScenarioA4");
                     for (int i = 0; i < pCount; i++)
                     {
                         pP[i] = pPBest.copyPlayer();
