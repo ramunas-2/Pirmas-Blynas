@@ -22,8 +22,15 @@ namespace Probability
             //scenario3();
             //scenarioA2();
             //scenarioA3();
-            scenarioA4();
             //scenarioA5();
+            scenarioA4();
+            //scenarioA6();
+        }
+
+        private void scenarioA6()
+        {
+            ExternalRunner externalRunner = new ExternalRunner(logger, rules, "Runner1");
+            externalRunner.helloCGPU();
         }
 
 

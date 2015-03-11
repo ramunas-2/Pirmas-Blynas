@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -28,6 +29,194 @@ namespace Probability
 
         public Player makeAugmentedAntiplayerEvolution1(Player pP)
         {
+            Stopwatch stopwatch = new Stopwatch();
+
+            Player pA1 = null;
+            Player pA2 = null;
+            int repeatCount = 10;
+
+
+            stopwatch.Restart();
+            for (int i = 1; i < repeatCount; i++)
+            {
+                pA1 = antiPlayerE01(pP); //Original
+            }
+            stopwatch.Stop();
+            logger.logChart(stopwatch.ElapsedMilliseconds);
+
+            stopwatch.Restart();
+            for (int i = 1; i < repeatCount; i++)
+            {
+                pA2 = antiPlayerE02(pP); //Refactored, optimised for performance
+            }
+            stopwatch.Stop();
+            logger.logChart(stopwatch.ElapsedMilliseconds);
+
+            if (pA1.isBrainCellsEqual(pA2))
+            {
+                logger.log("OK", 10, "Anti-AE1");
+            }
+            else
+            {
+                logger.log("Antiplayer do not match", 10, "Error");
+            }
+
+            return pA2;
+        }
+
+        private Player antiPlayerE02(Player pP)
+        {
+            //Refactored, optimised for performance
+            Player pA = pP.copyPlayer();
+            for (int i = 0; i < pA.allBrainCellsCount; i++)
+            {
+                pA.brainCells[i] = -1.0d;
+            }
+
+            int maxGameOverPathLengthEvolution1;
+            List<FightStatisticsComponent> antiComponents;
+            aPE02Preparation(pP, out maxGameOverPathLengthEvolution1, out antiComponents);
+
+            aPE02Calculation(pA, maxGameOverPathLengthEvolution1, antiComponents);
+
+            pA.strength = aPE02CalculateSum(antiComponents); ;
+
+            return pA;
+        }
+
+
+        private void aPE02Preparation(Player pP, out int maxGameOverPathLengthEvolution1, out List<FightStatisticsComponent> antiComponents)
+        {
+            maxGameOverPathLengthEvolution1 = 0;
+            antiComponents = new List<FightStatisticsComponent>();
+            foreach (FightStatisticsComponent fightStatisticComponent in fightStatisticComponents)
+            {
+                FightStatisticsComponent newComponent = new FightStatisticsComponent(fightStatisticComponent);
+                bool lastPlayer = true;
+                int initialLength = newComponent.probabilityComponents.Count;
+                for (int i = newComponent.probabilityComponents.Count - 1; i >= 0; i--)
+                {
+                    if (lastPlayer ^ (newComponent.whoEnds == 1) ^ (initialLength % 2 == 0))
+                    {
+                        newComponent.wonCoins *= pP.brainCells[newComponent.probabilityComponents[i]];
+                        newComponent.probabilityComponents.RemoveAt(i);
+                    }
+                    lastPlayer ^= true;
+                }
+                newComponent.whoEnds = 1;
+                if (newComponent.probabilityComponents.Count > maxGameOverPathLengthEvolution1)
+                {
+                    maxGameOverPathLengthEvolution1 = newComponent.probabilityComponents.Count;
+                }
+                newComponent.setCountZero();
+                antiComponents.Add(newComponent);
+            }
+
+            //int before = antiComponents.Count;
+
+            for (int i = antiComponents.Count - 1; i >= 1; i--)
+            {
+                FightStatisticsComponent component = antiComponents[i];
+                bool equalFound = false;
+                for (int j = i - 1; (j >= 0) && (!equalFound); j--)
+                {
+                    FightStatisticsComponent component2 = antiComponents[j];
+                    if (component.comparePC(component2))
+                    {
+                        equalFound = true;
+                        component2.wonCoins += component.wonCoins;
+                    }
+                }
+                if (equalFound)
+                {
+                    antiComponents.RemoveAt(i);
+                }
+
+            }
+
+            //logger.log("Before: " + before + "; after: " + antiComponents.Count);
+
+
+
+        }
+
+        private void aPE02Calculation(Player pA, int maxGameOverPathLengthEvolution1, List<FightStatisticsComponent> antiComponents)
+        {
+            for (int pathLength = maxGameOverPathLengthEvolution1; pathLength > 0; pathLength--)
+            {
+                foreach (FightStatisticsComponent antiComponent in antiComponents)
+                {
+                    if (antiComponent.probabilityComponentsCount == pathLength)
+                    {
+                        if (pA.brainCells[antiComponent.probabilityComponents0] == -1.0d)
+                        {
+                            Scenario scenario = rules.findScenarioByBCLocation(antiComponent.probabilityComponents0 % rules.situationBrainCellsCount);
+                            int currentADice = antiComponent.probabilityComponents0 / rules.situationBrainCellsCount;
+                            double? bestOptionABenefit = null;
+                            int bestOptionAChoiceLocation = -1;
+                            int choiceLocation = (currentADice * rules.situationBrainCellsCount) + scenario.brainCellsLocation;
+                            foreach (int iiA in scenario.possibleMoves)
+                            {
+                                double sumOfAllDiceCombinationsBenefit = 0;
+                                foreach (FightStatisticsComponent deepComponent in antiComponents)
+                                {
+                                    if ((deepComponent.probabilityComponentsCount == pathLength) && (deepComponent.probabilityComponents0 == choiceLocation))
+                                    {
+                                        sumOfAllDiceCombinationsBenefit += deepComponent.wonCoins;
+                                    }
+                                }
+                                if (bestOptionABenefit.HasValue)
+                                {
+                                    if (sumOfAllDiceCombinationsBenefit > bestOptionABenefit)
+                                    {
+                                        bestOptionABenefit = sumOfAllDiceCombinationsBenefit;
+                                        bestOptionAChoiceLocation = choiceLocation;
+                                    }
+                                }
+                                else
+                                {
+                                    bestOptionABenefit = sumOfAllDiceCombinationsBenefit;
+                                    bestOptionAChoiceLocation = choiceLocation;
+                                }
+                                choiceLocation++;
+                            }
+                            choiceLocation = (currentADice * rules.situationBrainCellsCount) + scenario.brainCellsLocation;
+                            foreach (int iiA in scenario.possibleMoves)
+                            {
+                                pA.brainCells[choiceLocation] = ((choiceLocation == bestOptionAChoiceLocation) ? 1.0d : 0.0d);
+                                foreach (FightStatisticsComponent deepComponent in antiComponents)
+                                {
+                                    if ((deepComponent.probabilityComponentsCount == pathLength) && (deepComponent.probabilityComponents0 == choiceLocation))
+                                    {
+                                        deepComponent.wonCoins *= (pA.brainCells[deepComponent.probabilityComponents0]);
+                                        deepComponent.probabilityComponents.RemoveAt(0);
+                                        deepComponent.setCountZero();
+                                    }
+                                }
+                                choiceLocation++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private double aPE02CalculateSum(List<FightStatisticsComponent> antiComponents)
+        {
+            double sumOfCoins = 0;
+            foreach (FightStatisticsComponent antiComponent in antiComponents)
+            {
+                sumOfCoins += antiComponent.wonCoins;
+            }
+            sumOfCoins /= (2 * rules.diceCombinations * rules.diceCombinations);
+            return sumOfCoins;
+        }
+
+        //----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+        private Player antiPlayerE01(Player pP)
+        {
             Player pA = pP.copyPlayer();
             pA.name = "AntiE1-" + pA.name;
             //logger.log("Antiplayer Augmented started for pleyer : " + pP.toString(), 5, "Anti-A");
@@ -39,7 +228,7 @@ namespace Probability
             //2 Make fightStatisticComponents copy
             int maxGameOverPathLengthEvolution1 = 0;
             List<FightStatisticsComponent> antiComponents = new List<FightStatisticsComponent>();
-            int ii=0;
+            int ii = 0;
             foreach (FightStatisticsComponent fightStatisticComponent in fightStatisticComponents)
             {
                 //antiComponents.Add(new FightStatisticsComponent(fightStatisticComponent));
@@ -186,7 +375,6 @@ namespace Probability
             //logger.log("Antiplayer Augmented made : " + pA.toString(), 5, "Anti-A");
             //logger.log("Antiplayer Augmented success against player : " + fightStatistics(pA, pP).ToString("F4"), 5, "Anti-A");
             return pA;
-
         }
 
 
@@ -734,7 +922,7 @@ namespace Probability
         public void setCountZero()
         {
             probabilityComponentsCount = probabilityComponents.Count;
-            if (probabilityComponentsCount>0)
+            if (probabilityComponentsCount > 0)
             {
                 probabilityComponents0 = probabilityComponents[0];
             }
@@ -742,6 +930,19 @@ namespace Probability
             {
                 probabilityComponents0 = -1;
             }
+        }
+
+        public bool comparePC(FightStatisticsComponent c2)
+        {
+            bool matches = (probabilityComponentsCount == c2.probabilityComponentsCount);
+            for (int i = 0; (i < probabilityComponentsCount) && (matches); i++)
+            {
+                if (probabilityComponents[i] != c2.probabilityComponents[i])
+                {
+                    matches = false;
+                }
+            }
+            return matches;
         }
 
     }
