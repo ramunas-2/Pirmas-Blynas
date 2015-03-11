@@ -15,8 +15,6 @@ namespace Probability
         protected ArenaAugmented arenaAugmented;
         public World(Logger logger)
         {
-            logger.log("World Constructor OK", 1, "Error");
-
             this.logger = logger;
             rules = new Rules(logger);
             arena = new Arena(logger, rules);

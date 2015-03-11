@@ -12,7 +12,7 @@ namespace Probability
     {
         Logger logger;
         Rules rules;
-        
+
         List<FightStatisticsComponent> fightStatisticComponents;
 
         int maxGameOverPathLengthEvolution1;
@@ -82,7 +82,7 @@ namespace Probability
 
             int maxGameOverPathLengthEvolution1;
             List<FightStatisticsComponent> antiComponents;
-            aPE02Preparation(pP, out maxGameOverPathLengthEvolution1, out antiComponents);
+            aPE02Preparation2(pP, out maxGameOverPathLengthEvolution1, out antiComponents);
 
             aPE02Calculation(pA, maxGameOverPathLengthEvolution1, antiComponents);
 
@@ -144,8 +144,31 @@ namespace Probability
             //logger.log("Before: " + before + "; after: " + antiComponents.Count);
 
 
+        }
+
+
+        private void aPE02Preparation2(Player pP, out int maxGameOverPathLengthEvolution1, out List<FightStatisticsComponent> antiComponents)
+        {
+            maxGameOverPathLengthEvolution1 = this.maxGameOverPathLengthEvolution1;
+            antiComponents = new List<FightStatisticsComponent>();
+            foreach (FightStatisticsComponentEvo2 fightStatisticComponentEvo2 in fightStatisticComponentsEvo2)
+            {
+                FightStatisticsComponent newComponent = new FightStatisticsComponent(fightStatisticComponentEvo2);
+                double sum = 0.0d;
+                for (int i = 0; i < fightStatisticComponentEvo2.matrixLI; i++)
+                {
+                    double multiplication = fightStatisticComponentEvo2.matrixCoins[i];
+                    for (int j = 0; j < fightStatisticComponentEvo2.matrixLJ[i]; j++)
+                    {
+                        multiplication *= pP.brainCells[fightStatisticComponentEvo2.matrix[i][j]]; // j,i?
+                    }
+                    sum += multiplication;
+                }
+                fightStatisticComponentEvo2.wonCoins = sum;
+            }
 
         }
+
 
         private void aPE02Calculation(Player pA, int maxGameOverPathLengthEvolution1, List<FightStatisticsComponent> antiComponents)
         {
@@ -871,6 +894,7 @@ namespace Probability
 
         private void fillFightStatisticsComponentsEvo2()
         {
+            fightStatisticComponentsEvo2 = new List<FightStatisticsComponentEvo2>();
             maxGameOverPathLengthEvolution1 = 0;
             foreach (FightStatisticsComponent fightStatisticComponent in fightStatisticComponents)
             {
@@ -880,7 +904,7 @@ namespace Probability
 
                 //Create matrix row 0
                 //
-                List <int> row0 = new List<int>();
+                List<int> row0 = new List<int>();
 
 
                 for (int i = newComponent.probabilityComponents.Count - 1; i >= 0; i--)
@@ -903,8 +927,11 @@ namespace Probability
                 newComponent.matrixLI = 1;
                 newComponent.matrixLJ = new int[1];
                 newComponent.matrixLJ[0] = row0.Count;
-                newComponent.matrix=new int[1][];
+                newComponent.matrix = new int[1][];
                 newComponent.matrix[0] = row0.ToArray();
+                newComponent.matrixCoins = new double[1];
+                newComponent.matrixCoins[0] = newComponent.wonCoins;
+
 
                 newComponent.whoEnds = 1;
                 if (newComponent.probabilityComponents.Count > maxGameOverPathLengthEvolution1)
@@ -939,13 +966,16 @@ namespace Probability
                         component2.matrixLJ = lLJ.ToArray();
 
                         int[][] matrix = new int[component2.matrixLI][]; ;
-                        for (int ii=0; ii<component.matrixLI; ii++)
+                        for (int ii = 0; ii < component.matrixLI; ii++)
                         {
                             matrix[ii] = component.matrix[ii].ToArray();
                         }
-                        matrix[component2.matrixLI-1] = component2.matrix[0].ToArray();
+                        matrix[component2.matrixLI - 1] = component2.matrix[0].ToArray();
                         component2.matrix = matrix;
-                        
+
+                        List<double> lLCoins = new List<double>(component.matrixCoins);
+                        lLCoins.Add(component2.matrixCoins[0]);
+                        component2.matrixCoins = lLCoins.ToArray();
 
 
 
@@ -1019,12 +1049,14 @@ namespace Probability
         public int matrixLI;
         public int[] matrixLJ;
         public int[][] matrix;
-        
+
+        public double[] matrixCoins;
+
         public FightStatisticsComponentEvo2(FightStatisticsComponent model)
             : base(model)
         {
         }
-        
+
 
 
         public FightStatisticsComponentEvo2(FightStatisticsComponentEvo2 model)
@@ -1033,6 +1065,7 @@ namespace Probability
             matrixLI = model.matrixLI;
             matrixLJ = new int[matrixLI];
             Array.Copy(model.matrixLJ, matrixLJ, matrixLI);
+            Array.Copy(model.matrixCoins, matrixCoins, matrixLI);
             matrix = matrix.Select(x => x.ToArray()).ToArray();
         }
 

@@ -13,8 +13,6 @@ namespace Probability
         public WorldAugmented(Logger logger)
             : base(logger)
         {
-            logger.log("World Augmented Constructor OK", 1, "Error");
-
             stopRun = false;
         }
 
