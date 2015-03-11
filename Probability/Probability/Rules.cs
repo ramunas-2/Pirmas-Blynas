@@ -12,8 +12,8 @@ namespace Probability
         Logger logger;
 
         public int blind = 1;
-        public int playerCoins = 3;
-        public int diceCombinations = 4;
+        public int playerCoins = 4;
+        public int diceCombinations = 6;
         public Random random;
         public int situationBrainCellsCount;
         public int allBrainCellsCount;

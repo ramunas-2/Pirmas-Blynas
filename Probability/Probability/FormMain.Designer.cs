@@ -69,7 +69,7 @@
             series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
             series1.Name = "Series1";
             this.chartLog.Series.Add(series1);
-            this.chartLog.Size = new System.Drawing.Size(690, 467);
+            this.chartLog.Size = new System.Drawing.Size(444, 144);
             this.chartLog.TabIndex = 2;
             this.chartLog.Text = "chart1";
             // 
@@ -111,7 +111,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1402, 542);
+            this.ClientSize = new System.Drawing.Size(1151, 195);
             this.Controls.Add(this.labelResult);
             this.Controls.Add(this.buttonStop);
             this.Controls.Add(this.buttonRun2);

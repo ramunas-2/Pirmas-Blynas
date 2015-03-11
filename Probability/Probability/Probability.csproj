@@ -47,7 +47,6 @@
   <ItemGroup>
     <Compile Include="Arena.cs" />
     <Compile Include="ArenaAugmented.cs" />
-    <Compile Include="ExternalRunner.cs" />
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
