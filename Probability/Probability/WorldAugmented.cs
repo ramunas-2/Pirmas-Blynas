@@ -178,7 +178,7 @@ namespace Probability
             for (int i = 0; i < pCount; i++)
             {
                 pP[i] = new Player(logger, rules, "Lucky", true);
-                //pP[i].load01();
+                pP[i].load01();
                 pP[i].normaliseBrainCells();
             }
             Player pPVeryBest = null;
