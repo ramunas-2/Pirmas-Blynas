@@ -108,7 +108,7 @@ namespace Probability
         {
             int retVal = -2;
             Scenario scenario = rules.findScenarioByPath(path);
-            logger.log("Make Move from path ( " + rules.intListToString(path) + ")", 8, "Player");
+            logger.log("Make Move from path ( " + Rules.intListToString(path) + ")", 8, "Player");
             if (scenario.gameOver)
             {
                 logger.log("Can't make move, gameOver", 0, "Error");

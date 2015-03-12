@@ -193,7 +193,7 @@ namespace Probability
 
         }
 
-        public string intListToString(List<int> path)
+        public static string intListToString(List<int> path)
         {
             string s = "";
             foreach (int ii in path)
@@ -203,7 +203,7 @@ namespace Probability
             return s;
         }
 
-        public string intListToStringReverse(List<int> path)
+        public static string intListToStringReverse(List<int> path)
         {
             string s = "";
             for (int i = path.Count - 1; i >= 0; i--)
@@ -213,7 +213,7 @@ namespace Probability
             return s;
         }
 
-        public string doubleListToString(List<double> path, int precission = 4)
+        public static string doubleListToString(List<double> path, int precission = 4)
         {
             string s = "";
             foreach (double dd in path)

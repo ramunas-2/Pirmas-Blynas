@@ -82,9 +82,9 @@ namespace Probability
         public string toString()
         {
             string s = "Scenario path = ( ";
-            s += rules.intListToString(path);
+            s += Rules.intListToString(path);
             s += "); possibleMoves = ( ";
-            s += rules.intListToString(possibleMoves);
+            s += Rules.intListToString(possibleMoves);
             s += "); brainCellsLocation = "+brainCellsLocation;
             return s;
         }

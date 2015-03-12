@@ -34,7 +34,7 @@ namespace Probability
         }
 
 
-        public Player makeAugmentedAntiplayerEvolution1(Player pP)
+        public Player makeAugmentedAntiplayerEvolution1Test(Player pP)
         {
             Stopwatch stopwatch = new Stopwatch();
 
@@ -44,7 +44,7 @@ namespace Probability
 
 
             stopwatch.Restart();
-            for (int i = 1; i < repeatCount; i++)
+            for (int i = 0; i < repeatCount; i++)
             {
                 pA1 = antiPlayerE01(pP); //Original
             }
@@ -52,7 +52,7 @@ namespace Probability
             logger.logChart(stopwatch.ElapsedMilliseconds);
 
             stopwatch.Restart();
-            for (int i = 1; i < repeatCount; i++)
+            for (int i = 0; i < repeatCount; i++)
             {
                 pA2 = antiPlayerE02(pP); //Refactored, optimised for performance
             }
@@ -71,6 +71,13 @@ namespace Probability
             return pA2;
         }
 
+        public Player makeAugmentedAntiplayerEvolution1(Player pP)
+        {
+            Player pA2 = null;
+            pA2 = antiPlayerE02(pP); //Refactored, optimised for performance
+            return pA2;
+        }
+
         private Player antiPlayerE02(Player pP)
         {
             //Refactored, optimised for performance
@@ -82,13 +89,26 @@ namespace Probability
 
             int maxGameOverPathLengthEvolution1;
             List<FightStatisticsComponent> antiComponents;
+
+            //aPE02Preparation(pP, out maxGameOverPathLengthEvolution1, out antiComponents);
+            //outputAntiComponent(antiComponents, "Optimised1");
+
             aPE02Preparation2(pP, out maxGameOverPathLengthEvolution1, out antiComponents);
+            //outputAntiComponent(antiComponents, "Optimised2");
 
             aPE02Calculation(pA, maxGameOverPathLengthEvolution1, antiComponents);
 
             pA.strength = aPE02CalculateSum(antiComponents); ;
 
             return pA;
+        }
+
+        private void outputAntiComponent(List<FightStatisticsComponent> antiComponents, string name)
+        {
+            foreach (FightStatisticsComponent component in antiComponents)
+            {
+                logger.log(name + " " + component.toString(), 10, "Anti-AE1");
+            }
         }
 
 
@@ -164,7 +184,10 @@ namespace Probability
                     }
                     sum += multiplication;
                 }
-                fightStatisticComponentEvo2.wonCoins = sum;
+                newComponent.wonCoins = sum;
+                newComponent.setCountZero();
+                antiComponents.Add(newComponent);
+
             }
 
         }
@@ -287,6 +310,8 @@ namespace Probability
                 ii++;
 
             }
+
+            //outputAntiComponent(antiComponents, "Original");
 
             //debugAntiComponents(pP, pA, antiComponents);
 
@@ -451,7 +476,7 @@ namespace Probability
                         int lastLocation = antiComponent.probabilityComponents[0];
                         if (pA.brainCells[lastLocation] == -1.0d)
                         {//Component is not processed at this level yet, must collect a group and process
-                            logger.log("Iteration pathLength = " + pathLength + " path = ( " + rules.intListToString(antiComponent.probabilityComponents) + ")", 8, "Anti-AE1");
+                            logger.log("Iteration pathLength = " + pathLength + " path = ( " + Rules.intListToString(antiComponent.probabilityComponents) + ")", 8, "Anti-AE1");
                             //Identify A group
                             Scenario scenario = rules.findScenarioByBCLocation(lastLocation % rules.situationBrainCellsCount);
                             int currentADice = lastLocation / rules.situationBrainCellsCount;
@@ -608,7 +633,7 @@ namespace Probability
                         int lastLocation = antiComponent.probabilityComponents[0];
                         if (pA.brainCells[lastLocation] == -1.0d)
                         {//Component is not processed at this level yet, must collect a group and process
-                            logger.log("Iteration pathLength = " + pathLength + " path = ( " + rules.intListToString(antiComponent.probabilityComponents) + ")", 8, "Anti-A");
+                            logger.log("Iteration pathLength = " + pathLength + " path = ( " + Rules.intListToString(antiComponent.probabilityComponents) + ")", 8, "Anti-A");
                             //Identify A group
                             Scenario scenario = rules.findScenarioByBCLocation(lastLocation % rules.situationBrainCellsCount);
                             int currentADice = lastLocation / rules.situationBrainCellsCount;
@@ -783,7 +808,7 @@ namespace Probability
                         {
                             if (scenario.gameOver)
                             {
-                                logger.log("Analysing scenario ( " + rules.intListToString(scenario.path) + ")", 8, "FightS");
+                                logger.log("Analysing scenario ( " + Rules.intListToString(scenario.path) + ")", 8, "FightS");
                                 bool currentPlayerEnds = true;
                                 List<int> remainingPath = new List<int>(scenario.path);
                                 List<int> probabilityComponents = new List<int>();
@@ -884,7 +909,7 @@ namespace Probability
                                 {
                                     maxGameOverPathLength = probabilityComponents.Count();
                                 }
-                                logger.log("wonCoins = " + wonCoins.ToString() + " probabilityComponents = ( " + rules.intListToString(probabilityComponents) + ")", 8, "FightS");
+                                logger.log("wonCoins = " + wonCoins.ToString() + " probabilityComponents = ( " + Rules.intListToString(probabilityComponents) + ")", 8, "FightS");
                             }
                         }
                     }
@@ -1119,6 +1144,18 @@ namespace Probability
             }
             return matches;
         }
+
+        public string toString()
+        {
+            string s = "";
+            s += ("wonCoins = " + wonCoins.ToString("F4") + "; ");
+            s += ("whoEnds = " + whoEnds.ToString() + "; ");
+            s += ("probabilityComponents = " + Rules.intListToString(probabilityComponents) + "; ");
+            s += ("probabilityComponentsCount = " + probabilityComponentsCount.ToString() + "; ");
+            s += ("probabilityComponents0 = " + probabilityComponents0.ToString() + "; ");
+            return s;
+        }
+
 
     }
 }

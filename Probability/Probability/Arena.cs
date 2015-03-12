@@ -41,7 +41,7 @@ namespace Probability
                 logger.log("Fight, not gameOver", 9, "Fight");
                 int choice = pCurrrent.makeMove(path);
                 path.Add(choice);
-                logger.log("Path = ( " + rules.intListToString(path) + ")", 9, "Fight");
+                logger.log("Path = ( " + Rules.intListToString(path) + ")", 9, "Fight");
                 Scenario scenario = rules.findScenarioByPath(path);
                 if (choice > 0)
                 {//Raise coins
