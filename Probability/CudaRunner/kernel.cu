@@ -23,6 +23,21 @@ __global__ void addKernel(int *c, const int *a, const int *b)
 
 }
 
+
+extern "C"
+{
+	__declspec(dllexport) void CudaAdd(int path0, int path1[], int path2[][2][3])
+	{
+		//printf("GO Cuda! %d\n", length);
+		//addWithCuda(c, a, b, length);
+
+	}
+}
+
+
+
+
+
 extern "C"
 {
 	__declspec(dllexport) void DisplayHelloFromDLL(int length, double dArray[])
@@ -35,7 +50,7 @@ extern "C"
 	}
 }
 
-
+/*
 extern "C"
 {
 	__declspec(dllexport) void CudaAdd(int length, int a[], int b[], int c[])
@@ -45,6 +60,7 @@ extern "C"
 
 	}
 }
+*/
 
 
 
