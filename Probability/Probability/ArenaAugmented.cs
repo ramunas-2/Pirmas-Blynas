@@ -17,13 +17,33 @@ namespace Probability
         int maxGameOverPathLength = 0;
 
         List<FightStatisticsComponentEvo2> fightStatisticComponentsEvo2;
-        int maxGameOverPathLengthEvolution1;
         List<List<List<List<int>>>> ml4;
+
+        ExternalRunner externalRunner;
+
+
+        int maxGameOverPathLengthEvolution1;
+
         public int[][][][] mask4;
         public int[][][] mask3;
         public int[][] mask2;
         public int[] mask1;
         public int mask0;
+
+        public int[][][] matrix3;
+        public int[][] matrix2;
+        public int[] matrix1;
+        public int matrix0;
+
+        public double[][] matrixCoins;
+
+        public double[] wonCoins;
+        public int wonCoinsLength;
+
+        public int[][] path2;
+        public int[] path1;
+        public int path0;
+
 
 
 
@@ -36,11 +56,26 @@ namespace Probability
             this.rules = rules;
             fillFightStatisticsComponents();
             fillFightStatisticsComponentsEvo2();
+            externalRunner = new ExternalRunner(logger, rules, "Runner002");
+            initialiseExternalEvo3();
 
 
 
         }
 
+        public void initialiseExternalEvo3()
+        {
+            externalRunner.initialise(maxGameOverPathLengthEvolution1, mask4, mask3, mask2, mask1, mask0, matrix3, matrix2, matrix1, matrix0, matrixCoins, wonCoins, wonCoinsLength, path2, path1, path0);
+        }
+
+        public double calculateExternalAntiplayerEvo3(ref Player p)
+        {
+            double strength = 0;
+            strength = externalRunner.calculateAntiPlayer(p.brainCells, p.allBrainCellsCount);
+
+
+            return strength;
+        }
 
         public Player makeAugmentedAntiplayerEvolution1(Player pP)
         {
@@ -63,7 +98,10 @@ namespace Probability
             stopwatch.Restart();
             for (int i = 0; i < repeatCount; i++)
             {
-                pA2 = antiPlayerE03(pP); //Refactored, optimised for performance
+                //pA2 = antiPlayerE03(pP); //Refactored, optimised for performance
+                pA2 = new Player(pP);
+                double strength = calculateExternalAntiplayerEvo3(ref pA2);
+                pA2.strength = strength / (2 * rules.diceCombinations * rules.diceCombinations);
             }
             stopwatch.Stop();
             logger.logChart(stopwatch.ElapsedMilliseconds);
@@ -78,7 +116,10 @@ namespace Probability
                 logger.log("Antiplayer do not match", 10, "Error");
                 logger.log("Antiplayer 1 strength = " + pA1.strength.ToString("F30"), 10, "Error");
                 logger.log("Antiplayer 2 strength = " + pA2.strength.ToString("F30"), 10, "Error");
-                logger.log("Antiplayer strength difference = " + (pA2.strength-pA2.strength).ToString("F30"), 10, "Error");
+                logger.log("Antiplayer strength difference = " + (pA2.strength - pA2.strength).ToString("F30"), 10, "Error");
+                logger.log("Antiplayer brainCell equal = " + (pA1.isBrainCellsEqual(pA2)?"True":"False"), 10, "Error");
+                logger.log("Antiplayer 1 brainCells = " + Rules.doubleListToString(pA1.brainCells.ToList(),4), 10, "Error");
+                logger.log("Antiplayer 2 brainCells = " + Rules.doubleListToString(pA2.brainCells.ToList(), 4), 10, "Error");
 
             }
 
@@ -116,25 +157,87 @@ namespace Probability
             return pA;
         }
 
+
         private Player antiPlayerE03(Player pP)
+        {
+            //-----Refactored, optimised for performance
+            for (int i0 = 0; i0 < matrix0; i0++)
+            {
+                double sum = 0.0d;
+                for (int i1 = 0; i1 < matrix1[i0]; i1++)
+                {
+                    double multiplication = matrixCoins[i0][i1];
+                    for (int i2 = 0; i2 < matrix2[i0][i1]; i2++)
+                    {
+                        multiplication *= pP.brainCells[matrix3[i0][i1][i2]];
+                    }
+                    sum += multiplication;
+                }
+                wonCoins[i0] = sum;
+            }
+            Player pA = pP.copyPlayer();
+            int pathLength = maxGameOverPathLengthEvolution1;
+            for (int i0 = 0; i0 < mask0; i0++)
+            {
+                for (int i1 = 0; i1 < mask1[i0]; i1++)
+                {
+                    double? bestOptionABenefit = null;
+                    int bestOptionAChoiceLocation = -1;
+                    for (int i2 = 0; i2 < mask2[i0][i1]; i2++)
+                    {
+                        double sumOfAllDiceCombinationsBenefit = 0;
+                        for (int i3 = 0; i3 < mask3[i0][i1][i2]; i3++)
+                        {
+                            sumOfAllDiceCombinationsBenefit += wonCoins[mask4[i0][i1][i2][i3]];
+                        }
+                        if (bestOptionABenefit == null || sumOfAllDiceCombinationsBenefit > bestOptionABenefit)
+                        {
+                            bestOptionABenefit = sumOfAllDiceCombinationsBenefit;
+                            bestOptionAChoiceLocation = i2;
+                        }
+                    }
+                    for (int i2 = 0; i2 < mask2[i0][i1]; i2++)
+                    {
+                        for (int i3 = 0; i3 < mask3[i0][i1][i2]; i3++)
+                        {
+                            double newBrainCellValue = (i2 == bestOptionAChoiceLocation) ? 1.0d : 0.0d;
+                            pA.brainCells[path2[mask4[i0][i1][i2][i3]][pathLength - 1]] = newBrainCellValue;
+                            wonCoins[mask4[i0][i1][i2][i3]] *= newBrainCellValue;
+                        }
+                    }
+                }
+                pathLength--;
+            }
+            double sumOfCoins = 0;
+            for (int i = 0; i < wonCoinsLength; i++)
+            {
+                sumOfCoins += wonCoins[i];
+            }
+            sumOfCoins /= (2 * rules.diceCombinations * rules.diceCombinations);
+            pA.strength = sumOfCoins;
+            return pA;
+        }
+
+
+        private Player antiPlayerE03_old(Player pP)
         {
             //Refactored, optimised for performance
             Player pA = pP.copyPlayer();
             pA.setMinus1();
 
             int maxGameOverPathLengthEvolution1;
-            List<FightStatisticsComponent> antiComponents;
+            List<FightStatisticsComponentEvo2> antiComponents;
 
             //aPE02Preparation(pP, out maxGameOverPathLengthEvolution1, out antiComponents);
             //outputAntiComponent(antiComponents, "Optimised1");
 
-            aPE02Preparation2(pP, out maxGameOverPathLengthEvolution1, out antiComponents);
+            aPE02PreparationEvo3(pP, out maxGameOverPathLengthEvolution1, out antiComponents);
             //outputAntiComponent(antiComponents, "Optimised2");
 
             //aPE02Calculation(pA, maxGameOverPathLengthEvolution1, antiComponents);
             aPE02CalculationE03(pA, maxGameOverPathLengthEvolution1, antiComponents);
 
-            pA.strength = aPE02CalculateSum(antiComponents); ;
+            pA.strength = aPE02CalculateSumE03(antiComponents); ;
 
             return pA;
         }
@@ -232,6 +335,36 @@ namespace Probability
 
         }
 
+        private void aPE02PreparationEvo3(Player pP, out int maxGameOverPathLengthEvolution1, out List<FightStatisticsComponentEvo2> antiComponents)
+        {
+            maxGameOverPathLengthEvolution1 = this.maxGameOverPathLengthEvolution1;
+            antiComponents = fightStatisticComponentsEvo2;
+            //antiComponents = new List<FightStatisticsComponentEvo2>();
+            //foreach (FightStatisticsComponentEvo2 fightStatisticComponentEvo2 in fightStatisticComponentsEvo2)
+            //int ii = 0;
+            //foreach (FightStatisticsComponentEvo2 newComponent in fightStatisticComponentsEvo2)
+            for (int i0 = 0; i0 < matrix0; i0++)
+            {
+                //FightStatisticsComponentEvo2 newComponent = new FightStatisticsComponentEvo2(fightStatisticComponentEvo2);
+                //FightStatisticsComponentEvo2 newComponent = fightStatisticComponentEvo2;
+                double sum = 0.0d;
+                for (int i1 = 0; i1 < matrix1[i0]; i1++)
+                {
+                    double multiplication = matrixCoins[i0][i1];
+                    for (int i2 = 0; i2 < matrix2[i0][i1]; i2++)
+                    {
+                        multiplication *= pP.brainCells[matrix3[i0][i1][i2]];
+                    }
+                    sum += multiplication;
+                }
+                wonCoins[i0] = sum;
+                //newComponent.setCountZero();
+                //antiComponents.Add(newComponent);
+                //ii++;
+            }
+
+
+        }
 
         private void aPE02Calculation(Player pA, int maxGameOverPathLengthEvolution1, List<FightStatisticsComponent> antiComponents)
         {
@@ -296,7 +429,7 @@ namespace Probability
 
 
 
-        private void aPE02CalculationE03(Player pA, int maxGameOverPathLengthEvolution1, List<FightStatisticsComponent> antiComponents)
+        private void aPE02CalculationE03_List(Player pA, int maxGameOverPathLengthEvolution1, List<FightStatisticsComponentEvo2> antiComponents)
         {
             int pathLength = maxGameOverPathLengthEvolution1;
             foreach (List<List<List<int>>> ml3 in ml4)
@@ -326,10 +459,8 @@ namespace Probability
                         foreach (int ml0 in ml1)
                         {
                             double newBrainCellValue = (choiceLocation == bestOptionAChoiceLocation) ? 1.0d : 0.0d;
-                            pA.brainCells[antiComponents[ml0].probabilityComponents0] = newBrainCellValue;
+                            pA.brainCells[antiComponents[ml0].path[pathLength - 1]] = newBrainCellValue;
                             antiComponents[ml0].wonCoins *= newBrainCellValue;
-                            antiComponents[ml0].probabilityComponents.RemoveAt(0);
-                            antiComponents[ml0].setCountZero();
                         }
                         choiceLocation++;
                     }
@@ -339,11 +470,68 @@ namespace Probability
         }
 
 
+        private void aPE02CalculationE03(Player pA, int maxGameOverPathLengthEvolution1, List<FightStatisticsComponentEvo2> antiComponents)
+        {
+            int pathLength = maxGameOverPathLengthEvolution1;
+            for (int i0 = 0; i0 < mask0; i0++)
+            {
+                for (int i1 = 0; i1 < mask1[i0]; i1++)
+                {
+                    double? bestOptionABenefit = null;
+                    int bestOptionAChoiceLocation = -1;
+                    for (int i2 = 0; i2 < mask2[i0][i1]; i2++)
+                    {
+                        double sumOfAllDiceCombinationsBenefit = 0;
+                        for (int i3 = 0; i3 < mask3[i0][i1][i2]; i3++)
+                        {
+                            sumOfAllDiceCombinationsBenefit += wonCoins[mask4[i0][i1][i2][i3]];
+                        }
+                        if (bestOptionABenefit == null || sumOfAllDiceCombinationsBenefit > bestOptionABenefit)
+                        {
+                            bestOptionABenefit = sumOfAllDiceCombinationsBenefit;
+                            bestOptionAChoiceLocation = i2;
+                        }
+                    }
+                    for (int i2 = 0; i2 < mask2[i0][i1]; i2++)
+                    {
+                        for (int i3 = 0; i3 < mask3[i0][i1][i2]; i3++)
+                        {
+                            double newBrainCellValue = (i2 == bestOptionAChoiceLocation) ? 1.0d : 0.0d;
+                            pA.brainCells[path2[mask4[i0][i1][i2][i3]][pathLength - 1]] = newBrainCellValue;
+                            wonCoins[mask4[i0][i1][i2][i3]] *= newBrainCellValue;
+                        }
+                    }
+                }
+                pathLength--;
+            }
+        }
 
 
 
 
+        private double aPE02CalculateSumE03(List<FightStatisticsComponentEvo2> antiComponents)
+        {
+            double sumOfCoins = 0;
+            //foreach (FightStatisticsComponent antiComponent in antiComponents)
+            for (int i = 0; i < wonCoinsLength; i++)
+            {
+                sumOfCoins += wonCoins[i];
+            }
+            sumOfCoins /= (2 * rules.diceCombinations * rules.diceCombinations);
+            return sumOfCoins;
+        }
 
+
+        private double aPE02CalculateSum(List<FightStatisticsComponentEvo2> antiComponents)
+        {
+            double sumOfCoins = 0;
+            foreach (FightStatisticsComponent antiComponent in antiComponents)
+            {
+                sumOfCoins += antiComponent.wonCoins;
+            }
+            sumOfCoins /= (2 * rules.diceCombinations * rules.diceCombinations);
+            return sumOfCoins;
+        }
 
         private double aPE02CalculateSum(List<FightStatisticsComponent> antiComponents)
         {
@@ -355,6 +543,8 @@ namespace Probability
             sumOfCoins /= (2 * rules.diceCombinations * rules.diceCombinations);
             return sumOfCoins;
         }
+
+
 
         //----------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1013,22 +1203,85 @@ namespace Probability
                 ml4.Add(ml3);
             }
 
+
+            foreach (FightStatisticsComponentEvo2 component in fightStatisticComponentsEvo2)
+            {
+                component.pathCount = component.probabilityComponents.Count;
+                component.path = new int[component.pathCount];
+                for (int i = 0; i < component.pathCount; i++)
+                {
+                    component.path[i] = component.probabilityComponents[component.pathCount - i - 1];
+                }
+
+            }
+
+
+            int i1;
+
+            path0 = fightStatisticComponentsEvo2.Count;
+            path1 = new int[path0];
+            path2 = new int[path0][];
+            i1 = 0;
+            foreach (FightStatisticsComponentEvo2 component in fightStatisticComponentsEvo2)
+            {
+                path1[i1] = component.pathCount;
+                path2[i1] = new int[path1[i1]];
+                for (int i2 = 0; i2 < path1[i1]; i2++)
+                {
+                    path2[i1][i2] = component.path[i2];
+                }
+                i1++;
+            }
+
+
+
+            /*
+            public double[][] path2;
+            public int[] path1;
+            public int path0;
+            */
+
+
+
             //----- Fiil mask
 
-            /*
-            public int[][][][] mask4;
-            public int[][][] mask3;
-            public int[][] mask2;
-            public int[] mask1;
-            public int mask0;
-            */
-
-            /*
-            newComponent.matrix = new int[1][];
-            newComponent.matrix[0] = row0.ToArray();
-            */
 
 
+            mask0 = ml4.Count;
+            mask1 = new int[mask0];
+            mask2 = new int[mask0][];
+            mask3 = new int[mask0][][];
+            mask4 = new int[mask0][][][];
+            i1 = 0;
+            foreach (List<List<List<int>>> ml3 in ml4)
+            {
+                mask1[i1] = ml3.Count;
+                mask2[i1] = new int[mask1[i1]];
+                mask3[i1] = new int[mask1[i1]][];
+                mask4[i1] = new int[mask1[i1]][][];
+                int i2 = 0;
+                foreach (List<List<int>> ml2 in ml3)
+                {
+                    mask2[i1][i2] = ml2.Count;
+                    mask3[i1][i2] = new int[mask2[i1][i2]];
+                    mask4[i1][i2] = new int[mask2[i1][i2]][];
+                    int i3 = 0;
+                    foreach (List<int> ml1 in ml2)
+                    {
+                        mask3[i1][i2][i3] = ml1.Count;
+                        mask4[i1][i2][i3] = new int[mask3[i1][i2][i3]];
+                        int i4 = 0;
+                        foreach (int ml0 in ml1)
+                        {
+                            mask4[i1][i2][i3][i4] = ml0;
+                            i4++;
+                        }
+                        i3++;
+                    }
+                    i2++;
+                }
+                i1++;
+            }
 
 
 
@@ -1036,6 +1289,51 @@ namespace Probability
 
 
 
+
+
+
+
+            matrix0 = fightStatisticComponentsEvo2.Count;
+            matrix1 = new int[matrix0];
+            matrix2 = new int[matrix0][];
+            matrix3 = new int[matrix0][][];
+            matrixCoins = new double[matrix0][];
+            i1 = 0;
+            foreach (FightStatisticsComponentEvo2 component in fightStatisticComponentsEvo2)
+            {
+                matrix1[i1] = component.matrixLI;
+                matrix2[i1] = new int[matrix1[i1]];
+                matrix3[i1] = new int[matrix1[i1]][];
+                matrixCoins[i1] = new double[matrix1[i1]];
+                for (int i2 = 0; i2 < matrix1[i1]; i2++)
+                {
+                    matrix2[i1][i2] = component.matrixLJ[i2];
+                    matrix3[i1][i2] = new int[matrix2[i1][i2]];
+                    matrixCoins[i1][i2] = component.matrixCoins[i2];
+                    for (int i3 = 0; i3 < matrix2[i1][i2]; i3++)
+                    {
+                        matrix3[i1][i2][i3] = component.matrix[i2][i3];
+                    }
+                }
+                i1++;
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            wonCoinsLength = fightStatisticComponentsEvo2.Count;
+            wonCoins = new double[wonCoinsLength];
 
 
 
@@ -1087,6 +1385,10 @@ namespace Probability
 
         public double[] matrixCoins;
 
+        public int[] path;
+        public int pathCount;
+
+
         public FightStatisticsComponentEvo2(FightStatisticsComponent model)
             : base(model)
         {
@@ -1098,11 +1400,48 @@ namespace Probability
             : base(model)
         {
             matrixLI = model.matrixLI;
-            matrixLJ = new int[matrixLI];
-            matrixCoins = new double[matrixLI];
-            Array.Copy(model.matrixLJ, matrixLJ, matrixLI);
-            Array.Copy(model.matrixCoins, matrixCoins, matrixLI);
-            matrix = model.matrix.Select(x => x.ToArray()).ToArray();
+
+            if (model.matrixLJ == null)
+            {
+                matrixLJ = null;
+            }
+            else
+            {
+                matrixLJ = new int[matrixLI];
+                Array.Copy(model.matrixLJ, matrixLJ, matrixLI);
+            }
+
+            if (model.matrixCoins == null)
+            {
+                matrixCoins = null;
+            }
+            else
+            {
+                matrixCoins = new double[matrixLI];
+                Array.Copy(model.matrixCoins, matrixCoins, matrixLI);
+            }
+
+            if (model.matrix == null)
+            {
+                matrix = null;
+            }
+            else
+            {
+                matrix = model.matrix.Select(x => x.ToArray()).ToArray();
+            }
+
+            if (model.path == null)
+            {
+                pathCount = 0;
+                path = null;
+            }
+            else
+            {
+                pathCount = model.pathCount;
+                path = new int[pathCount];
+                Array.Copy(model.path, path, pathCount);
+            }
+
         }
 
 
