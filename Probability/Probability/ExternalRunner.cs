@@ -88,6 +88,67 @@ namespace Probability
         public static extern void CudaAdd(int length, int[] a, int[] b, int[] c);
 
 
+        [DllImport(@"..\..\..\debug\CudaRunner.dll", CallingConvention = CallingConvention.Cdecl)]
+        static extern double calculateAntiPlayerExternal(double[] brainCells, int allBrainCellsCount);
+
+        [DllImport(@"..\..\..\debug\CudaRunner.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void initialiseAntiPlayer(
+
+            int maxGameOverPathLengthEvolution1,
+
+            int[] mask1,
+            int mask0,
+
+            int[] matrix1,
+            int matrix0,
+
+            double[] wonCoins,
+            int wonCoinsLength,
+
+            int[] path1,
+            int path0,
+
+            int[] sMask4,
+            int k0mask4,
+            int k1mask4,
+            int k2mask4,
+            int k3mask4,
+            int kAmask4,
+
+            int[] sMask3,
+            int k0mask3,
+            int k1mask3,
+            int k2mask3,
+            int kAmask3,
+
+            int[] sMask2,
+            int k0mask2,
+            int k1mask2,
+            int kAmask2,
+
+            int[] smatrix3,
+            int k0matrix3,
+            int k1matrix3,
+            int k2matrix3,
+            int kAmatrix3,
+
+            int[] smatrix2,
+            int k0matrix2,
+            int k1matrix2,
+            int kAmatrix2,
+
+            double[] smatrixCoins2,
+            int k0matrixCoins2,
+            int k1matrixCoins2,
+            int kAmatrixCoins2,
+
+            int[] spath2,
+            int k0path2,
+            int k1path2,
+            int kApath2
+
+            );
+
         public void initialise(int maxGameOverPathLengthEvolution1, int[][][][] mask4, int[][][] mask3, int[][] mask2, int[] mask1, int mask0, int[][][] matrix3, int[][] matrix2, int[] matrix1, int matrix0, double[][] matrixCoins, double[] wonCoins, int wonCoinsLength, int[][] path2, int[] path1, int path0)
         {
             this.maxGameOverPathLengthEvolution1 = maxGameOverPathLengthEvolution1;
@@ -106,9 +167,6 @@ namespace Probability
             //this.path2 = path2;
             this.path1 = path1;
             this.path0 = path0;
-
-
-
 
 
             //logger.log("i0 = " + k0mask4 + "; i1 = " + k1mask4 + "; i2 = " + k2mask4 + "; i3 = " + k3mask4 + "; total = " + iS);
@@ -147,6 +205,64 @@ namespace Probability
             analyse2DArray(path1, ref k1path2);
             kApath2 = k0path2 * k1path2;
             spath2 = serialise2D(path1, path2, k0path2, k1path2);
+
+            
+            initialiseAntiPlayer(
+             maxGameOverPathLengthEvolution1,
+
+             mask1,
+             mask0,
+
+             matrix1,
+             matrix0,
+
+             wonCoins,
+             wonCoinsLength,
+
+             path1,
+             path0,
+
+             sMask4,
+             k0mask4,
+             k1mask4,
+             k2mask4,
+             k3mask4,
+             kAmask4,
+
+             sMask3,
+             k0mask3,
+             k1mask3,
+             k2mask3,
+             kAmask3,
+
+             sMask2,
+             k0mask2,
+             k1mask2,
+             kAmask2,
+
+             smatrix3,
+             k0matrix3,
+             k1matrix3,
+             k2matrix3,
+             kAmatrix3,
+
+             smatrix2,
+             k0matrix2,
+             k1matrix2,
+             kAmatrix2,
+
+             smatrixCoins2,
+             k0matrixCoins2,
+             k1matrixCoins2,
+             kAmatrixCoins2,
+
+             spath2,
+             k0path2,
+             k1path2,
+             kApath2
+             
+             );
+            
         }
 
         private void analyse2DArray(int[] array1, ref int i1)
@@ -320,6 +436,12 @@ namespace Probability
         }
 
         public double calculateAntiPlayer(double[] brainCells, int allBrainCellsCount)
+        {
+            //return calculateAntiPlayerInternal(brainCells);
+            return calculateAntiPlayerExternal(brainCells, allBrainCellsCount);
+        }
+
+        private double calculateAntiPlayerInternal(double[] brainCells)
         {
             for (int i0 = 0; i0 < matrix0; i0++)
             {
