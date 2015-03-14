@@ -45,7 +45,7 @@
             this.richTextBoxMainLogger.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(186)));
             this.richTextBoxMainLogger.Location = new System.Drawing.Point(12, 12);
             this.richTextBoxMainLogger.Name = "richTextBoxMainLogger";
-            this.richTextBoxMainLogger.Size = new System.Drawing.Size(682, 173);
+            this.richTextBoxMainLogger.Size = new System.Drawing.Size(682, 348);
             this.richTextBoxMainLogger.TabIndex = 0;
             this.richTextBoxMainLogger.Text = "";
             // 
@@ -69,7 +69,7 @@
             series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
             series1.Name = "Series1";
             this.chartLog.Series.Add(series1);
-            this.chartLog.Size = new System.Drawing.Size(690, 144);
+            this.chartLog.Size = new System.Drawing.Size(690, 319);
             this.chartLog.TabIndex = 2;
             this.chartLog.Text = "chart1";
             // 
@@ -111,7 +111,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1402, 191);
+            this.ClientSize = new System.Drawing.Size(1402, 372);
             this.Controls.Add(this.labelResult);
             this.Controls.Add(this.buttonStop);
             this.Controls.Add(this.buttonRun2);
