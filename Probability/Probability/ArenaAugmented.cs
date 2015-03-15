@@ -85,11 +85,13 @@ namespace Probability
             Player pA2 = null;
             int repeatCount = 100;
 
+            pP.initialiseRandomise();
 
             stopwatch.Restart();
             for (int i = 0; i < repeatCount; i++)
             {
                 pA1 = antiPlayerE01(pP); //Original
+                //pA1 = new Player(pP);
             }
             stopwatch.Stop();
             logger.logChart(stopwatch.ElapsedMilliseconds);
@@ -101,7 +103,7 @@ namespace Probability
                 //pA2 = antiPlayerE03(pP); //Refactored, optimised for performance
                 pA2 = new Player(pP);
                 double strength = calculateExternalAntiplayerEvo3(ref pA2);
-                pA2.strength = strength / (2 * rules.diceCombinations * rules.diceCombinations);
+                pA2.strength = strength;
             }
             stopwatch.Stop();
             logger.logChart(stopwatch.ElapsedMilliseconds);
@@ -116,9 +118,9 @@ namespace Probability
                 logger.log("Antiplayer do not match", 10, "Error");
                 logger.log("Antiplayer 1 strength = " + pA1.strength.ToString("F30"), 10, "Error");
                 logger.log("Antiplayer 2 strength = " + pA2.strength.ToString("F30"), 10, "Error");
-                logger.log("Antiplayer strength difference = " + (pA2.strength - pA2.strength).ToString("F30"), 10, "Error");
-                logger.log("Antiplayer brainCell equal = " + (pA1.isBrainCellsEqual(pA2)?"True":"False"), 10, "Error");
-                logger.log("Antiplayer 1 brainCells = " + Rules.doubleListToString(pA1.brainCells.ToList(),4), 10, "Error");
+                logger.log("Antiplayer strength difference = " + (pA1.strength - pA2.strength).ToString("F30"), 10, "Error");
+                logger.log("Antiplayer brainCell equal = " + (pA1.isBrainCellsEqual(pA2) ? "True" : "False"), 10, "Error");
+                logger.log("Antiplayer 1 brainCells = " + Rules.doubleListToString(pA1.brainCells.ToList(), 4), 10, "Error");
                 logger.log("Antiplayer 2 brainCells = " + Rules.doubleListToString(pA2.brainCells.ToList(), 4), 10, "Error");
 
             }

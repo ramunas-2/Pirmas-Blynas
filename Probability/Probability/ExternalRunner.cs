@@ -89,7 +89,7 @@ namespace Probability
 
 
         [DllImport(@"..\..\..\debug\CudaRunner.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern double calculateAntiPlayerExternal(double[] brainCells, int allBrainCellsCount);
+        static extern double calculateAntiPlayerExternal(double[] brainCells, int allBrainCellsCount, double[] result, int count);
 
         [DllImport(@"..\..\..\debug\CudaRunner.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void initialiseAntiPlayer(
@@ -101,9 +101,6 @@ namespace Probability
 
             int[] matrix1,
             int matrix0,
-
-            double[] wonCoins,
-            int wonCoinsLength,
 
             int[] path1,
             int path0,
@@ -206,7 +203,7 @@ namespace Probability
             kApath2 = k0path2 * k1path2;
             spath2 = serialise2D(path1, path2, k0path2, k1path2);
 
-            
+
             initialiseAntiPlayer(
              maxGameOverPathLengthEvolution1,
 
@@ -215,9 +212,6 @@ namespace Probability
 
              matrix1,
              matrix0,
-
-             wonCoins,
-             wonCoinsLength,
 
              path1,
              path0,
@@ -260,9 +254,9 @@ namespace Probability
              k0path2,
              k1path2,
              kApath2
-             
+
              );
-            
+
         }
 
         private void analyse2DArray(int[] array1, ref int i1)
@@ -437,8 +431,135 @@ namespace Probability
 
         public double calculateAntiPlayer(double[] brainCells, int allBrainCellsCount)
         {
+
+
+            int count = 384; //Tested with 576 max
+            double[] result = new double[count];
+            double[] brainCellsMany = new double[count * allBrainCellsCount];
+
+            Player[] pP = new Player[count];
+            Player[] pA = new Player[count];
+            Player[] pT = new Player[count];
+
+            for (int j = 0; j < count; j++)
+            {
+                pP[j] = new Player(logger, rules, "P" + j.ToString("D3"), true);
+                pA[j] = new Player(logger, rules, "A" + j.ToString("D3"), true);
+                pT[j] = new Player(logger, rules, "T" + j.ToString("D3"), true);
+            }
+
+            for (int i = 0; i < allBrainCellsCount; i++)
+            {
+                pP[0].brainCells[i] = brainCells[i];
+            }
+
+            for (int j = 0; j < count; j++)
+            {
+                for (int i = 0; i < allBrainCellsCount; i++)
+                {
+                    brainCellsMany[j * allBrainCellsCount + i] = pP[j].brainCells[i];
+                }
+            }
+
+            Stopwatch stopwatch = new Stopwatch();
+
+            stopwatch.Restart();
+            calculateAntiPlayerExternal(brainCellsMany, allBrainCellsCount, result, count);
+            stopwatch.Stop();
+            //logger.log("Time = " + stopwatch.ElapsedMilliseconds, 10, "ExternalRunner");
+            //logger.logChart(stopwatch.ElapsedMilliseconds);
+
+
+
+            bool allOK = true;
+            for (int j = 0; j < count; j++)
+            {
+                for (int i = 0; i < allBrainCellsCount; i++)
+                {
+                    pA[j].brainCells[i] = brainCellsMany[j * allBrainCellsCount + i];
+                }
+                result[j] /= (2 * rules.diceCombinations * rules.diceCombinations);
+                pP[j].strength = result[j];
+                pA[j].strength = -result[j];
+
+                pT[j] = pP[j].copyPlayer();
+                double strength = calculateAntiPlayerInternal(pT[j].brainCells);
+                pT[j].strength = (-strength) / (2 * rules.diceCombinations * rules.diceCombinations);
+
+
+                //Compare pA ws pT
+                if (pA[j].isBrainCellsEqual(pT[j]) && (Math.Abs(pA[j].strength - pT[j].strength) < 1E-12d))
+                {
+                    //logger.log("OK", 10, "Anti-AE1");
+                }
+                else
+                {
+                    allOK = false;
+                    logger.log("Antiplayer do not match", 10, "Error");
+                    logger.log("Antiplayer 1 strength = " + pA[j].strength.ToString("F30"), 10, "Error");
+                    logger.log("Antiplayer 2 strength = " + pT[j].strength.ToString("F30"), 10, "Error");
+                    logger.log("Antiplayer strength difference = " + (pA[j].strength - pT[j].strength).ToString("F30"), 10, "Error");
+                    logger.log("Antiplayer brainCell equal = " + (pA[j].isBrainCellsEqual(pT[j]) ? "True" : "False"), 10, "Error");
+                    logger.log("Antiplayer 1 brainCells = " + Rules.doubleListToString(pA[j].brainCells.ToList(), 4), 10, "Error");
+                    logger.log("Antiplayer 2 brainCells = " + Rules.doubleListToString(pT[j].brainCells.ToList(), 4), 10, "Error");
+                }
+
+
+
+            }
+
+
+            for (int i = 0; i < allBrainCellsCount; i++)
+            {
+                brainCells[i] = pA[0].brainCells[i];
+            }
+
+            return -pA[0].strength;
+
+
+
             //return calculateAntiPlayerInternal(brainCells);
-            return calculateAntiPlayerExternal(brainCells, allBrainCellsCount);
+
+
+            /*
+            int count = 1;
+            int realData = 0;
+            double[] result = new double[count];
+            double[] brainCellsMany = new double[allBrainCellsCount * count];
+
+            Player[] pMany = new Player[count];
+
+            for (int i = 0; i < count; i++)
+            {
+                pMany[i] = new Player(logger, rules, "Random" + i, true);
+            }
+            pMany[realData].brainCells = brainCells.ToArray();
+
+            int j = 0;
+            for (int i = 0; i < count; i++)
+            {
+                for (int ii = 0; ii < allBrainCellsCount; ii++)
+                {
+                    //brainCellsMany[j] = pMany[i].brainCells[ii];
+                    brainCellsMany[j] = pMany[i].brainCells[ii];
+                    j++;
+                }
+            }
+
+
+
+            calculateAntiPlayerExternal(brainCellsMany, allBrainCellsCount, result, count);
+
+            for (int ii = 0; ii < allBrainCellsCount; ii++)
+            {
+                brainCells[ii]=brainCellsMany[realData*allBrainCellsCount+ii];
+            }
+
+
+
+            double retVal = result[realData];
+            return retVal;
+            */
         }
 
         private double calculateAntiPlayerInternal(double[] brainCells)
@@ -500,7 +621,7 @@ namespace Probability
 
         public ExternalRunner(Logger logger, Rules rules, string name = "")
         {
-            logger.set("ExternalRunner", 10, Color.Red);
+            logger.set("ExternalRunner", 10, Color.Maroon);
             this.logger = logger;
             this.rules = rules;
             this.name = name;
