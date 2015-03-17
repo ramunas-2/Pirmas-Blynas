@@ -572,11 +572,18 @@ namespace Probability
 
         public double beautifyAE1Original(ref Player pP)
         {
-            //1 Finf MAX beneficial direction
+            //1 Find MAX beneficial direction
             BeautifyComponent bestDirection = null;
             double microStep = 1.0E-12d;
-            Player pA = arenaAugmented.makeAugmentedAntiplayerEvolution1(pP);
+
+            //Player pA = arenaAugmented.makeAugmentedAntiplayerEvolution1(pP);
+
+            Player pA = new Player(pP);
+            double strength = arenaAugmented.calculateExternalAntiplayerEvo3(ref pA);
+            pA.strength = strength;
+
             double bestResult = -pA.strength;
+
             Player pABaseline = pA.copyPlayer();
             double baseLineStrength = pA.strength;
             pP.push();
@@ -584,7 +591,14 @@ namespace Probability
             foreach (BeautifyComponent beautifyComponent in beautifyComponents)
             {
                 pP.mutateAdvanced(beautifyComponent.changeFrom, beautifyComponent.changeTo, beautifyComponent.direction * microStep);
-                pA = arenaAugmented.makeAugmentedAntiplayerEvolution1(pP);
+
+                //pA = arenaAugmented.makeAugmentedAntiplayerEvolution1(pP);
+
+                pA = pP.copyPlayer();
+                strength = arenaAugmented.calculateExternalAntiplayerEvo3(ref pA);
+                pA.strength = strength;
+
+
                 beautifyComponent.newResult = pA.strength;
                 //logger.log("Checking new direction, result = " + beautifyComponent.newResult.Value.ToString("F15"), 8, "ScenarioA4");
                 if (bestDirection == null)
@@ -611,7 +625,14 @@ namespace Probability
                 {
                     double testStep = stepMax + stepIncrement;
                     pP.mutateAdvanced(bestDirection.changeFrom, bestDirection.changeTo, bestDirection.direction * testStep);
-                    pA = arenaAugmented.makeAugmentedAntiplayerEvolution1(pP);
+
+                    //pA = arenaAugmented.makeAugmentedAntiplayerEvolution1(pP);
+
+                    pA = pP.copyPlayer();
+                    strength = arenaAugmented.calculateExternalAntiplayerEvo3(ref pA);
+                    pA.strength = strength;
+
+
                     if ((pA.isBrainCellsEqual(pABaseline)) && ((-pA.strength) > bestResult))
                     {
                         stepMax = testStep;

@@ -7,6 +7,7 @@
 cudaError_t addWithCuda(int *c, const int *a, const int *b, unsigned int size);
 
 
+
 __constant__ int* maxGameOverPathLengthEvolution1;
 
 __constant__ int* mask1;
@@ -18,9 +19,6 @@ __constant__ int* matrix0;
 __constant__ int* path1;
 __constant__ int* path0;
 
-// int* sMask4__;
-// int* kAmask4__;
- //_device__ __constant__ int sMask4[10800];
 __constant__ int* sMask4;
 
 __constant__ int* k0mask4;
@@ -63,10 +61,139 @@ __constant__ int* kApath2;
 
 
 
+int* CPU_maxGameOverPathLengthEvolution1;
+
+int* CPU_mask1;
+int* CPU_mask0;
+
+int* CPU_matrix1;
+int* CPU_matrix0;
+
+int* CPU_path1;
+int* CPU_path0;
+
+int* CPU_sMask4;
+
+int* CPU_k0mask4;
+int* CPU_k1mask4;
+int* CPU_k2mask4;
+int* CPU_k3mask4;
+int* CPU_kAmask4;
+
+int* CPU_sMask3;
+int* CPU_k0mask3;
+int* CPU_k1mask3;
+int* CPU_k2mask3;
+int* CPU_kAmask3;
+
+int* CPU_sMask2;
+int* CPU_k0mask2;
+int* CPU_k1mask2;
+int* CPU_kAmask2;
+
+int* CPU_smatrix3;
+int* CPU_k0matrix3;
+int* CPU_k1matrix3;
+int* CPU_k2matrix3;
+int* CPU_kAmatrix3;
+
+int* CPU_smatrix2;
+int* CPU_k0matrix2;
+int* CPU_k1matrix2;
+int* CPU_kAmatrix2;
+
+double* CPU_smatrixCoins2;
+int* CPU_k0matrixCoins2;
+int* CPU_k1matrixCoins2;
+int* CPU_kAmatrixCoins2;
+
+int* CPU_spath2;
+int* CPU_k0path2;
+int* CPU_k1path2;
+int* CPU_kApath2;
 
 
 
 
+
+void antiPlayerCPU(double *brainCells, const int *allBrainCellsCount, double *sumOfCoins, int count)
+
+
+{
+	for (int iThX = 0; iThX < count; iThX++)
+	{
+		
+		double* wonCoins = new double[*CPU_matrix0];
+		
+		for (int i0 = 0; i0 < *CPU_matrix0; i0++)
+		{
+			double sum = 0.0;
+			for (int i1 = 0; i1 < CPU_matrix1[i0]; i1++)
+			{
+				double multiplication = CPU_smatrixCoins2[(i0 * (*CPU_k1matrix2)) + i1];
+				for (int i2 = 0; i2 < CPU_smatrix2[(i0 * (*CPU_k1matrix2)) + i1]; i2++)
+				{
+					multiplication *= brainCells[((*allBrainCellsCount)*iThX) + CPU_smatrix3[(((i0 * (*CPU_k1matrix3)) + i1) * (*CPU_k2matrix3)) + i2]];
+				}
+				sum += multiplication;
+			}
+			wonCoins[i0] = sum;
+		}
+
+		
+		int pathLength = *CPU_maxGameOverPathLengthEvolution1;
+		for (int i0 = 0; i0 < *CPU_mask0; i0++)
+		{
+			for (int i1 = 0; i1 < CPU_mask1[i0]; i1++)
+			{
+				double bestOptionABenefit = -1000000000; //to fix
+				int bestOptionAChoiceLocation = -1;
+				for (int i2 = 0; i2 < CPU_sMask2[(i0 * (*CPU_k1mask2)) + i1]; i2++)
+				{
+					double sumOfAllDiceCombinationsBenefit = 0;
+					for (int i3 = 0; i3 < CPU_sMask3[(((i0 * (*CPU_k1mask3)) + i1) * (*CPU_k2mask3)) + i2]; i3++)
+					{
+						sumOfAllDiceCombinationsBenefit += wonCoins[CPU_sMask4[(((((i0 * (*CPU_k1mask4)) + i1) * (*CPU_k2mask4)) + i2) * (*CPU_k3mask4)) + i3]];
+
+					}
+					//if (bestOptionABenefit == null || sumOfAllDiceCombinationsBenefit > bestOptionABenefit)
+					if (sumOfAllDiceCombinationsBenefit > bestOptionABenefit)
+					{
+						bestOptionABenefit = sumOfAllDiceCombinationsBenefit;
+						bestOptionAChoiceLocation = i2;
+					}
+				}
+				for (int i2 = 0; i2 < CPU_sMask2[(i0 * (*CPU_k1mask2)) + i1]; i2++)
+				{
+					for (int i3 = 0; i3 < CPU_sMask3[(((i0 * (*CPU_k1mask3)) + i1) * (*CPU_k2mask3)) + i2]; i3++)
+					{
+						double newBrainCellValue;
+						if (i2 == bestOptionAChoiceLocation)
+						{
+							newBrainCellValue = 1.0;
+						}
+						else
+						{
+							newBrainCellValue = 0.0;
+						}
+						brainCells[((*allBrainCellsCount)*iThX) + CPU_spath2[((CPU_sMask4[(((((i0 * (*CPU_k1mask4)) + i1) * (*CPU_k2mask4)) + i2) * (*CPU_k3mask4)) + i3]) * (*CPU_k1path2)) + pathLength - 1]] = newBrainCellValue;
+						wonCoins[CPU_sMask4[(((((i0 * (*CPU_k1mask4)) + i1) * (*CPU_k2mask4)) + i2) * (*CPU_k3mask4)) + i3]] *= newBrainCellValue;
+					}
+				}
+			}
+			pathLength--;
+		}
+		sumOfCoins[iThX] = 0;
+		for (int i = 0; i < *CPU_matrix0; i++)
+		{
+			sumOfCoins[iThX] += wonCoins[i];
+		}
+		
+		delete[] wonCoins;
+		
+	}
+
+}
 
 
 
@@ -534,103 +661,107 @@ extern "C"
 				*/
 
 
-		/*
+
 		CPU_maxGameOverPathLengthEvolution1 = new int;
-		cudaMemcpy(maxGameOverPathLengthEvolution1, &_maxGameOverPathLengthEvolution1, sizeof(int), cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_maxGameOverPathLengthEvolution1, &_maxGameOverPathLengthEvolution1, sizeof(int), cudaMemcpyHostToHost);
 
 		CPU_mask0 = new int;
-		cudaMemcpy(mask0, &_mask0, sizeof(int), cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_mask0, &_mask0, sizeof(int), cudaMemcpyHostToHost);
 		CPU_mask1 = new int[_mask0];
-		cudaMemcpy(mask1, _mask1, sizeof(int)*_mask0, cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_mask1, _mask1, sizeof(int)*_mask0, cudaMemcpyHostToHost);
 
 		CPU_matrix0 = new int;
-		cudaMemcpy(matrix0, &_matrix0, sizeof(int), cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_matrix0, &_matrix0, sizeof(int), cudaMemcpyHostToHost);
 		CPU_matrix1 = new int[_matrix0];
-		cudaMemcpy(matrix1, _matrix1, sizeof(int)*_matrix0, cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_matrix1, _matrix1, sizeof(int)*_matrix0, cudaMemcpyHostToHost);
 
 		CPU_path0 = new int;
-		cudaMemcpy(path0, &_path0, sizeof(int), cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_path0, &_path0, sizeof(int), cudaMemcpyHostToHost);
 		CPU_path1 = new int[_path0];
-		cudaMemcpy(path1, _path1, sizeof(int)*_path0, cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_path1, _path1, sizeof(int)*_path0, cudaMemcpyHostToHost);
 
 		CPU_k0mask4 = new int;
-		cudaMemcpy(k0mask4, &_k0mask4, sizeof(int), cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_k0mask4, &_k0mask4, sizeof(int), cudaMemcpyHostToHost);
 		CPU_k1mask4 = new int;
-		cudaMemcpy(k1mask4, &_k1mask4, sizeof(int), cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_k1mask4, &_k1mask4, sizeof(int), cudaMemcpyHostToHost);
 		CPU_k2mask4 = new int;
-		cudaMemcpy(k2mask4, &_k2mask4, sizeof(int), cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_k2mask4, &_k2mask4, sizeof(int), cudaMemcpyHostToHost);
 		CPU_k3mask4 = new int;
-		cudaMemcpy(k3mask4, &_k3mask4, sizeof(int), cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_k3mask4, &_k3mask4, sizeof(int), cudaMemcpyHostToHost);
 		CPU_kAmask4 = new int;
-		cudaMemcpy(kAmask4, &_kAmask4, sizeof(int), cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_kAmask4, &_kAmask4, sizeof(int), cudaMemcpyHostToHost);
 
 		CPU_sMask4 = new int[_kAmask4];
-		cudaMemcpy(sMask4, _sMask4, sizeof(int)*_kAmask4, cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_sMask4, _sMask4, sizeof(int)*_kAmask4, cudaMemcpyHostToHost);
 
 		CPU_k0mask3 = new int;
-		cudaMemcpy(k0mask3, &_k0mask3, sizeof(int), cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_k0mask3, &_k0mask3, sizeof(int), cudaMemcpyHostToHost);
 		CPU_k1mask3 = new int;
-		cudaMemcpy(k1mask3, &_k1mask3, sizeof(int), cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_k1mask3, &_k1mask3, sizeof(int), cudaMemcpyHostToHost);
 		CPU_k2mask3 = new int;
-		cudaMemcpy(k2mask3, &_k2mask3, sizeof(int), cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_k2mask3, &_k2mask3, sizeof(int), cudaMemcpyHostToHost);
 		CPU_kAmask3 = new int;
-		cudaMemcpy(kAmask3, &_kAmask3, sizeof(int), cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_kAmask3, &_kAmask3, sizeof(int), cudaMemcpyHostToHost);
 
 		CPU_sMask3 = new int[_kAmask3];
-		cudaMemcpy(sMask3, _sMask3, sizeof(int)*_kAmask3, cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_sMask3, _sMask3, sizeof(int)*_kAmask3, cudaMemcpyHostToHost);
 
 		CPU_k0mask2 = new int;
-		cudaMemcpy(k0mask2, &_k0mask2, sizeof(int), cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_k0mask2, &_k0mask2, sizeof(int), cudaMemcpyHostToHost);
 		CPU_k1mask2 = new int;
-		cudaMemcpy(k1mask2, &_k1mask2, sizeof(int), cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_k1mask2, &_k1mask2, sizeof(int), cudaMemcpyHostToHost);
 		CPU_kAmask2 = new int;
-		cudaMemcpy(kAmask2, &_kAmask2, sizeof(int), cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_kAmask2, &_kAmask2, sizeof(int), cudaMemcpyHostToHost);
 
 		CPU_sMask2 = new int[_kAmask2];
-		cudaMemcpy(sMask2, _sMask2, sizeof(int)*_kAmask2, cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_sMask2, _sMask2, sizeof(int)*_kAmask2, cudaMemcpyHostToHost);
 
 		CPU_k0matrix3 = new int;
-		cudaMemcpy(k0matrix3, &_k0matrix3, sizeof(int), cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_k0matrix3, &_k0matrix3, sizeof(int), cudaMemcpyHostToHost);
 		CPU_k1matrix3 = new int;
-		cudaMemcpy(k1matrix3, &_k1matrix3, sizeof(int), cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_k1matrix3, &_k1matrix3, sizeof(int), cudaMemcpyHostToHost);
 		CPU_k2matrix3 = new int;
-		cudaMemcpy(k2matrix3, &_k2matrix3, sizeof(int), cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_k2matrix3, &_k2matrix3, sizeof(int), cudaMemcpyHostToHost);
 		CPU_kAmatrix3 = new int;
-		cudaMemcpy(kAmatrix3, &_kAmatrix3, sizeof(int), cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_kAmatrix3, &_kAmatrix3, sizeof(int), cudaMemcpyHostToHost);
 
 		CPU_smatrix3 = new int[_kAmatrix3];
-		cudaMemcpy(smatrix3, _smatrix3, sizeof(int)*_kAmatrix3, cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_smatrix3, _smatrix3, sizeof(int)*_kAmatrix3, cudaMemcpyHostToHost);
 
 		CPU_k0matrix2 = new int;
-		cudaMemcpy(k0matrix2, &_k0matrix2, sizeof(int), cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_k0matrix2, &_k0matrix2, sizeof(int), cudaMemcpyHostToHost);
 		CPU_k1matrix2 = new int;
-		cudaMemcpy(k1matrix2, &_k1matrix2, sizeof(int), cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_k1matrix2, &_k1matrix2, sizeof(int), cudaMemcpyHostToHost);
 		CPU_kAmatrix2 = new int;
-		cudaMemcpy(kAmatrix2, &_kAmatrix2, sizeof(int), cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_kAmatrix2, &_kAmatrix2, sizeof(int), cudaMemcpyHostToHost);
 
 		CPU_smatrix2 = new int[_kAmatrix2];
-		cudaMemcpy(smatrix2, _smatrix2, sizeof(int)*_kAmatrix2, cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_smatrix2, _smatrix2, sizeof(int)*_kAmatrix2, cudaMemcpyHostToHost);
 
 		CPU_k0matrixCoins2 = new int;
-		cudaMemcpy(k0matrixCoins2, &_k0matrixCoins2, sizeof(int), cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_k0matrixCoins2, &_k0matrixCoins2, sizeof(int), cudaMemcpyHostToHost);
 		CPU_k1matrixCoins2 = new int;
-		cudaMemcpy(k1matrixCoins2, &_k1matrixCoins2, sizeof(int), cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_k1matrixCoins2, &_k1matrixCoins2, sizeof(int), cudaMemcpyHostToHost);
 		CPU_kAmatrixCoins2 = new int;
-		cudaMemcpy(kAmatrixCoins2, &_kAmatrixCoins2, sizeof(int), cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_kAmatrixCoins2, &_kAmatrixCoins2, sizeof(int), cudaMemcpyHostToHost);
 
 		CPU_smatrixCoins2 = new double[_kAmatrixCoins2];
-		cudaMemcpy(smatrixCoins2, _smatrixCoins2, sizeof(double)*_kAmatrixCoins2, cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_smatrixCoins2, _smatrixCoins2, sizeof(double)*_kAmatrixCoins2, cudaMemcpyHostToHost);
 
 		CPU_k0path2 = new int;
-		cudaMemcpy(k0path2, &_k0path2, sizeof(int), cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_k0path2, &_k0path2, sizeof(int), cudaMemcpyHostToHost);
 		CPU_k1path2 = new int;
-		cudaMemcpy(k1path2, &_k1path2, sizeof(int), cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_k1path2, &_k1path2, sizeof(int), cudaMemcpyHostToHost);
 		CPU_kApath2 = new int;
-		cudaMemcpy(kApath2, &_kApath2, sizeof(int), cudaMemcpyHostToHost);
+		cudaMemcpy(CPU_kApath2, &_kApath2, sizeof(int), cudaMemcpyHostToHost);
 
 		CPU_spath2 = new int[_kApath2];
-		cudaMemcpy(spath2, _spath2, sizeof(int)*_kApath2, cudaMemcpyHostToHost);
-		*/
+		cudaMemcpy(CPU_spath2, _spath2, sizeof(int)*_kApath2, cudaMemcpyHostToHost);
+
+
+
+
+
 
 
 		cudaMalloc((void**)&maxGameOverPathLengthEvolution1, sizeof(int));
@@ -674,7 +805,7 @@ extern "C"
 		sMask4__ = new int[_kAmask4];
 		cudaMemcpy(sMask4__, _sMask4, sizeof(int)*_kAmask4, cudaMemcpyHostToHost);
 
-		
+
 		kAmask4__ = new int;
 		cudaMemcpy(kAmask4__, &_kAmask4, sizeof(int), cudaMemcpyHostToHost);
 		*/
@@ -684,7 +815,7 @@ extern "C"
 
 
 
-		
+
 
 
 		cudaMalloc((void**)&k0mask3, sizeof(int));
@@ -758,7 +889,7 @@ extern "C"
 	__declspec(dllexport) double calculateAntiPlayerExternal(double _brainCells[], int _allBrainCellsCount, double _sumOfCoins[], int _count)
 	{
 
-
+		/*
 		double* brainCells;
 		cudaMalloc((void**)&brainCells, _allBrainCellsCount*_count*sizeof(double));
 		cudaMemcpy(brainCells, _brainCells, _allBrainCellsCount*_count*sizeof(double), cudaMemcpyHostToDevice);
@@ -770,9 +901,10 @@ extern "C"
 
 		double* sumOfCoins;
 		cudaMalloc((void**)&sumOfCoins, sizeof(double)*_count);
+		*/
 
 
-		
+
 		//__constant__ int* sMask4;
 
 		//__constant__ int sMask4[10800];
@@ -792,15 +924,25 @@ extern "C"
 
 		cudaError_t cudaStatus = cudaMemcpyToSymbol(sMask4, sMask4__, sizeof(int)*(*kAmask4__), cudaMemcpyHostToDevice);
 		if (cudaStatus != cudaSuccess) {
-			fprintf(stderr, "cudaMallocToSymbol failed!");
-			printf("cudaMallocToSymbol failed!\n");
-			printf(cudaStatus);
+		fprintf(stderr, "cudaMallocToSymbol failed!");
+		printf("cudaMallocToSymbol failed!\n");
+		printf(cudaStatus);
 
 		}
 		*/
 
 
 		//antiPlayerGPU << <1, _count >> >(brainCells, allBrainCellsCount, sumOfCoins,
+
+
+
+
+
+
+		antiPlayerCPU(_brainCells, &_allBrainCellsCount, _sumOfCoins, _count);
+
+
+		/*
 		antiPlayerGPU << <1, _count >> >(brainCells, allBrainCellsCount, sumOfCoins,
 			maxGameOverPathLengthEvolution1,
 
@@ -809,11 +951,6 @@ extern "C"
 
 			matrix1,
 			matrix0,
-
-			/*
-			wonCoins,
-			wonCoinsLength,
-			*/
 
 			path1,
 			path0,
@@ -859,6 +996,9 @@ extern "C"
 
 			);
 
+			*/
+
+		/*
 		cudaDeviceSynchronize();
 
 		cudaMemcpy(_sumOfCoins, sumOfCoins, _count*sizeof(double), cudaMemcpyDeviceToHost);
@@ -867,6 +1007,7 @@ extern "C"
 		cudaFree(brainCells);
 		cudaFree(allBrainCellsCount);
 		cudaFree(sumOfCoins);
+		*/
 
 		return 0;
 

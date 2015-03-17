@@ -404,6 +404,24 @@ namespace Probability
             return retVal;
         }
 
+
+
+
+        public double calculateAntiPlayer(double[] brainCells, int allBrainCellsCount)
+        {
+            double[] result = new double[1];
+            calculateAntiPlayerExternal(brainCells, allBrainCellsCount, result, 1);
+            return result[0] / (2 * rules.diceCombinations * rules.diceCombinations);
+        }
+
+
+
+
+
+
+
+
+
         private double[] serialise2D(int[] array1, double[][] array2, int k0, int k1)
         {
             double[] retVal;
@@ -429,11 +447,12 @@ namespace Probability
             return retVal;
         }
 
-        public double calculateAntiPlayer(double[] brainCells, int allBrainCellsCount)
+        public double calculateAntiPlayer_TestMany(double[] brainCells, int allBrainCellsCount)
         {
 
 
-            int count = 384; //Tested with 576 max
+            //int count = 384; //Tested with 576 max
+            int count = 1;
             double[] result = new double[count];
             double[] brainCellsMany = new double[count * allBrainCellsCount];
 
