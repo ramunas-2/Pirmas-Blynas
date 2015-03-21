@@ -28,14 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea33 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series33 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea34 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series34 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea35 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series35 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea36 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series36 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.richTextBoxMainLogger0 = new System.Windows.Forms.RichTextBox();
             this.buttonRun01 = new System.Windows.Forms.Button();
             this.chartLog0 = new System.Windows.Forms.DataVisualization.Charting.Chart();
@@ -55,16 +57,20 @@
             this.labelResult1 = new System.Windows.Forms.Label();
             this.labelResult2 = new System.Windows.Forms.Label();
             this.labelResult3 = new System.Windows.Forms.Label();
+            this.labelMain = new System.Windows.Forms.Label();
+            this.richTextBoxMain = new System.Windows.Forms.RichTextBox();
+            this.chartMain = new System.Windows.Forms.DataVisualization.Charting.Chart();
             ((System.ComponentModel.ISupportInitialize)(this.chartLog0)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartLog1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartLog2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartLog3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartMain)).BeginInit();
             this.SuspendLayout();
             // 
             // richTextBoxMainLogger0
             // 
             this.richTextBoxMainLogger0.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(186)));
-            this.richTextBoxMainLogger0.Location = new System.Drawing.Point(12, 41);
+            this.richTextBoxMainLogger0.Location = new System.Drawing.Point(12, 172);
             this.richTextBoxMainLogger0.Name = "richTextBoxMainLogger0";
             this.richTextBoxMainLogger0.Size = new System.Drawing.Size(682, 140);
             this.richTextBoxMainLogger0.TabIndex = 0;
@@ -72,7 +78,7 @@
             // 
             // buttonRun01
             // 
-            this.buttonRun01.Location = new System.Drawing.Point(700, 12);
+            this.buttonRun01.Location = new System.Drawing.Point(1130, 8);
             this.buttonRun01.Name = "buttonRun01";
             this.buttonRun01.Size = new System.Drawing.Size(75, 23);
             this.buttonRun01.TabIndex = 1;
@@ -82,21 +88,21 @@
             // 
             // chartLog0
             // 
-            chartArea33.Name = "ChartArea1";
-            this.chartLog0.ChartAreas.Add(chartArea33);
-            this.chartLog0.Location = new System.Drawing.Point(700, 41);
+            chartArea1.Name = "ChartArea1";
+            this.chartLog0.ChartAreas.Add(chartArea1);
+            this.chartLog0.Location = new System.Drawing.Point(700, 192);
             this.chartLog0.Name = "chartLog0";
-            series33.ChartArea = "ChartArea1";
-            series33.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series33.Name = "Series1";
-            this.chartLog0.Series.Add(series33);
-            this.chartLog0.Size = new System.Drawing.Size(690, 140);
+            series1.ChartArea = "ChartArea1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series1.Name = "Series1";
+            this.chartLog0.Series.Add(series1);
+            this.chartLog0.Size = new System.Drawing.Size(690, 120);
             this.chartLog0.TabIndex = 2;
             this.chartLog0.Text = "chart1";
             // 
             // buttonRun2
             // 
-            this.buttonRun2.Location = new System.Drawing.Point(1315, 12);
+            this.buttonRun2.Location = new System.Drawing.Point(1315, 8);
             this.buttonRun2.Name = "buttonRun2";
             this.buttonRun2.Size = new System.Drawing.Size(75, 23);
             this.buttonRun2.TabIndex = 3;
@@ -106,7 +112,7 @@
             // 
             // buttonStop
             // 
-            this.buttonStop.Location = new System.Drawing.Point(781, 12);
+            this.buttonStop.Location = new System.Drawing.Point(1211, 8);
             this.buttonStop.Name = "buttonStop";
             this.buttonStop.Size = new System.Drawing.Size(75, 23);
             this.buttonStop.TabIndex = 4;
@@ -122,7 +128,7 @@
             // labelResult0
             // 
             this.labelResult0.AutoSize = true;
-            this.labelResult0.Location = new System.Drawing.Point(869, 17);
+            this.labelResult0.Location = new System.Drawing.Point(700, 176);
             this.labelResult0.Name = "labelResult0";
             this.labelResult0.Size = new System.Drawing.Size(10, 13);
             this.labelResult0.TabIndex = 5;
@@ -145,22 +151,22 @@
             // 
             // chartLog1
             // 
-            chartArea34.Name = "ChartArea1";
-            this.chartLog1.ChartAreas.Add(chartArea34);
-            this.chartLog1.Location = new System.Drawing.Point(700, 194);
+            chartArea2.Name = "ChartArea1";
+            this.chartLog1.ChartAreas.Add(chartArea2);
+            this.chartLog1.Location = new System.Drawing.Point(700, 345);
             this.chartLog1.Name = "chartLog1";
-            series34.ChartArea = "ChartArea1";
-            series34.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series34.Name = "Series1";
-            this.chartLog1.Series.Add(series34);
-            this.chartLog1.Size = new System.Drawing.Size(690, 140);
+            series2.ChartArea = "ChartArea1";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series2.Name = "Series1";
+            this.chartLog1.Series.Add(series2);
+            this.chartLog1.Size = new System.Drawing.Size(690, 120);
             this.chartLog1.TabIndex = 7;
             this.chartLog1.Text = "chart1";
             // 
             // richTextBoxMainLogger1
             // 
             this.richTextBoxMainLogger1.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(186)));
-            this.richTextBoxMainLogger1.Location = new System.Drawing.Point(12, 194);
+            this.richTextBoxMainLogger1.Location = new System.Drawing.Point(12, 325);
             this.richTextBoxMainLogger1.Name = "richTextBoxMainLogger1";
             this.richTextBoxMainLogger1.Size = new System.Drawing.Size(682, 140);
             this.richTextBoxMainLogger1.TabIndex = 6;
@@ -168,22 +174,22 @@
             // 
             // chartLog2
             // 
-            chartArea35.Name = "ChartArea1";
-            this.chartLog2.ChartAreas.Add(chartArea35);
-            this.chartLog2.Location = new System.Drawing.Point(700, 347);
+            chartArea3.Name = "ChartArea1";
+            this.chartLog2.ChartAreas.Add(chartArea3);
+            this.chartLog2.Location = new System.Drawing.Point(700, 498);
             this.chartLog2.Name = "chartLog2";
-            series35.ChartArea = "ChartArea1";
-            series35.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series35.Name = "Series1";
-            this.chartLog2.Series.Add(series35);
-            this.chartLog2.Size = new System.Drawing.Size(690, 140);
+            series3.ChartArea = "ChartArea1";
+            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series3.Name = "Series1";
+            this.chartLog2.Series.Add(series3);
+            this.chartLog2.Size = new System.Drawing.Size(690, 120);
             this.chartLog2.TabIndex = 9;
             this.chartLog2.Text = "chart1";
             // 
             // richTextBoxMainLogger2
             // 
             this.richTextBoxMainLogger2.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(186)));
-            this.richTextBoxMainLogger2.Location = new System.Drawing.Point(12, 347);
+            this.richTextBoxMainLogger2.Location = new System.Drawing.Point(12, 478);
             this.richTextBoxMainLogger2.Name = "richTextBoxMainLogger2";
             this.richTextBoxMainLogger2.Size = new System.Drawing.Size(682, 140);
             this.richTextBoxMainLogger2.TabIndex = 8;
@@ -191,22 +197,22 @@
             // 
             // chartLog3
             // 
-            chartArea36.Name = "ChartArea1";
-            this.chartLog3.ChartAreas.Add(chartArea36);
-            this.chartLog3.Location = new System.Drawing.Point(700, 504);
+            chartArea4.Name = "ChartArea1";
+            this.chartLog3.ChartAreas.Add(chartArea4);
+            this.chartLog3.Location = new System.Drawing.Point(700, 655);
             this.chartLog3.Name = "chartLog3";
-            series36.ChartArea = "ChartArea1";
-            series36.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series36.Name = "Series1";
-            this.chartLog3.Series.Add(series36);
-            this.chartLog3.Size = new System.Drawing.Size(690, 140);
+            series4.ChartArea = "ChartArea1";
+            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series4.Name = "Series1";
+            this.chartLog3.Series.Add(series4);
+            this.chartLog3.Size = new System.Drawing.Size(690, 120);
             this.chartLog3.TabIndex = 11;
             this.chartLog3.Text = "chart1";
             // 
             // richTextBoxMainLogger3
             // 
             this.richTextBoxMainLogger3.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(186)));
-            this.richTextBoxMainLogger3.Location = new System.Drawing.Point(12, 504);
+            this.richTextBoxMainLogger3.Location = new System.Drawing.Point(12, 635);
             this.richTextBoxMainLogger3.Name = "richTextBoxMainLogger3";
             this.richTextBoxMainLogger3.Size = new System.Drawing.Size(682, 140);
             this.richTextBoxMainLogger3.TabIndex = 10;
@@ -215,7 +221,7 @@
             // labelResult1
             // 
             this.labelResult1.AutoSize = true;
-            this.labelResult1.Location = new System.Drawing.Point(978, 17);
+            this.labelResult1.Location = new System.Drawing.Point(700, 329);
             this.labelResult1.Name = "labelResult1";
             this.labelResult1.Size = new System.Drawing.Size(10, 13);
             this.labelResult1.TabIndex = 12;
@@ -224,7 +230,7 @@
             // labelResult2
             // 
             this.labelResult2.AutoSize = true;
-            this.labelResult2.Location = new System.Drawing.Point(1087, 17);
+            this.labelResult2.Location = new System.Drawing.Point(700, 482);
             this.labelResult2.Name = "labelResult2";
             this.labelResult2.Size = new System.Drawing.Size(10, 13);
             this.labelResult2.TabIndex = 13;
@@ -233,17 +239,54 @@
             // labelResult3
             // 
             this.labelResult3.AutoSize = true;
-            this.labelResult3.Location = new System.Drawing.Point(1196, 17);
+            this.labelResult3.Location = new System.Drawing.Point(700, 639);
             this.labelResult3.Name = "labelResult3";
             this.labelResult3.Size = new System.Drawing.Size(10, 13);
             this.labelResult3.TabIndex = 14;
             this.labelResult3.Text = "-";
             // 
+            // labelMain
+            // 
+            this.labelMain.AutoSize = true;
+            this.labelMain.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(186)));
+            this.labelMain.ForeColor = System.Drawing.Color.Maroon;
+            this.labelMain.Location = new System.Drawing.Point(700, 14);
+            this.labelMain.Name = "labelMain";
+            this.labelMain.Size = new System.Drawing.Size(15, 20);
+            this.labelMain.TabIndex = 15;
+            this.labelMain.Text = "-";
+            // 
+            // richTextBoxMain
+            // 
+            this.richTextBoxMain.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(186)));
+            this.richTextBoxMain.Location = new System.Drawing.Point(12, 17);
+            this.richTextBoxMain.Name = "richTextBoxMain";
+            this.richTextBoxMain.Size = new System.Drawing.Size(682, 140);
+            this.richTextBoxMain.TabIndex = 16;
+            this.richTextBoxMain.Text = "";
+            // 
+            // chartMain
+            // 
+            chartArea5.Name = "ChartArea1";
+            this.chartMain.ChartAreas.Add(chartArea5);
+            this.chartMain.Location = new System.Drawing.Point(700, 37);
+            this.chartMain.Name = "chartMain";
+            series5.ChartArea = "ChartArea1";
+            series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series5.Name = "Series1";
+            this.chartMain.Series.Add(series5);
+            this.chartMain.Size = new System.Drawing.Size(690, 120);
+            this.chartMain.TabIndex = 17;
+            this.chartMain.Text = "chart1";
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1402, 654);
+            this.ClientSize = new System.Drawing.Size(1407, 781);
+            this.Controls.Add(this.chartMain);
+            this.Controls.Add(this.richTextBoxMain);
+            this.Controls.Add(this.labelMain);
             this.Controls.Add(this.labelResult3);
             this.Controls.Add(this.labelResult2);
             this.Controls.Add(this.labelResult1);
@@ -266,6 +309,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.chartLog1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartLog2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartLog3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartMain)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -292,6 +336,9 @@
         private System.Windows.Forms.Label labelResult1;
         private System.Windows.Forms.Label labelResult2;
         private System.Windows.Forms.Label labelResult3;
+        private System.Windows.Forms.Label labelMain;
+        private System.Windows.Forms.RichTextBox richTextBoxMain;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartMain;
     }
 }
 

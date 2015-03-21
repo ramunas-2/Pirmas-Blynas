@@ -229,43 +229,70 @@ namespace Probability
             logger.set("ScenarioA4H", 2, Color.Maroon);
             logger.logLabel("Started...");
             Stopwatch stopwatch = new Stopwatch();
-            long repeatTime = 60 * 60 * 1000 * 6; //6 hours
-            double expectedGrowth = 2.0d;
+            long repeatTime = 60 * 60 * 1000 * 3; //3 hours
+            //long repeatTime = 60 * 1000 * 2; //2 minutes
+            double expectedGrowth = 1.01d; //only 1% for data collection purposes
 
-
+            
 
             while (!stopRun)
             {
                 Player pPVeryBest = null;
+                Player pPVeryBest2 = null;
                 Player pPVeryBestLast = null;
                 Player pPLast = null;
-                int pCount = rules.random.Next(28) + 4;
-                int maxIterations = rules.random.Next(35) + 5;
-                int maxBeautifyIterations = rules.random.Next(55) + 5;
-                int mutateCount = rules.random.Next(3) + 1;
+                int pCount;
+                int maxIterations;
+                int maxBeautifyIterations;
+                int mutateCount;
+
                 int iteration = 0;
-                stopwatch.Restart();
-                logger.log("pCount = " + pCount + "; maxIterations = " + maxIterations + "; maxBeautifyIterations = " + maxBeautifyIterations + "; mutateCount = " + mutateCount, 2, "ScenarioA4H");
-                while ((!stopRun) && ((pPVeryBest == null) || (pPVeryBest.strength > (pPVeryBestLast.strength / expectedGrowth))))
+                while ((!stopRun) && ((pPVeryBest == null) || (pPVeryBestLast == null) || (pPVeryBest.strength > (pPVeryBestLast.strength / expectedGrowth))))
                 {
+                    pCount = rules.random.Next(28) + 4;
+                    maxIterations = rules.random.Next(35) + 5;
+                    maxBeautifyIterations = rules.random.Next(55) + 5;
+                    mutateCount = rules.random.Next(3) + 1;
+                    logger.log("Randomised parameters set : pCount = " + pCount + "; maxIterations = " + maxIterations + "; maxBeautifyIterations = " + maxBeautifyIterations + "; mutateCount = " + mutateCount, 2, "ScenarioA4H");
+
+                    stopwatch.Restart();
                     if (pPVeryBest != null)
                     {
                         pPVeryBestLast = pPVeryBest.copyPlayer();
                     }
+                    pPVeryBest = null;
                     while ((!stopRun) && (stopwatch.ElapsedMilliseconds < repeatTime))
                     {
                         //----- Process
-                        pPLast = beautifyAE1M4(pPVeryBest, pCount, maxIterations, maxBeautifyIterations, mutateCount);
+                        pPLast = beautifyAE1M4(pPVeryBest2, pCount, maxIterations, maxBeautifyIterations, mutateCount);
                         if ((pPLast != null) && ((pPVeryBest == null) || (pPLast.strength > pPVeryBest.strength)))
                         {
                             pPVeryBest = pPLast.copyPlayer();
-                            logger.log("New very best Player found : " + pPVeryBest.toString(), 1, "ScenarioA4");
-                            logger.log("Strength : " + pPVeryBest.strength.ToString("F16"), 1, "ScenarioA4");
+                            //logger.log("New very best Player found : " + pPVeryBest.toString(), 1, "ScenarioA4");
+                            logger.log("New very best Player found, strength = " + pPVeryBest.strength.ToString("F16"), 1, "ScenarioA4");
+                            //logger.log("Strength : " + pPVeryBest.strength.ToString("F16"), 1, "ScenarioA4");
                             logger.logLabel("Strength : " + pPVeryBest.strength.ToString("0.###E+0"));
                         }
-                        logger.log("Diagnostics : pCount = " + pCount + "; maxIterations = " + maxIterations + "; maxBeautifyIterations = " + maxBeautifyIterations + "; mutateCount = " + mutateCount + "; timeElapsed = " + stopwatch.ElapsedMilliseconds + "; iteration = " + iteration + "; Strength = " + pPVeryBest.strength.ToString("0.###E+0"), 2, "ScenarioA4H");
-                        iteration++;
+                        if (pPVeryBest != null)
+                        {
+                            double lastStrength = -rules.playerCoins;
+                            if (pPVeryBestLast != null)
+                            {
+                                lastStrength = pPVeryBestLast.strength;
+                            }
+                            logger.log("Diagnostics : pCount = " + pCount + "; maxIterations = " + maxIterations + "; maxBeautifyIterations = " + maxBeautifyIterations + "; mutateCount = " + mutateCount + "; timeElapsed = " + stopwatch.ElapsedMilliseconds + "; iteration = " + iteration + "; Last strength = " + lastStrength.ToString("0.###E+0") + "; Current strength = " + pPVeryBest.strength.ToString("0.###E+0"), 2, "ScenarioA4H");
+                        }
                     }
+                    if (pPVeryBest!=null)
+                    {
+                        pPVeryBest2 = pPVeryBest.copyPlayer();
+                    }
+                    logger.log("Time-out, starting next iteration", 2, "ScenarioA4H");
+                    iteration++;
+                }
+                if ((pPVeryBestLast != null) && (pPVeryBest != null)&&(!(pPVeryBest.strength > (pPVeryBestLast.strength / expectedGrowth))))
+                {
+                    logger.log("Expected growth criteria failed, resetting. Received strenght = " + pPVeryBest.strength.ToString("F16") + "; last strength = " + pPVeryBestLast.strength.ToString("F16") + "; ratio = " + ((double)(pPVeryBestLast.strength / pPVeryBest.strength)).ToString("F16"), 2, "ScenarioA4H");
                 }
             }
         }
@@ -312,6 +339,7 @@ namespace Probability
                         pPBest = pP[i].copyPlayer();
                         bestNo = i;
                         logger.log("New best Player found : " + pPBest.toString(), 8, "ScenarioA4");
+                        logger.updateBest(pPBest);
                     }
                 }
                 if (pPBest != null)

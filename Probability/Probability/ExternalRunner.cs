@@ -490,7 +490,7 @@ namespace Probability
 
 
 
-            bool allOK = true;
+            //bool allOK = true;
             for (int j = 0; j < count; j++)
             {
                 for (int i = 0; i < allBrainCellsCount; i++)
@@ -513,7 +513,7 @@ namespace Probability
                 }
                 else
                 {
-                    allOK = false;
+                    //allOK = false;
                     logger.log("Antiplayer do not match", 10, "Error");
                     logger.log("Antiplayer 1 strength = " + pA[j].strength.ToString("F30"), 10, "Error");
                     logger.log("Antiplayer 2 strength = " + pT[j].strength.ToString("F30"), 10, "Error");

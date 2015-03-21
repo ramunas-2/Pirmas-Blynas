@@ -22,6 +22,8 @@ namespace Probability
         System.Windows.Forms.Label[] labelResult = new System.Windows.Forms.Label[noOfThreads];
         System.ComponentModel.BackgroundWorker[] backgroundWorker = new System.ComponentModel.BackgroundWorker[noOfThreads];
 
+        Player pBest;
+        Logger loggerMain;
 
         public FormMain()
         {
@@ -45,6 +47,10 @@ namespace Probability
             {
                 threadRuns[i] = false;
             }
+
+            loggerMain = new Logger(richTextBoxMain, chartMain, labelMain, "logMain.txt", 2);
+            pBest = new Player(loggerMain, new Rules(loggerMain), "Best", true);
+            pBest.strength = -1E12d;
 
             int j = 0;
             if (noOfThreads > j)
@@ -84,12 +90,13 @@ namespace Probability
 
             for (int i = 0; i < noOfThreads; i++)
             {
-                logger[i] = new Logger(richTextLog[i], chartLog[i], labelResult[i], "log" + i.ToString("d2") + ".txt", 5);
+                logger[i] = new Logger(richTextLog[i], chartLog[i], labelResult[i], "log" + i.ToString("d2") + ".txt", 5, loggerMain, pBest);
                 logger[i].log("Hello");
                 logger[i].set("Error", 10, Color.Red);
                 worldAugmented[i] = new WorldAugmented(logger[i]);
 
             }
+
 
 
 

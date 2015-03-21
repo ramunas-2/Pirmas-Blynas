@@ -57,16 +57,16 @@ namespace Probability
             return retVal;
         }
 
-        private void copyPlayerNoNew(Player retVal)
+        public void copyPlayerNoNew(Player pDestination)
         {
             for (int i = 0; i < allBrainCellsCount; i++)
             {
-                retVal.brainCells[i] = this.brainCells[i];
+                pDestination.brainCells[i] = this.brainCells[i];
             }
-            retVal.coins = this.coins;
-            retVal.dice = this.dice;
-            retVal.allBrainCellsCount = this.allBrainCellsCount;
-            retVal.strength = this.strength;
+            pDestination.coins = this.coins;
+            pDestination.dice = this.dice;
+            pDestination.allBrainCellsCount = this.allBrainCellsCount;
+            pDestination.strength = this.strength;
         }
 
         //Reset coins and dice
@@ -214,12 +214,12 @@ namespace Probability
         }
 
         //toString
-        public string toString()
+        public string toString(int precision = 25)
         {
-            string s = "Player <" + name + ">; coins = " + coins.ToString() + "; dice = " + dice.ToString() + "; brainCells = ( ";
+            string s = "Player <" + name + ">; coins = " + coins.ToString() + "; dice = " + dice.ToString() + "; strength = " + strength.ToString("F" + precision.ToString()) + "; brainCells = ( ";
             for (int i = 0; i < allBrainCellsCount; i++)
             {
-                s += (brainCells[i].ToString("F25") + "; ");
+                s += (brainCells[i].ToString("F"+precision.ToString()) + "; ");
             }
             s += ")";
             return s;

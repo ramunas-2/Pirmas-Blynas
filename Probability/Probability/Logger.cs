@@ -23,19 +23,33 @@ namespace Probability
         int debugLevel;
         Dictionary<string, LoggerType> loggerTypesDictionary;
 
-
+        public Logger loggerMain;
+        public Player pBest;
 
         StreamWriter w;
         public Logger(System.Windows.Forms.RichTextBox richTextLog, System.Windows.Forms.DataVisualization.Charting.Chart chartLog, System.Windows.Forms.Label labelResult, string logFile, int debugLevel)
+        {
+            initialiseLogger( richTextLog,  chartLog,  labelResult, logFile,  debugLevel,  null,  null);
+        }
+
+        public Logger(System.Windows.Forms.RichTextBox richTextLog, System.Windows.Forms.DataVisualization.Charting.Chart chartLog, System.Windows.Forms.Label labelResult, string logFile, int debugLevel, Logger loggerMain, Player pBest)
+        {
+            initialiseLogger(richTextLog, chartLog, labelResult, logFile, debugLevel, loggerMain, pBest);
+        }
+
+        void initialiseLogger(System.Windows.Forms.RichTextBox richTextLog, System.Windows.Forms.DataVisualization.Charting.Chart chartLog, System.Windows.Forms.Label labelResult, string logFile, int debugLevel, Logger loggerMain, Player pBest)
         {
             this.richTextLog = richTextLog;
             this.chartLog = chartLog;
             this.labelResult = labelResult;
             this.logFile = logFile;
             this.debugLevel = debugLevel;
+            this.loggerMain = loggerMain;
+            this.pBest = pBest;
             w = File.AppendText(logFile);
             loggerTypesDictionary = new Dictionary<string, LoggerType>();
         }
+
 
         public void log(string logMessage)
         {
@@ -132,6 +146,22 @@ namespace Probability
         {
             chartLog.Series["Series1"].Points.Clear();
             chartLog.Update();
+        }
+
+        public void updateBest(Player p)
+        {
+            if (loggerMain!=null)
+            {
+                if (p.strength>pBest.strength)
+                {
+                    p.copyPlayerNoNew(pBest);
+//                    loggerMain.log("Strength = " + p.strength.ToString("0.###E+0"));
+                    loggerMain.log("Player = " + p.toString());
+
+                    loggerMain.logLabel("Strength : " + p.strength.ToString("0.###E+0"));
+                    loggerMain.logChart(p.strength);
+                }
+            }
         }
 
 
