@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -78,7 +79,7 @@ namespace Probability
 
             for (int i = 0; i < 3; i++)
             {
-                logger.log("p2[26] = " + p2.brainCells[26].ToString("F20")+"; p2[27] = " + p2.brainCells[27].ToString("F20"), 5, "ScenarioA8");
+                logger.log("p2[26] = " + p2.brainCells[26].ToString("F20") + "; p2[27] = " + p2.brainCells[27].ToString("F20"), 5, "ScenarioA8");
 
                 beautifyAE1(ref p2);
                 pA2 = arenaAugmented.makeAugmentedAntiplayerEvolution1(p2);
@@ -225,52 +226,76 @@ namespace Probability
         {
             logger.log("Run scenarion A4 - Evolve imune player");
             logger.set("ScenarioA4", 2, Color.Green);
-
+            logger.set("ScenarioA4H", 2, Color.Maroon);
             logger.logLabel("Started...");
+            Stopwatch stopwatch = new Stopwatch();
+            long repeatTime = 60 * 60 * 1000 * 6; //6 hours
+            double expectedGrowth = 2.0d;
 
-            Player pPVeryBest = null;
-            Player pPLast = null;
+
 
             while (!stopRun)
             {
-                //----- Process
-                pPLast = beautifyAE1M4();
-                if ((pPLast != null) && ((pPVeryBest == null) || (pPLast.strength > pPVeryBest.strength)))
+                Player pPVeryBest = null;
+                Player pPVeryBestLast = null;
+                Player pPLast = null;
+                int pCount = rules.random.Next(28) + 4;
+                int maxIterations = rules.random.Next(35) + 5;
+                int maxBeautifyIterations = rules.random.Next(55) + 5;
+                int mutateCount = rules.random.Next(3) + 1;
+                int iteration = 0;
+                stopwatch.Restart();
+                logger.log("pCount = " + pCount + "; maxIterations = " + maxIterations + "; maxBeautifyIterations = " + maxBeautifyIterations + "; mutateCount = " + mutateCount, 2, "ScenarioA4H");
+                while ((!stopRun) && ((pPVeryBest == null) || (pPVeryBest.strength > (pPVeryBestLast.strength / expectedGrowth))))
                 {
-                    pPVeryBest = pPLast.copyPlayer();
-                    logger.log("New very best Player found : " + pPVeryBest.toString(), 1, "ScenarioA4");
-                    logger.log("Strength : " + pPVeryBest.strength.ToString("F16"), 1, "ScenarioA4");
-                    logger.logLabel("Strength : " + pPVeryBest.strength.ToString("0.###E+0"));
+                    if (pPVeryBest != null)
+                    {
+                        pPVeryBestLast = pPVeryBest.copyPlayer();
+                    }
+                    while ((!stopRun) && (stopwatch.ElapsedMilliseconds < repeatTime))
+                    {
+                        //----- Process
+                        pPLast = beautifyAE1M4(pPVeryBest, pCount, maxIterations, maxBeautifyIterations, mutateCount);
+                        if ((pPLast != null) && ((pPVeryBest == null) || (pPLast.strength > pPVeryBest.strength)))
+                        {
+                            pPVeryBest = pPLast.copyPlayer();
+                            logger.log("New very best Player found : " + pPVeryBest.toString(), 1, "ScenarioA4");
+                            logger.log("Strength : " + pPVeryBest.strength.ToString("F16"), 1, "ScenarioA4");
+                            logger.logLabel("Strength : " + pPVeryBest.strength.ToString("0.###E+0"));
+                        }
+                        logger.log("Diagnostics : pCount = " + pCount + "; maxIterations = " + maxIterations + "; maxBeautifyIterations = " + maxBeautifyIterations + "; mutateCount = " + mutateCount + "; timeElapsed = " + stopwatch.ElapsedMilliseconds + "; iteration = " + iteration + "; Strength = " + pPVeryBest.strength.ToString("0.###E+0"), 2, "ScenarioA4H");
+                        iteration++;
+                    }
                 }
             }
-
-
-
-
-
         }
 
 
-        private Player beautifyAE1M4()
+        private Player beautifyAE1M4(Player model, int pCount = 16, int maxIterations = 20, int maxBeautifyIterations = 30, int mutateCount = 1)
         {
 
+            /*
             int pCount = 16; //Number of parrallel players
             int maxIterations = 20; //Number of iterations (long)
-            int maxBeautifyIterations = 30; //Number of iterations (long)
-
-
-            /*
-            int pCount = 1; //Number of parrallel players
-            int maxIterations = 1; //Number of iterations (long)
-            int maxBeautifyIterations = 30; //Number of iterations (long)
+            int maxBeautifyIterations = 30; //Number of iterations (short)
             */
 
             Player[] pP = new Player[pCount];
             for (int i = 0; i < pCount; i++)
             {
-                pP[i] = new Player(logger, rules, "Lucky", true);
-                pP[i].load01();
-                pP[i].normaliseBrainCells();
+                //pP[i].load01();
+                //pP[i].normaliseBrainCells();
+
+
+                if (model == null)
+                {
+                    pP[i] = new Player(logger, rules, "Lucky", true);
+                }
+                else
+                {
+                    pP[i] = new Player(model);
+                }
+
             }
             Player pPVeryBest = null;
             for (int iteration = 0; iteration < maxIterations; iteration++)
@@ -281,7 +306,7 @@ namespace Probability
                 {
                     logger.log("Iteration = " + iteration + "; Player = " + i, 5, "ScenarioA4");
                     //----- Process
-                    pP[i] = beautifyAE1M3(-1E-12d, maxBeautifyIterations, 1, pP[i], 100, "T00", 2);
+                    pP[i] = beautifyAE1M3(-1E-12d, maxBeautifyIterations, mutateCount, pP[i], 100, "T00", 2);
                     if ((pP[i] != null) && ((pPBest == null) || (pP[i].strength > pPBest.strength)))
                     {
                         pPBest = pP[i].copyPlayer();
@@ -518,13 +543,13 @@ namespace Probability
         private void beautifyAE1Evo2FindBestDirection(Player pP, ref BeautifyComponent bestDirection, double microStep, ref Player pA, Player pABaseline)
         {
             bestDirection = null;
-            double? bestStrength=null;
+            double? bestStrength = null;
 
             foreach (BeautifyComponent beautifyComponent in beautifyComponents)
             {
                 pP.mutateAdvanced(beautifyComponent.changeFrom, beautifyComponent.changeTo, beautifyComponent.direction * microStep);
                 double strength = arenaAugmented.fightStatistics(pP, pABaseline);
-                if ((bestStrength == null) || (strength>bestStrength))
+                if ((bestStrength == null) || (strength > bestStrength))
                 {
                     bestStrength = strength;
                     bestDirection = beautifyComponent;
