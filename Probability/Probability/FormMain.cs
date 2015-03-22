@@ -25,6 +25,8 @@ namespace Probability
         Player pBest;
         Logger loggerMain;
 
+        bool terminateWhenAllClosed = false;
+
         public FormMain()
         {
             InitializeComponent();
@@ -88,12 +90,13 @@ namespace Probability
                 backgroundWorker[j] = backgroundWorker3;
             }
 
+            Random rnd = new Random();
             for (int i = 0; i < noOfThreads; i++)
             {
                 logger[i] = new Logger(richTextLog[i], chartLog[i], labelResult[i], "log" + i.ToString("d2") + ".txt", 5, loggerMain, pBest);
                 logger[i].log("Hello");
                 logger[i].set("Error", 10, Color.Red);
-                worldAugmented[i] = new WorldAugmented(logger[i]);
+                worldAugmented[i] = new WorldAugmented(logger[i], rnd.Next(0x00010000));
 
             }
 
@@ -131,6 +134,11 @@ namespace Probability
 
         private void button1_Click(object sender, EventArgs e)
         {
+            stopApplication();
+        }
+
+        private void stopApplication()
+        {
             for (int i = 0; i < noOfThreads; i++)
             {
                 if (threadRuns[i])
@@ -150,6 +158,7 @@ namespace Probability
         {
             if (noOfThreads > 0)
                 threadRuns[0] = false;
+            terminateCheck();
         }
 
         private void backgroundWorker1_DoWork_1(object sender, DoWorkEventArgs e)
@@ -162,6 +171,7 @@ namespace Probability
         {
             if (noOfThreads > 1)
                 threadRuns[1] = false;
+            terminateCheck();
         }
 
         private void backgroundWorker2_DoWork(object sender, DoWorkEventArgs e)
@@ -174,6 +184,7 @@ namespace Probability
         {
             if (noOfThreads > 2)
                 threadRuns[2] = false;
+            terminateCheck();
         }
 
         private void backgroundWorker3_DoWork(object sender, DoWorkEventArgs e)
@@ -186,6 +197,42 @@ namespace Probability
         {
             if (noOfThreads > 3)
                 threadRuns[3] = false;
+            terminateCheck();
+        }
+
+        private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            stopApplication();
+            terminateWhenAllClosed = true;
+            if (!checkAllClosed())
+            {
+                e.Cancel = true;
+            }
+        }
+
+        private bool checkAllClosed()
+        {
+            bool allClosed = false;
+            if (terminateWhenAllClosed)
+            {
+                allClosed = true;
+                for (int i = 0; i < noOfThreads; i++)
+                {
+                    allClosed &= (!threadRuns[i]);
+                }
+            }
+            return allClosed;
+        }
+
+        private void terminateCheck()
+        {
+            if (terminateWhenAllClosed)
+            {
+                if (checkAllClosed())
+                {
+                    Close();
+                }
+            }
         }
 
 

@@ -11,8 +11,8 @@ namespace Probability
     class WorldAugmented : World
     {
 
-        public WorldAugmented(Logger logger)
-            : base(logger)
+        public WorldAugmented(Logger logger, int sead)
+            : base(logger, sead)
         {
             stopRun = false;
         }
@@ -292,7 +292,7 @@ namespace Probability
                 }
                 if ((pPVeryBestLast != null) && (pPVeryBest != null)&&(!(pPVeryBest.strength > (pPVeryBestLast.strength / expectedGrowth))))
                 {
-                    logger.log("Expected growth criteria failed, resetting. Received strenght = " + pPVeryBest.strength.ToString("F16") + "; last strength = " + pPVeryBestLast.strength.ToString("F16") + "; ratio = " + ((double)(pPVeryBestLast.strength / pPVeryBest.strength)).ToString("F16"), 2, "ScenarioA4H");
+                    logger.log("Expected growth criteria failed, resetting. Last strenght = " + pPVeryBestLast.strength.ToString("F16") + "; current strength = " + pPVeryBest.strength.ToString("F16") + "; ratio = " + ((double)(pPVeryBestLast.strength / pPVeryBest.strength)).ToString("F16"), 2, "ScenarioA4H");
                 }
             }
         }

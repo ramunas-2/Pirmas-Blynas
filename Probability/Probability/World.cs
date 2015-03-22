@@ -13,10 +13,10 @@ namespace Probability
         protected Rules rules;
         protected Arena arena;
         protected ArenaAugmented arenaAugmented;
-        public World(Logger logger)
+        public World(Logger logger, int sead=-1)
         {
             this.logger = logger;
-            rules = new Rules(logger);
+            rules = new Rules(logger, sead);
             arena = new Arena(logger, rules);
             arenaAugmented = new ArenaAugmented(logger, rules);
         }

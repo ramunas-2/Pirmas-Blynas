@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -26,6 +27,8 @@ namespace Probability
         public Logger loggerMain;
         public Player pBest;
 
+        Stopwatch stopwatch;
+
         StreamWriter w;
         public Logger(System.Windows.Forms.RichTextBox richTextLog, System.Windows.Forms.DataVisualization.Charting.Chart chartLog, System.Windows.Forms.Label labelResult, string logFile, int debugLevel)
         {
@@ -48,6 +51,8 @@ namespace Probability
             this.pBest = pBest;
             w = File.AppendText(logFile);
             loggerTypesDictionary = new Dictionary<string, LoggerType>();
+            stopwatch = new Stopwatch();
+            stopwatch.Start();
         }
 
 
@@ -114,16 +119,16 @@ namespace Probability
             }
         }
 
-        public void logChart(double x)
+        public void logChart(double y)
         {
             if (chartLog.InvokeRequired)
             {
                 SetChartCallback d = new SetChartCallback(logChart);
-                richTextLog.Invoke(d, new object[] { x });
+                richTextLog.Invoke(d, new object[] { y });
             }
             else
             {
-                chartLog.Series["Series1"].Points.AddY(x);
+                chartLog.Series["Series1"].Points.AddXY(((double)stopwatch.ElapsedMilliseconds)/(1000*60*60),y);
                 chartLog.Update();
             }
         }

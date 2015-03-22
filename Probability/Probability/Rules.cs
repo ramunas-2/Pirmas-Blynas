@@ -20,7 +20,7 @@ namespace Probability
         public Scenario[] locationsBC;
 
 
-        public Rules(Logger logger)
+        public Rules(Logger logger, int seed=-1)
         {
             logger.set("Rules", 1, Color.Brown);
             this.logger = logger;
@@ -38,7 +38,15 @@ namespace Probability
 
 
             //Random generator
-            random = new Random();
+            if (seed == -1)
+            {
+                random = new Random();
+            }
+            else
+            {
+                random = new Random(seed);
+            }
+
 
 
         }
