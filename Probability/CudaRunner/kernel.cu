@@ -167,6 +167,9 @@ void antiPlayerCPU(double *brainCells, const int *allBrainCellsCount, double *su
 				{
 					for (int i3 = 0; i3 < CPU_sMask3[(((i0 * (*CPU_k1mask3)) + i1) * (*CPU_k2mask3)) + i2]; i3++)
 					{
+
+
+						//--Overhead, should be done only once, move-up!
 						double newBrainCellValue;
 						if (i2 == bestOptionAChoiceLocation)
 						{
@@ -177,6 +180,7 @@ void antiPlayerCPU(double *brainCells, const int *allBrainCellsCount, double *su
 							newBrainCellValue = 0.0;
 						}
 						brainCells[((*allBrainCellsCount)*iThX) + CPU_spath2[((CPU_sMask4[(((((i0 * (*CPU_k1mask4)) + i1) * (*CPU_k2mask4)) + i2) * (*CPU_k3mask4)) + i3]) * (*CPU_k1path2)) + pathLength - 1]] = newBrainCellValue;
+
 						wonCoins[CPU_sMask4[(((((i0 * (*CPU_k1mask4)) + i1) * (*CPU_k2mask4)) + i2) * (*CPU_k3mask4)) + i3]] *= newBrainCellValue;
 					}
 				}

@@ -249,18 +249,19 @@ namespace Probability
                 int iteration = 0;
                 while ((!stopRun) && ((pPVeryBest == null) || (pPVeryBestLast == null) || (pPVeryBest.strength > (pPVeryBestLast.strength / expectedGrowth))))
                 {
-                    /*
+                    
                     pCount = rules.random.Next(28) + 4;
                     maxIterations = rules.random.Next(35) + 5;
                     maxBeautifyIterations = rules.random.Next(55) + 5;
                     mutateCount = rules.random.Next(3) + 1;
-                    */
+                    
 
+                    /*
                     pCount = 15;
                     maxIterations = 25;
                     maxBeautifyIterations = 50;
                     mutateCount = 2;
-
+                    */
 
 
                     logger.log("Randomised parameters set : pCount = " + pCount + "; maxIterations = " + maxIterations + "; maxBeautifyIterations = " + maxBeautifyIterations + "; mutateCount = " + mutateCount, 2, "ScenarioA4H");
@@ -320,8 +321,6 @@ namespace Probability
             Player[] pP = new Player[pCount];
             for (int i = 0; i < pCount; i++)
             {
-                //pP[i].load01();
-                //pP[i].normaliseBrainCells();
 
 
                 if (model == null)
@@ -332,6 +331,13 @@ namespace Probability
                 {
                     pP[i] = new Player(model);
                 }
+
+                /*
+                pP[i].load01();
+                pP[i].normaliseBrainCells();
+                */
+
+
 
             }
             Player pPVeryBest = null;

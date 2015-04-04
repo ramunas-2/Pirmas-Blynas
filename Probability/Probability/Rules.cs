@@ -12,8 +12,8 @@ namespace Probability
         Logger logger;
 
         public int blind = 1;
-        public int playerCoins = 4;
-        public int diceCombinations = 6;
+        public int playerCoins = 2;
+        public int diceCombinations = 2;
         public Random random;
         public int situationBrainCellsCount;
         public int allBrainCellsCount;
@@ -38,6 +38,7 @@ namespace Probability
 
 
             //Random generator
+            logger.log("Initialise random with seed = "+seed);
             if (seed == -1)
             {
                 random = new Random();

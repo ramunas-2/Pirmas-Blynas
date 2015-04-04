@@ -235,6 +235,167 @@ namespace Probability
             }
         }
 
+        private void buttonTest1_Click(object sender, EventArgs e)
+        {
+            //loggerMain = new Logger(richTextBoxMain, chartMain, labelMain, "logTest.txt", 2);
+            Random rnd = new Random();
+            WorldAugmented world = new WorldAugmented(loggerMain, (rnd.Next(0x00010000)));
+            Rules rules = new Rules(loggerMain, rnd.Next(0x00010000));
+            Arena arena = new Arena(loggerMain, rules);
+            ArenaAugmented arenaAugmented = new ArenaAugmented(loggerMain, rules);
+
+            Player pCalculated = new Player(loggerMain, rules, "pCalculated", true);
+            Player pRandom = new Player(loggerMain, rules, "pRandom", true);
+            Player pA = new Player(loggerMain, rules, "pA", true);
+            Player pManual = new Player(loggerMain, rules, "pManual", true);
+
+
+            pManual.brainCells[0] = 0d;
+            pManual.brainCells[1] = 1d;
+            pManual.brainCells[2] = 0d;
+            pManual.brainCells[3] = 0d;
+            pManual.brainCells[4] = 1d;
+            pManual.brainCells[5] = 0d;
+            pManual.brainCells[6] = 1d;
+            pManual.brainCells[7] = 0d;
+            pManual.brainCells[8] = 1d;
+            pManual.brainCells[9] = 0d;
+            pManual.brainCells[10] = 0d;
+            pManual.brainCells[11] = 1d;
+            pManual.brainCells[12] = 0d;
+            pManual.brainCells[13] = 0d;
+            pManual.brainCells[14] = 1d;
+            pManual.brainCells[15] = 0d;
+            pManual.brainCells[16] = 0d;
+            pManual.brainCells[17] = 1d;
+            pManual.brainCells[18] = 0d;
+            pManual.brainCells[19] = 1d;
+
+
+            pCalculated.brainCells[0] = 0d;
+            pCalculated.brainCells[1] = 2.77555756E-17d;
+            pCalculated.brainCells[2] = 1d;
+            pCalculated.brainCells[3] = 0d;
+            pCalculated.brainCells[4] = 1d;
+            pCalculated.brainCells[5] = 0d;
+            pCalculated.brainCells[6] = 1d;
+            pCalculated.brainCells[7] = 0d;
+            pCalculated.brainCells[8] = 1d;
+            pCalculated.brainCells[9] = 5.55111512E-17d;
+            pCalculated.brainCells[10] = 0d;
+            pCalculated.brainCells[11] = 0d;
+            pCalculated.brainCells[12] = 1d;
+            pCalculated.brainCells[13] = 0d;
+            pCalculated.brainCells[14] = 0.637411158460914d;
+            pCalculated.brainCells[15] = 0.362588841539086d;
+            pCalculated.brainCells[16] = 0d;
+            pCalculated.brainCells[17] = 1d;
+            pCalculated.brainCells[18] = 0d;
+            pCalculated.brainCells[19] = 1d;
+
+
+
+            pA = arenaAugmented.antiPlayerE01(pCalculated);
+
+            /*
+            for (long i = 0; i < 1000000000; i++)
+            {
+                if (i % 1000000 ==0)
+                {
+                    loggerMain.log(""+i/1000000);
+                }
+                pCalculated.reset();
+                pManual.reset();
+            }
+            */
+
+
+            for (int i = 0; i < 1; i++)
+            {
+
+                //double resultAgainstManual = arena.fightScan(pCalculated, pManual, 1000000000);  //for Random testing
+                //double resultAgainstManual = arena.fightScan(pCalculated, pManual, 10000);
+
+
+                double resultAgainstRandom = arenaAugmented.fightStatistics(pCalculated, pRandom);
+                double resultAgainstA = arenaAugmented.fightStatistics(pCalculated, pA);
+                double resultAgainstManual = arenaAugmented.fightStatistics(pCalculated, pManual);
+
+
+                loggerMain.log("Fight against pRandom = " + resultAgainstRandom.ToString("E4"));
+                loggerMain.log("Fight against pA      = " + resultAgainstA.ToString("E4"));
+                loggerMain.log("Fight against pManual = " + resultAgainstManual.ToString("E4"));
+
+            }
+
+
+            loggerMain.printSD();
+
+
+
+
+        }
+
+        private void EquationButton_Click(object sender, EventArgs e)
+        {
+            Random rnd = new Random();
+            WorldAugmented world = new WorldAugmented(loggerMain, (rnd.Next(0x00010000)));
+            Rules rules = new Rules(loggerMain, rnd.Next(0x00010000));
+            Arena arena = new Arena(loggerMain, rules);
+            ArenaAugmented arenaAugmented = new ArenaAugmented(loggerMain, rules);
+
+            Player p = new Player(loggerMain, rules, "Player", true);
+
+
+
+
+            string s1 = "Solve[\n";
+            for (int dice = 0; dice < rules.diceCombinations; dice++)
+            {
+                int brainCellsBegin = dice * rules.situationBrainCellsCount;
+                foreach (Scenario scenario in rules.scenarios)
+                {
+                    if (scenario.possibleMoves.Count > 0)
+                    {
+                        String s2 = "(";
+                        for (int i = brainCellsBegin; i < brainCellsBegin + scenario.possibleMoves.Count; i++)
+                        {
+                            s1 += "(0 <= p"+i+" <=1) && ";
+                            s2 += "p"+i + " + ";
+                        }
+                        s2 = s2.Substring(0, s2.Length - 3);
+                        s2 += " == 1)";
+                        s1 += s2+" && \n";
+                    }
+                    brainCellsBegin += scenario.possibleMoves.Count;
+                }
+            }
+
+            s1 += arenaAugmented.antiPlayerE03PrintEquation(p);
+
+            s1 += ", \n{";
+
+            for (int i = 0; i < p.allBrainCellsCount; i++)
+            {
+                s1 += "p" + i + ", ";
+            }
+            s1 = s1.Substring(0, s1.Length - 2);
+            s1 += "}]";
+
+
+            loggerMain.log("Equation : \n"+ s1);
+
+
+
+
+
+
+
+
+
+
+        }
+
 
 
     }

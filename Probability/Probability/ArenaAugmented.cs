@@ -202,8 +202,10 @@ namespace Probability
                     {
                         for (int i3 = 0; i3 < mask3[i0][i1][i2]; i3++)
                         {
+                            //--Overhead, should be done only once, move-up!
                             double newBrainCellValue = (i2 == bestOptionAChoiceLocation) ? 1.0d : 0.0d;
                             pA.brainCells[path2[mask4[i0][i1][i2][i3]][pathLength - 1]] = newBrainCellValue;
+
                             wonCoins[mask4[i0][i1][i2][i3]] *= newBrainCellValue;
                         }
                     }
@@ -219,6 +221,144 @@ namespace Probability
             pA.strength = sumOfCoins;
             return pA;
         }
+
+
+
+        public String antiPlayerE03PrintEquation(Player pP)
+        {
+            string ss = "";
+            Dictionary<int, string> c = new Dictionary<int, string>();
+            Dictionary<int, string> cG = new Dictionary<int, string>();
+            //-----Refactored, optimised for performance
+            for (int i0 = 0; i0 < matrix0; i0++)
+            {
+                string s1 = "(c" + i0 + " == (";
+                double sum = 0.0d;
+                for (int i1 = 0; i1 < matrix1[i0]; i1++)
+                {
+                    string s2 = "(" + matrixCoins[i0][i1];
+                    double multiplication = matrixCoins[i0][i1];
+                    for (int i2 = 0; i2 < matrix2[i0][i1]; i2++)
+                    {
+                        s2 += " * p" + matrix3[i0][i1][i2];
+                        multiplication *= pP.brainCells[matrix3[i0][i1][i2]];
+                    }
+                    s2 += ") + ";
+                    s1 += s2;
+                    sum += multiplication;
+                }
+                s1 = s1.Substring(0, s1.Length - 3);
+                s1 += ")";
+
+                /*
+                s1 += ") && ";
+                ss += s1;
+                */
+
+                c.Add(i0, s1);
+
+
+                wonCoins[i0] = sum;
+            }
+
+
+            Player pA = pP.copyPlayer();
+            int pathLength = maxGameOverPathLengthEvolution1;
+            for (int i0 = 0; i0 < mask0; i0++)
+            {
+                for (int i1 = 0; i1 < mask1[i0]; i1++)
+                {
+                    cG = new Dictionary<int, string>();
+                    double? bestOptionABenefit = null;
+                    int bestOptionAChoiceLocation = -1;
+                    for (int i2 = 0; i2 < mask2[i0][i1]; i2++)
+                    {
+                        string s1 = "(";
+                        double sumOfAllDiceCombinationsBenefit = 0;
+                        for (int i3 = 0; i3 < mask3[i0][i1][i2]; i3++)
+                        {
+                            s1 += "c" + mask4[i0][i1][i2][i3] + " + ";
+                            sumOfAllDiceCombinationsBenefit += wonCoins[mask4[i0][i1][i2][i3]];
+                        }
+                        if (bestOptionABenefit == null || sumOfAllDiceCombinationsBenefit > bestOptionABenefit)
+                        {
+                            bestOptionABenefit = sumOfAllDiceCombinationsBenefit;
+                            bestOptionAChoiceLocation = i2;
+                        }
+                        s1 = s1.Substring(0, s1.Length - 3);
+                        s1 += ")";
+
+                        //s1 = "a" + path2[mask4[i0][i1][i2][0]][pathLength - 1]+" : "+s1;
+                        //ss += (s1+"\n");
+
+                        cG.Add(path2[mask4[i0][i1][i2][0]][pathLength - 1], s1);
+
+                    }
+                    //ss += "----------------" + "\n";
+
+                    foreach (KeyValuePair<int, string> item in cG)
+                    {
+                        string s1 = "(a" + item.Key + " == If[";
+                        foreach (KeyValuePair<int, string> item2 in cG)
+                        {
+                            if (item.Key != item2.Key)
+                            {
+                                s1 += ("(" + item.Value + (item.Key > item2.Key?"<":"<=") + item2.Value+") && ");
+                            }
+                        }
+                        s1 = s1.Substring(0, s1.Length - 4);
+                        s1 += ", 1, 0]) && \n";
+                        ss += s1;
+                    }
+
+
+                    for (int i2 = 0; i2 < mask2[i0][i1]; i2++)
+                    {
+                        string s1 = "i2= " + i2 + " Values=(";
+                        for (int i3 = 0; i3 < mask3[i0][i1][i2]; i3++)
+                        {
+                            double newBrainCellValue = (i2 == bestOptionAChoiceLocation) ? 1.0d : 0.0d;
+                            pA.brainCells[path2[mask4[i0][i1][i2][i3]][pathLength - 1]] = newBrainCellValue;
+                            //logger.log("Updating pA[" + path2[mask4[i0][i1][i2][i3]][pathLength - 1] + "] with " + newBrainCellValue);
+
+                            c[mask4[i0][i1][i2][i3]] += " * a" + path2[mask4[i0][i1][i2][i3]][pathLength - 1];
+
+                            wonCoins[mask4[i0][i1][i2][i3]] *= newBrainCellValue;
+                        }
+                    }
+                }
+                pathLength--;
+            }
+
+
+
+            foreach (var item in c)
+            {
+                ss += (item.Value + ") && \n");
+            }
+
+
+            ss += "(";
+            foreach (KeyValuePair<int, string> item in c)
+            {
+                ss += "c" + item.Key + " + ";
+            }
+            ss = ss.Substring(0, ss.Length - 3);
+            ss += " == 0)";
+
+
+
+
+            double sumOfCoins = 0;
+            for (int i = 0; i < wonCoinsLength; i++)
+            {
+                sumOfCoins += wonCoins[i];
+            }
+            sumOfCoins /= (2 * rules.diceCombinations * rules.diceCombinations);
+            pA.strength = sumOfCoins;
+            return ss;
+        }
+
 
 
         private Player antiPlayerE03_old(Player pP)
@@ -551,7 +691,7 @@ namespace Probability
         //----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-        private Player antiPlayerE01(Player pP)
+        public Player antiPlayerE01(Player pP)
         {
             Player pA = pP.copyPlayer();
             pA.name = "AntiE1-" + pA.name;
@@ -692,7 +832,7 @@ namespace Probability
 
             //9 Verify if any -1 brain cell is left in A
             //10 Make a copy of A, run normalise, verify if anything is changed
-            /*
+
             Player pACopy = pA.copyPlayer();
             pACopy.normaliseBrainCells();
             for (int i = 0; i < rules.allBrainCellsCount; i++)
@@ -706,7 +846,7 @@ namespace Probability
                     logger.log("After Anti player creatiopn found not normalised brain cell", 1, "Error");
                 }
             }
-            */
+
 
 
 

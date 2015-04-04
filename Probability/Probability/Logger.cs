@@ -30,9 +30,15 @@ namespace Probability
         Stopwatch stopwatch;
 
         StreamWriter w;
+
+
+        Dictionary<string, long> stringDictionary;
+
+
+
         public Logger(System.Windows.Forms.RichTextBox richTextLog, System.Windows.Forms.DataVisualization.Charting.Chart chartLog, System.Windows.Forms.Label labelResult, string logFile, int debugLevel)
         {
-            initialiseLogger( richTextLog,  chartLog,  labelResult, logFile,  debugLevel,  null,  null);
+            initialiseLogger(richTextLog, chartLog, labelResult, logFile, debugLevel, null, null);
         }
 
         public Logger(System.Windows.Forms.RichTextBox richTextLog, System.Windows.Forms.DataVisualization.Charting.Chart chartLog, System.Windows.Forms.Label labelResult, string logFile, int debugLevel, Logger loggerMain, Player pBest)
@@ -51,10 +57,19 @@ namespace Probability
             this.pBest = pBest;
             w = File.AppendText(logFile);
             loggerTypesDictionary = new Dictionary<string, LoggerType>();
+            stringDictionary = new Dictionary<string, long>();
             stopwatch = new Stopwatch();
             stopwatch.Start();
         }
 
+        /*
+        ~Logger()
+        {
+            w.Write("Close");
+            w.Flush();
+            w.Close();
+        }
+        */
 
         public void log(string logMessage)
         {
@@ -113,8 +128,10 @@ namespace Probability
                 richTextLog.AppendText(ss);
                 richTextLog.SelectionColor = richTextLog.ForeColor;
                 richTextLog.Refresh();
-                w.Write(ss);
                 richTextLog.ScrollToCaret();
+
+
+                w.Write(ss);
                 w.Flush();
             }
         }
@@ -128,7 +145,7 @@ namespace Probability
             }
             else
             {
-                chartLog.Series["Series1"].Points.AddXY(((double)stopwatch.ElapsedMilliseconds)/(1000*60*60),y);
+                chartLog.Series["Series1"].Points.AddXY(((double)stopwatch.ElapsedMilliseconds) / (1000 * 60 * 60), y);
                 chartLog.Update();
             }
         }
@@ -155,12 +172,12 @@ namespace Probability
 
         public void updateBest(Player p)
         {
-            if (loggerMain!=null)
+            if (loggerMain != null)
             {
-                if (p.strength>pBest.strength)
+                if (p.strength > pBest.strength)
                 {
                     p.copyPlayerNoNew(pBest);
-//                    loggerMain.log("Strength = " + p.strength.ToString("0.###E+0"));
+                    //                    loggerMain.log("Strength = " + p.strength.ToString("0.###E+0"));
                     loggerMain.log("Player = " + p.toString());
 
                     loggerMain.logLabel("Strength : " + p.strength.ToString("0.###E+0"));
@@ -168,6 +185,37 @@ namespace Probability
                 }
             }
         }
+
+
+        public void increaseSD(string name)
+        {
+            long iCount;
+            if (!stringDictionary.TryGetValue(name, out iCount))
+            {
+                iCount = 1;
+                stringDictionary.Add(name, iCount);
+            }
+            else
+            {
+                stringDictionary[name]++;
+            }
+        }
+
+        public void printSD()
+        {
+
+            foreach (KeyValuePair<string, long> sLine in stringDictionary)
+            {
+                //log(sLine.Key+"; count = "+sLine.Value);
+                log("Count = " + sLine.Value + "; Key = " + sLine.Key);
+            }
+        }
+
+        public void resetSD()
+        {
+            stringDictionary = new Dictionary<string, long>();
+        }
+
 
 
     }

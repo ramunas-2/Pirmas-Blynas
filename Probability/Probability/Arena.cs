@@ -24,7 +24,7 @@ namespace Probability
         //2 players, given dices, choieces made on braincells and random, fight to the end, return won coins
         public int fight(Player p1, Player p2)
         {
-            logger.log("p1 dice = " + p1.dice.ToString() + " ; p2 dice = " + p2.dice.ToString(), 9, "Fight");
+            //logger.log(p1.name+" dice = " + p1.dice.ToString() + " ; "+p2.name+" dice = " + p2.dice.ToString(), 0, "Fight");
             int retVal = 0;
             Player pCurrrent = p1;
             Player pOpponent = p2;
@@ -94,22 +94,39 @@ namespace Probability
                 logger.log("Difference is odd", 0, "Error");
             }
             retVal = difference / 2;
-            logger.log("Fight result = " + retVal.ToString(), 9, "Fight");
+            //logger.log("Fight result = " + retVal.ToString(), 0, "Fight");
+
+
+            logger.increaseSD(p1.name + " dice = " + p1.dice.ToString() + " ; " + p2.name + " dice = " + p2.dice.ToString() + "; Fight result = " + retVal.ToString()+"; path = "+Rules.intListToString(path));
+
+
+
             return retVal;
         }
 
         //FightScan Scan random dices all positions (p1 starts, p2 starts), repeat given times to eliminate random deviation
-        public double fightScan(Player p1, Player p2, int repeatCount)
+        public double fightScan(Player p1, Player p2, long repeatCount)
         {
             double retVal = 0.0d;
-            for (int i = 0; i < repeatCount; i++)
+            for (long i = 0; i < repeatCount; i++)
             {
+
                 p1.reset();
                 p2.reset();
+
+                p1.reset();
+                p2.reset();
+
                 retVal += ((double)fight(p1, p2));
+
                 p1.reset();
                 p2.reset();
+
+                p1.reset();
+                p2.reset();
+
                 retVal -= ((double)fight(p2, p1));
+
             }
             retVal /= (repeatCount * 2);
             return retVal;
